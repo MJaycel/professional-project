@@ -5,6 +5,7 @@
         <br>
         <div class="col-">
             <div class="row">
+                <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
 
                 <p>Email</p>
                 <input type="email" v-model="form.email">
@@ -38,13 +39,13 @@ export default {
     data() {
         return{
             form: {
-                email: "zion@gmail.com",
+                email: "@gmail.com",
                 password: "thomasthetankengine"
             },
         }
     },
     computed: {
-        ...mapState(['isLoggedIn'])
+        ...mapState(['isLoggedIn', 'loginError'])
     },
     methods: {
 

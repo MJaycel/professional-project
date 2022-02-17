@@ -10,12 +10,16 @@ Vue.use(Vuex, Router)
 export default new Vuex.Store({
     state: {
         isLoggedIn: false,
+        loginError: false
     },
     getters:{
     },
     mutations: {
         setLoggedInStatus(state, status){
             state.isLoggedIn = status
+        },
+        setLoginError(state, error){
+            state.loginError = error
         },
     },
     actions: {
@@ -36,7 +40,10 @@ export default new Vuex.Store({
                 console.log("Login Succesful", response.data.user)
             })
             .catch(error => {
-                console.log(error)
+                if(error){
+                    context.commit('setLoginError', true)
+                }
+                console.log(error.response.data)
             })
         },
         logout(context) {

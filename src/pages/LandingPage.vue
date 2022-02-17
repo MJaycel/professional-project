@@ -12,11 +12,20 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 
 export default {
   name: 'LandingPage',
   components: {
-  }
+  },
+  mounted() {
+    if(!this.isLoggedIn){
+      this.$store.commit('setLoginError', false)
+    }
+  },
+      computed: {
+        ...mapState(['isLoggedIn','loginError']),
+    }
 }
 </script>
 
