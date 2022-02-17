@@ -6,7 +6,7 @@
         <div class="col-">
             <div class="row">
                 <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
-                    
+
                 <p>Email</p>
                 <input type="email" v-model="form.email">
 
@@ -39,7 +39,7 @@ export default {
     data() {
         return{
             form: {
-                email: "@gmail.com",
+                email: "zion@gmail.com",
                 password: "thomasthetankengine"
             },
         }
