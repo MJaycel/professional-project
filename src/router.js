@@ -7,6 +7,8 @@ import LandingPage from "@/pages/LandingPage.vue"
 import Login from "@/pages/user/Login.vue"
 import Home from "@/pages/Home.vue"
 import PageNotFound from "@/pages/PageNotFound.vue"
+import Register from "@/pages/user/Register.vue"
+
 
 
 Vue.use(Router)
@@ -55,6 +57,28 @@ export default new Router ({
                     next()
             }
         },
+        {
+            path: '/register',
+            name: 'register',
+            component: Register,
+            beforeEnter: (to,from,next) => {
+                //if there is token, set log in state as true
+                if(localStorage.getItem('token')){
+                    store.commit('setLoggedInStatus', true);
+                }
+
+                //check if logged in
+                if(store.state.isLoggedIn) {
+                    console.log('token pass', localStorage.getItem('token'));
+                    // next({name: 'home', params: {id: store.state.user_id}})
+                    next(false)
+                } else 
+                    //set errors state back
+                    store.state.errors = {};
+                    store.state.errorsStatus = false;
+                    next()
+            }
+        },
         { 
             path: "*", 
             name: 'page_not_found',
@@ -63,8 +87,15 @@ export default new Router ({
         {
             path: '/home/:id',
             name: 'home',
-            component: Home
+            component: Home,
+            beforeEnter: (to,from,next) => {
+                if(!store.state.isLoggedIn){
+                    next({name: 'landing_page'})
+                } else{
+                    next()
+                }
+            }
         },
-
+        
     ]
 })

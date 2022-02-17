@@ -1,3 +1,4 @@
+
 <template>
     <div class="container">
         <!-- <router-link :to="{path: '/register'}"></router-link> -->
@@ -5,22 +6,28 @@
         <br>
         <div class="col-">
             <div class="row">
-                <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
-                    
+
+                <p>Name</p>
+                <input type="email" v-model="form.name">
+                <span class="error text-danger" v-if="errorsStatus">{{errors.name ? errors.name.message : ''}}</span>
+
+
                 <p>Email</p>
                 <input type="email" v-model="form.email">
+                <span class="error text-danger" v-if="errorsStatus">{{errors.email ? errors.email.message : ''}}</span>
 
                 <br>
 
                 <p>Password</p>
                 <input type="password" v-model="form.password">
+                <span class="error text-danger" v-if="errorsStatus">{{errors.password ? errors.password.message : ''}}</span>
 
                 <br>
 
                 <div class="col d-flex justify-content-end">
                 <router-link :to="{path: '/'}">cancel</router-link>
 
-                <b-button class="col-4" @click="login(form)">Submit</b-button>
+                <b-button class="col-4" @click="register(form)">Submit</b-button>
                 </div>
 
 
@@ -35,24 +42,25 @@
 import {mapState, mapActions} from 'vuex'
 
 export default {
-    name: "Login",
+    name: "Register",
     data() {
         return{
             form: {
-                email: "@gmail.com",
-                password: "thomasthetankengine"
+                name: "",
+                email: "",
+                password: ""
             },
         }
     },
     computed: {
-        ...mapState(['isLoggedIn', 'loginError'])
+        ...mapState(['isLoggedIn', 'errors', 'errorsStatus'])
     },
     methods: {
 
-        ...mapActions(['login']),
+        ...mapActions(['register']),
 
-        login() {
-            this.$store.dispatch('login', this.form)
+        register() {
+            this.$store.dispatch('register', this.form)
         }
     }
 }

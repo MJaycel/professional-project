@@ -6,6 +6,9 @@
             </h2>
 
             <router-link :to="{path: '/login'}">Login</router-link>
+            <br>
+            <router-link :to="{path: '/register'}">Create an Account</router-link>
+
 
       </div>
   </div>

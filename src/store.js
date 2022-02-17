@@ -10,7 +10,9 @@ Vue.use(Vuex, Router)
 export default new Vuex.Store({
     state: {
         isLoggedIn: false,
-        loginError: false
+        loginError: false,
+        errors: {}, 
+        errorsStatus: false
     },
     getters:{
     },
@@ -21,6 +23,12 @@ export default new Vuex.Store({
         setLoginError(state, error){
             state.loginError = error
         },
+        setErrors(state, errors){
+            state.errors = errors
+        },
+        setErrorsStatus(state, errorstatus){
+            state.errorsStatus = errorstatus
+        }
     },
     actions: {
         login(context, credentials){
@@ -51,6 +59,33 @@ export default new Vuex.Store({
             localStorage.removeItem('userId')
 
             context.commit('setLoggedInStatus', false)
-        }
+        },
+
+        ///////// CREATE
+        register(context, credentials){
+            axios.post("http://localhost:3030/register", {
+                name: credentials.name,
+                email: credentials.email,
+                password: credentials.password
+            }) 
+            .then(response => {
+                context.commit("setLoggedInStatus", true)
+                context.commit('setErrorsStatus', false)
+
+                router.push({name: 'home', params: {
+                    id: response.data.user._id
+                }})
+
+                localStorage.setItem('token', response.data.token)
+                localStorage.setItem('userId', response.data.user._id)
+                console.log("Register Succesful", response.data)
+            })
+            .catch(error => {
+                if(error){
+                    context.commit("setErrors", error.response.data.message.errors)
+                    context.commit("setErrorsStatus", true);
+                }
+            })
+        },
     }
 })
