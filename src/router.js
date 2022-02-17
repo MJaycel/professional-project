@@ -8,6 +8,8 @@ import Login from "@/pages/user/Login.vue"
 import Home from "@/pages/Home.vue"
 import PageNotFound from "@/pages/PageNotFound.vue"
 import Register from "@/pages/user/Register.vue"
+import Calendar from "@/pages/Calendar.vue"
+
 
 
 
@@ -95,6 +97,11 @@ export default new Router ({
                     next()
                 }
             }
+        },
+        {
+            path: '/calendar/:id',
+            name: 'calendar',
+            component: Calendar,
         },
         
     ]

@@ -1,39 +1,77 @@
 <template>
-    <div>
-        <h2> Calendar</h2>
-        <!-- <b-button @click="logout()">Logout</b-button> -->
-        <!-- <router-link :to="{name: 'calendar',params: {id: this.$store.state.user_id} }">Calendar</router-link> |
-        <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> |
-        <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link> -->
-        <!-- <Clock/> -->
+    <div id="cal">
+        <div style="margin-top: 50px">
+            <h2> Calendar</h2>
+            <router-link :to="{name: 'home', params: userId}">Home</router-link>
+        </div> 
+
+        <calendar-view
+            :show-date="showDate"
+            :items= items
+            class="theme-default holiday-us-traditional holiday-us-official col-10">
+            <calendar-view-header
+                slot="header"
+                slot-scope="t"
+                :header-props="t.headerProps"
+                @input="setShowDate" />
+        </calendar-view>            
     </div>
 </template>
 
 <script>
 
-// import Clock from '@/components/clock.vue'
-// import {mapState} from 'vuex'
+import { CalendarView, CalendarViewHeader } from "vue-simple-calendar"
+// The next two lines are processed by webpack. If you're using the component without webpack compilation,
+// you should just create <link> elements for these. Both are optional, you can create your own theme if you prefer.
+require("vue-simple-calendar/static/css/default.css")
+require("vue-simple-calendar/static/css/holidays-us.css")
+
+import axios from 'axios'
+
 export default {
     name: "Home",
-    components:{
-        // Clock
-    },
     data() {
         return{
+            userId: localStorage.userId,
+            showDate: new Date(),
             
+            //user events
+            items: []
         }
     },
-        mounted(){
-        console.log('user',this.$store.state.user_id)
+    components: {
+        CalendarView,
+        CalendarViewHeader,
     },
-    computed: {
+    mounted() {
+        this.getAllEvents()
     },
     methods: {
 
-    }
+        setShowDate(d) {
+            this.showDate = d;
+        },
+        //////get all events
+        getAllEvents() {
+            axios.get(`http://localhost:3030/calendar/${this.$route.params.id}`)
+                .then(response=> {
+                    this.items = response.data
+                    console.log('EVENTS', response.data)
+                })
+                .catch(error => console.log(error))     
+        }
+    },
+
 }
 </script>
 
 <style>
-
+    #cal {
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        color: #2c3e50;
+        height: 85vh;
+        width: 90vw;
+        margin-left: 1.5vw;
+        /* margin-right: auto;  */
+    }
 </style>

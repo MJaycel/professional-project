@@ -2,8 +2,8 @@
     <div>
         <h2>Welcome, You are logged in!</h2>
         <!-- <b-button @click="logout()">Logout</b-button> -->
-        <!-- <router-link :to="{name: 'calendar',params: {id: this.$store.state.user_id} }">Calendar</router-link> |
-        <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> |
+        <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
+        <!-- <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> |
         <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link> -->
         <b-button variant="warning" @click="logout()">Logout</b-button>        
     </div>
@@ -20,7 +20,7 @@ export default {
     },
     data() {
         return{
-            
+            userId: localStorage.getItem('userId')
         }
     },
     methods: {

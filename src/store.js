@@ -9,10 +9,11 @@ Vue.use(Vuex, Router)
 
 export default new Vuex.Store({
     state: {
+        /////user
         isLoggedIn: false,
         loginError: false,
         errors: {}, 
-        errorsStatus: false
+        errorsStatus: false,
     },
     getters:{
     },
@@ -28,7 +29,8 @@ export default new Vuex.Store({
         },
         setErrorsStatus(state, errorstatus){
             state.errorsStatus = errorstatus
-        }
+        },
+
     },
     actions: {
         login(context, credentials){
