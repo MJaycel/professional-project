@@ -5,7 +5,7 @@
         <!-- <router-link :to="{name: 'calendar',params: {id: this.$store.state.user_id} }">Calendar</router-link> |
         <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> |
         <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link> -->
-        <!-- <Clock/> -->
+        <b-button variant="warning" @click="logout()">Logout</b-button>        
     </div>
 </template>
 
@@ -23,13 +23,11 @@ export default {
             
         }
     },
-        mounted(){
-        console.log('user',this.$store.state.user_id)
-    },
-    computed: {
-    },
     methods: {
-
+        logout() {
+            this.$store.dispatch('logout')
+            this.$router.push({name: 'landing_page'})
+        }
     }
 }
 </script>

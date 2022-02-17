@@ -59,13 +59,6 @@ export default new Router ({
             path: "*", 
             name: 'page_not_found',
             component: PageNotFound,
-            // beforeEnter: (next) => {
-            //     if(localStorage.getItem('token')){
-            //         store.commit('setLoggedInStatus', true)
-            //         // next({name: 'home', params: {id: store.state.user_id}})
-            //         next()
-            //     }
-            // }
         },
         {
             path: '/home/:id',

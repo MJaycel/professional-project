@@ -38,6 +38,12 @@ export default new Vuex.Store({
             .catch(error => {
                 console.log(error)
             })
+        },
+        logout(context) {
+            localStorage.removeItem('token')
+            localStorage.removeItem('userId')
+
+            context.commit('setLoggedInStatus', false)
         }
     }
 })
