@@ -22,8 +22,14 @@
             </div>
 
             <div class="col-2 pt-3">
-                <p v-if="!this.dateClicked">{{this.today}}</p>
-                <h3>{{this.clickedDate}}</h3>
+                <div class="d-flex justify-content-between">
+                    <h3 v-if="!this.dateClicked">{{this.today}}</h3>
+                    <h3>{{this.clickedDate}}</h3>       
+                    <div v-b-hover="handleHover" style="margin-right:20px;">
+                        <b-icon v-if="isHovered" icon="plus-circle-fill" font-scale="2" style="color: #AA96DA" @click="showModal()"></b-icon>
+                        <b-icon v-else icon="plus-circle-fill" font-scale="2" style="color: #CCC4DE"></b-icon>                             
+                    </div>
+                </div>
 
                 <div class="pt-3" v-for="item in itemsFound" :key="item._id">
                     <div style="background: yellow">
@@ -62,7 +68,9 @@ export default {
             clickedDate: '',
             dateItems: [],
 
-            itemsFound: []
+            itemsFound: [],
+
+            isHovered: false
         }
     },
     components: {
@@ -84,13 +92,18 @@ export default {
 
     },
     methods: {
+
+        handleHover(hovered) {
+            this.isHovered = hovered
+        },
+
         ...mapActions(['getAllEvents']),
 
         setShowDate(d) {
             this.showDate = d;
         },
         clickdate(d){
-            this.$store.commit('setShowAddModal', true)
+            // this.$store.commit('setShowAddModal', true)
             this.dateClicked = true
             
             this.date = new Date(d)
@@ -122,6 +135,10 @@ export default {
                     console.log(this.itemsFound)
             })
             .catch(error => console.log(error))    
+        },
+
+        showModal() {
+            this.$store.commit('setShowAddModal', true)
         }
     },
 
