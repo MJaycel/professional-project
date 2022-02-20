@@ -16,13 +16,13 @@
 
             <div class="d-flex justiy-content-between">
                 <div v-if="!isAllDay" style="margin-top: 10px;">
-                    <b-form-input style="width: 320px; border-radius: 4px;" :id="`startDate`" v-model="form.startDate" type="date"></b-form-input>
+                    <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
                     <b-form-input style="width: 320px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
                 </div>
 
                 <div v-else style="margin-top: 10px;">
-                    <b-form-input style="width: 460px; border-radius: 4px;" :id="`startDate`" v-model="form.startDate" type="date"></b-form-input>
-                    <b-form-input style="width: 460px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
+                    <b-form-input style="width: 460px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                    <b-form-input style="width: 460px; margin-top: 16px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
                 </div>
 
                 <div v-if="!isAllDay" style="margin-top: 10px;">
@@ -43,6 +43,9 @@
 </template>
 
 <script>
+
+import axios from 'axios'
+import {mapState, mapActions} from 'vuex'
 
 export default {
     name: "AddEvent",  
@@ -73,9 +76,55 @@ export default {
     mounted() {
         this.$bvModal.show('add-item')
     },
+    computed: {
+        ...mapState(['showAddModal'])
+    },
     methods: {
+        ...mapActions(['getAllEvents']),
         addItem() {
-            console.log('adding')
+            const userInputStart = this.form.startTime
+            const userInputEnd = this.form.endTime
+
+            const hours_start = userInputStart.slice(0,2)
+            const minutes_start = userInputStart.slice(3)
+
+            const date_start = new Date(this.form.startDate)
+            date_start.setHours(hours_start, minutes_start)
+            this.form.startDate = date_start
+
+            // console.log(this.form.startDate)
+
+            const hours_end = userInputEnd.slice(0,2)
+            const minutes_end = userInputEnd.slice(3)
+
+            const date_end = new Date(this.form.endDate)
+            date_end.setHours(hours_end, minutes_end)
+            this.form.endDate = date_end
+
+            // console.log(this.form.endDate)
+
+            if(this.selected === 'monthly'){
+                for(let i = 0; i < 12; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setMonth(i)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setMonth(i)
+                    this.form.endDate = end
+
+                    // this.form.startTime = "0000-00-00T" + this.form.startTime + ":00.000Z"
+                    axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                    .then(response => {
+                        console.log("NEW EVENTS",response.data.events)
+                        // "refreshes" the calendar and shows new event that was added
+                        this.$store.dispatch('getAllEvents')
+                        this.$store.commit('setShowAddModal', false)
+                        this.$bvModal.hide('add-item')
+                    })
+                }
+            }
+            
         },
         cancel() {
             this.$bvModal.hide('add-item')
