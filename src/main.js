@@ -9,7 +9,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap-vue/dist/bootstrap-vue-icons.min.css'
 
 
-Vue.use(BootstrapVue,BootstrapVueIcons)
+Vue.use(BootstrapVue )
+
+Vue.use(BootstrapVueIcons)
 
 Vue.config.productionTip = false
 

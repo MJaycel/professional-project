@@ -1,5 +1,7 @@
 <template>
   <div>
+    <link href="https://unpkg.com/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/bootstrap-vue@2.16.0/dist/bootstrap-vue.css" rel="stylesheet" />
     <router-view/>
   </div>
 </template>

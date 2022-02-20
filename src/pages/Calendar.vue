@@ -30,15 +30,12 @@
                         <h6>{{item.title}}</h6>                    
                         <p>{{item.description}}</p> 
                         <p>{{item.startTime}}</p>                        
-
                     </div>
-
-
                 </div>
-
-
             </div> 
         </div>
+
+        <AddEvent v-if="showAddModal"/>
     </div>
 </template>
 
@@ -52,11 +49,13 @@ require("vue-simple-calendar/static/css/holidays-us.css")
 
 import axios from 'axios'
 import {mapActions, mapState} from 'vuex' 
+
+import AddEvent from '@/components/AddEvent.vue'
 export default {
-    name: "Home",
+    name: "Calendar",
     data() {
         return{
-            userId: localStorage.userId,
+            userId: localStorage.getItem('userId'),
             showDate: new Date(),
             //user events
             dateClicked: false,
@@ -69,16 +68,14 @@ export default {
     components: {
         CalendarView,
         CalendarViewHeader,
+        AddEvent
     },
     computed: {
-        ...mapState(['items'])
+        ...mapState(['items','showAddModal'])
     },
     mounted() {
-        // this.getAllEvents()
-
         this.$store.dispatch('getAllEvents')
         
-
         if(this.dateClicked === false){
             this.today = new Date()
             this.today = this.today.toDateString().slice(0,-4).trim();
@@ -93,6 +90,7 @@ export default {
             this.showDate = d;
         },
         clickdate(d){
+            this.$store.commit('setShowAddModal', true)
             this.dateClicked = true
             
             this.date = new Date(d)
@@ -100,8 +98,6 @@ export default {
             console.log(this.clickedDate);    
             
             this.getEventsInDate()
-
-
         },
         ///// get all events 
         getAllEvents() {

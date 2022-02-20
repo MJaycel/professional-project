@@ -15,7 +15,9 @@ export default new Vuex.Store({
         errors: {}, 
         errorsStatus: false,
 
-        items: []
+        items: [],
+
+        showAddModal: false
     },
     getters:{
     },
@@ -35,6 +37,10 @@ export default new Vuex.Store({
 
         setCalendarItems(state, items){
             state.items = items
+        },
+
+        setShowAddModal(state, showAddModal){
+            state.showAddModal = showAddModal
         }
 
     },
