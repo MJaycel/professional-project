@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="container welcome_display">
+      <div v-if="!isLoggedIn" class="container welcome_display">
             <h2>
                 Welcome to FocusHub
             </h2>
@@ -8,8 +8,9 @@
             <router-link :to="{path: '/login'}">Login</router-link>
             <br>
             <router-link :to="{path: '/register'}">Create an Account</router-link>
-
-
+      </div>
+      <div v-else>
+        You are in Landing Page
       </div>
   </div>
 </template>

@@ -8,7 +8,7 @@
             <div class="col-10">
                 <calendar-view
                     :show-date="showDate"
-                    :items= items
+                    :items= this.$store.state.items
                     :show-times= true
                     :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
                     @click-date="clickdate"
@@ -51,7 +51,7 @@ require("vue-simple-calendar/static/css/default.css")
 require("vue-simple-calendar/static/css/holidays-us.css")
 
 import axios from 'axios'
-
+import {mapActions, mapState} from 'vuex' 
 export default {
     name: "Home",
     data() {
@@ -59,7 +59,6 @@ export default {
             userId: localStorage.userId,
             showDate: new Date(),
             //user events
-            items: [],
             dateClicked: false,
             clickedDate: '',
             dateItems: [],
@@ -71,8 +70,14 @@ export default {
         CalendarView,
         CalendarViewHeader,
     },
+    computed: {
+        ...mapState(['items'])
+    },
     mounted() {
-        this.getAllEvents()
+        // this.getAllEvents()
+
+        this.$store.dispatch('getAllEvents')
+        
 
         if(this.dateClicked === false){
             this.today = new Date()
@@ -82,6 +87,8 @@ export default {
 
     },
     methods: {
+        ...mapActions(['getAllEvents']),
+
         setShowDate(d) {
             this.showDate = d;
         },
@@ -96,14 +103,9 @@ export default {
 
 
         },
-        //////get all events
+        ///// get all events 
         getAllEvents() {
-            axios.get(`http://localhost:3030/calendar/${this.$route.params.id}`)
-                .then(response=> {
-                    this.items = response.data
-                    console.log('EVENTS', response.data)
-                })
-                .catch(error => console.log(error))     
+            this.$store.dispatch('getAllEvents')
         },
         //////get events in date clicked
         getEventsInDate() {
@@ -131,7 +133,7 @@ export default {
 </script>
 
 <style>
-.cal{
+.cal{ 
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         color: #2c3e50;
         height: 85vh;

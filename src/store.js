@@ -14,6 +14,8 @@ export default new Vuex.Store({
         loginError: false,
         errors: {}, 
         errorsStatus: false,
+
+        items: []
     },
     getters:{
     },
@@ -30,6 +32,10 @@ export default new Vuex.Store({
         setErrorsStatus(state, errorstatus){
             state.errorsStatus = errorstatus
         },
+
+        setCalendarItems(state, items){
+            state.items = items
+        }
 
     },
     actions: {
@@ -88,6 +94,18 @@ export default new Vuex.Store({
                     context.commit("setErrorsStatus", true);
                 }
             })
+        },
+
+        //////get all events
+        getAllEvents(context) {
+            let userId = localStorage.getItem('userId')
+            axios.get(`http://localhost:3030/calendar/${userId}`)
+                .then(response=> {
+                    // this.items = response.data
+                    context.commit('setCalendarItems', response.data)
+                    console.log('EVENTS', response.data)
+                })
+                .catch(error => console.log(error))     
         },
     }
 })
