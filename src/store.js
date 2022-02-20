@@ -95,7 +95,6 @@ export default new Vuex.Store({
                 }
             })
         },
-
         //////get all events
         getAllEvents(context) {
             let userId = localStorage.getItem('userId')
