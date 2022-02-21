@@ -124,7 +124,36 @@ export default {
                     })
                 }
             }
-            
+
+            if(this.selected === 'weekly'){
+                for(let i = 0; i < 7; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 7)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 7)
+                    this.form.endDate = end
+
+                    axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                    .then(response => {
+                        console.log("NEW EVENTS",response.data.events)
+                        // "refreshes" the calendar and shows new event that was added
+                        this.$store.dispatch('getAllEvents')
+                        this.$store.commit('setShowAddModal', false)
+                        this.$bvModal.hide('add-item')
+                    })
+                }
+            }
+
+            // axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            // .then(response => {
+            //     console.log("NEW EVENTS",response.data.events)
+            //     // "refreshes" the calendar and shows new event that was added
+            //     this.$store.dispatch('getAllEvents')
+            //     this.$store.commit('setShowAddModal', false)
+            //     this.$bvModal.hide('add-item')
+            // })
         },
         cancel() {
             this.$bvModal.hide('add-item')
