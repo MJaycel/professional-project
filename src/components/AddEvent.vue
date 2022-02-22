@@ -54,6 +54,7 @@ export default {
     data() {
         return{
             userId: localStorage.getItem('userId'),
+            defaultDate : '',
             form: {
                 title: "",
                 description: "",
@@ -75,9 +76,22 @@ export default {
     },
     mounted() {
         this.$bvModal.show('add-item')
+        const year = this.$store.state.date.getFullYear()
+        const month = this.$store.state.date.getMonth() + 1
+        const date = this.$store.state.date.getDate()
+
+        
+        if(month > 9){
+            this.defaultDate = year + '-' + month + '-' + date            
+        } else {
+            this.defaultDate = year + '-0' + month + '-' + date            
+        }
+        this.form.startDate = this.defaultDate
+        this.form.endDate = this.defaultDate
+        console.log('this is the start date', this.form.startDate)
     },
     computed: {
-        ...mapState(['showAddModal'])
+        ...mapState(['showAddModal','date'])
     },
     methods: {
         ...mapActions(['getAllEvents']),
@@ -203,7 +217,11 @@ export default {
         cancel() {
             this.$bvModal.hide('add-item')
             this.$store.commit('setShowAddModal', false)
+        },
+        test() {
+            console.log(this.form.startDate)
         }
+
     }
 }
 </script>

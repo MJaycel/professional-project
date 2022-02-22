@@ -70,7 +70,8 @@ export default {
 
             itemsFound: [],
 
-            isHovered: false
+            isHovered: false,
+            date: new Date()
         }
     },
     components: {
@@ -79,7 +80,7 @@ export default {
         AddEvent
     },
     computed: {
-        ...mapState(['items','showAddModal'])
+        ...mapState(['items','showAddModal','date'])
     },
     mounted() {
         this.$store.dispatch('getAllEvents')
@@ -109,6 +110,7 @@ export default {
             this.date = new Date(d)
             this.clickedDate = this.date.toDateString().slice(0,-4).trim();
             console.log(this.clickedDate);    
+            this.$store.commit('setDate', this.date)
             
             this.getEventsInDate()
         },

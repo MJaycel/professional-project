@@ -17,7 +17,8 @@ export default new Vuex.Store({
 
         items: [],
 
-        showAddModal: false
+        showAddModal: false,
+        date: new Date()
     },
     getters:{
     },
@@ -41,8 +42,11 @@ export default new Vuex.Store({
 
         setShowAddModal(state, showAddModal){
             state.showAddModal = showAddModal
-        }
+        },
 
+        setDate(state, date){
+            state.date = date
+        }
     },
     actions: {
         login(context, credentials){
