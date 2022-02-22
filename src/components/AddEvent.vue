@@ -82,10 +82,19 @@ export default {
 
         
         if(month > 9){
-            this.defaultDate = year + '-' + month + '-' + date            
+            this.defaultDate = year + '-' + month + '-' + date
+            if(date > 9){
+                this.defaultDate = year + '-' + month + '-' + date
+            }            
         } else {
-            this.defaultDate = year + '-0' + month + '-' + date            
+            this.defaultDate = year + '-0' + month + '-' + date
+            if(date < 9){
+                this.defaultDate = year + '-0' + month + '-0' + date
+            }          
         }
+        // if(date > 9){
+        //     this.defaultDate = year + '0' 
+        // }   
         this.form.startDate = this.defaultDate
         this.form.endDate = this.defaultDate
         console.log('this is the start date', this.form.startDate)
@@ -96,9 +105,11 @@ export default {
     methods: {
         ...mapActions(['getAllEvents']),
         addItem() {
+
             const userInputStart = this.form.startTime
             const userInputEnd = this.form.endTime
 
+            //setting start time
             const hours_start = userInputStart.slice(0,2)
             const minutes_start = userInputStart.slice(3)
 
@@ -106,8 +117,7 @@ export default {
             date_start.setHours(hours_start, minutes_start)
             this.form.startDate = date_start
 
-            // console.log(this.form.startDate)
-
+            /// setting end date 
             const hours_end = userInputEnd.slice(0,2)
             const minutes_end = userInputEnd.slice(3)
 
@@ -115,12 +125,10 @@ export default {
             date_end.setHours(hours_end, minutes_end)
             this.form.endDate = date_end
 
-            // console.log(this.form.endDate)
-
             /////POSSIBLE ERROR
             //// this monthly function might have an error with daylight savings too
-            //// ask mo
 
+            /// solution if so == date format to UTC
             if(this.selected === 'monthly'){
                 for(let i = 0; i < 12; i++){
                     const start = new Date(this.form.startDate)
@@ -150,8 +158,9 @@ export default {
             ////// date changes
             ///////// found the main problem === time changes because of daylight savings time from march to oct
             ////// works fine if time is added 
-
+            ///// Event not adding to the date clicked
             ///// found a solution === turn date to UTC
+
             if(this.selected === 'weekly'){
                 for(let i = 0; i < 7; i++){
 
@@ -205,23 +214,60 @@ export default {
                 }
             }
 
-            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
-            .then(response => {
-                console.log("NEW EVENTS",response.data.events)
-                // "refreshes" the calendar and shows new event that was added
-                this.$store.dispatch('getAllEvents')
-                this.$store.commit('setShowAddModal', false)
-                this.$bvModal.hide('add-item')
-            })
+            if(this.selected === 'daily'){
+               ////////////// TESTING PURPOSES ///////////////////////////////////
+                // for(let i = 0; i < 365; i++){
+                //     const start = new Date(this.form.startDate)
+                //     start.setDate(start.getDate() + 1)
+                //     this.form.startDate = start
+
+                //     const end = new Date(this.form.endDate)
+                //     end.setDate(end.getDate() + 1)
+                //     this.form.endDate = end
+
+                //     console.log('start date',this.form.startDate)
+                //     console.log('end Date',this.form.endDate)
+
+                // }
+                ///////Saving in database /////
+                for(let i = 0; i < 4; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 1)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 1)
+                    this.form.endDate = end
+
+                    axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                    .then(response => {
+                        console.log("NEW EVENTS",response.data.events)
+                        // "refreshes" the calendar and shows new event that was added
+                        this.$store.dispatch('getAllEvents')
+                        this.$store.commit('setShowAddModal', false)
+                        this.$bvModal.hide('add-item')
+                    })
+                }
+            }
+
+            // axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            // .then(response => {
+            //     console.log("NEW EVENTS",response.data.events)
+            //     // "refreshes" the calendar and shows new event that was added
+            //     this.$store.dispatch('getAllEvents')
+            //     this.$store.commit('setShowAddModal', false)
+            //     this.$bvModal.hide('add-item')
+            // })
         },
         cancel() {
             this.$bvModal.hide('add-item')
             this.$store.commit('setShowAddModal', false)
         },
-        test() {
-            console.log(this.form.startDate)
+        onOptionChange() {
+            if(this.selected === 'daily'){
+                this.$bvModal.show('daily-setting')            
+            }
         }
-
     }
 }
 </script>
