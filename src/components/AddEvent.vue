@@ -103,6 +103,10 @@ export default {
 
             // console.log(this.form.endDate)
 
+            /////POSSIBLE ERROR
+            //// this monthly function might have an error with daylight savings too
+            //// ask mo
+
             if(this.selected === 'monthly'){
                 for(let i = 0; i < 12; i++){
                     const start = new Date(this.form.startDate)
@@ -113,7 +117,6 @@ export default {
                     end.setMonth(i)
                     this.form.endDate = end
 
-                    // this.form.startTime = "0000-00-00T" + this.form.startTime + ":00.000Z"
                     axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
                     .then(response => {
                         console.log("NEW EVENTS",response.data.events)
@@ -125,15 +128,57 @@ export default {
                 }
             }
 
+            ////// ERRORS
+            ////// not adding in date selected
+            ////// Time adds automatically for some reason
+            ////// Doesnt add 7 days ?
+            ////// works perfectly in console but messes up when saved in database
+            ////// date changes
+            ///////// found the main problem === time changes because of daylight savings time from march to oct
+            ////// works fine if time is added 
+
+            ///// found a solution === turn date to UTC
             if(this.selected === 'weekly'){
                 for(let i = 0; i < 7; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 7)
-                    this.form.startDate = start
 
+                    ////setting start date
+                    const start = new Date(this.form.startDate)
+                    const userInputStart = this.form.startTime
+                    const hours_start = userInputStart.slice(0,2)
+                    const minutes_start = userInputStart.slice(3)
+                    const year_start = start.getFullYear()
+                    const month_start = start.getMonth()
+                    const date_start = start.getDate()
+                    
+                    if(this.isAllDay){
+                        var start_UTC = new Date(Date.UTC(year_start,month_start,date_start))
+                    } else {
+                        start_UTC = new Date(Date.UTC(year_start,month_start,date_start,hours_start,minutes_start))
+                    }
+
+                    start_UTC.setUTCDate(start_UTC.getUTCDate() + 7)
+                    this.form.startDate = start_UTC.toUTCString()
+
+                    ///setting end date
                     const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 7)
-                    this.form.endDate = end
+                    const userInputEnd = this.form.endTime
+                    const hours_end = userInputEnd.slice(0,2)
+                    const minutes_end = userInputEnd.slice(3)
+                    const year_end = end.getFullYear()
+                    const month_end = end.getMonth()
+                    const date_end = end.getDate()
+                    const hour_end = hours_end
+                    const minute_end = minutes_end
+
+                    var end_UTC = new Date(Date.UTC(year_end,month_end,date_end,hour_end,minute_end))
+
+                    end_UTC.setUTCDate(end_UTC.getUTCDate() + 7)
+                    this.form.endDate = end_UTC.toUTCString()
+
+
+
+                    console.log('start date',this.form.startDate )
+                    // // console.log('end date',this.form.endDate)
 
                     axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
                     .then(response => {
@@ -146,14 +191,14 @@ export default {
                 }
             }
 
-            // axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
-            // .then(response => {
-            //     console.log("NEW EVENTS",response.data.events)
-            //     // "refreshes" the calendar and shows new event that was added
-            //     this.$store.dispatch('getAllEvents')
-            //     this.$store.commit('setShowAddModal', false)
-            //     this.$bvModal.hide('add-item')
-            // })
+            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            .then(response => {
+                console.log("NEW EVENTS",response.data.events)
+                // "refreshes" the calendar and shows new event that was added
+                this.$store.dispatch('getAllEvents')
+                this.$store.commit('setShowAddModal', false)
+                this.$bvModal.hide('add-item')
+            })
         },
         cancel() {
             this.$bvModal.hide('add-item')
