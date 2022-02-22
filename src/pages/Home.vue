@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container pt-5">
         <h2>Welcome, You are logged in!</h2>
         <!-- <b-button @click="logout()">Logout</b-button> -->
         <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
