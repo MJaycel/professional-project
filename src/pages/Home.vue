@@ -4,7 +4,7 @@
         <!-- <b-button @click="logout()">Logout</b-button> -->
         <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
         <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> | 
-        <!-- <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link> -->
+        <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link>
         <b-button variant="warning" @click="logout()">Logout</b-button>        
     
         <p>{{quotes.content}}</p>

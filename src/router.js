@@ -10,6 +10,7 @@ import PageNotFound from "@/pages/PageNotFound.vue"
 import Register from "@/pages/user/Register.vue"
 import Calendar from "@/pages/Calendar.vue"
 import MusicPlayer from "@/pages/MusicPlayer.vue"
+import Timer from '@/pages/Timer.vue'
 
 
 
@@ -109,6 +110,10 @@ export default new Router ({
             name: 'MusicPlayer',
             component: MusicPlayer
         },
-        
+        {
+            path:'/PomodoroTimer',
+            name: 'PomodoroTimer',
+            component: Timer
+        }
     ]
 })
