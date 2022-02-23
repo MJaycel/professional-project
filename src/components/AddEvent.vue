@@ -6,14 +6,6 @@
             <br>
             <b-form-textarea class="desc__input no__outline" placeholder="Add a description"></b-form-textarea>
             <br>
-            <div class="d-flex justify-content-end">
-                <p>All day</p>
-                <b-form-checkbox style="margin-left:10px;margin-right: 8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
-                </b-form-checkbox>
-
-                <b-form-select v-model="selected" :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select>
-            </div>
-
             <div class="d-flex justiy-content-between">
                 <div v-if="!isAllDay" style="margin-top: 10px;">
                     <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
@@ -31,13 +23,24 @@
                 </div>
 
             </div>
+            <div class="d-flex justify-content-start pt-3">
+                <p>All day</p>
+                <b-form-checkbox style="margin-left:10px;margin-right: 8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
+                </b-form-checkbox>
+
+                <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select>
+            </div>
             <br>
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="cancel"> Cancel</b-button>
 
                 <b-button class="addItem__btn" @click="addItem"> Save</b-button>                
             </div>
+        </b-modal>
 
+        <b-modal id="weekly-settings">
+            <p>Occurs every week until: </p>
+            <b-form-input  style="width: 460px; border-radius: 4px;" v-model="newStartDate" type="date"></b-form-input>
         </b-modal>
     </div>
 </template>
@@ -72,6 +75,7 @@ export default {
                 {value: "monthly", text: "Monthly"},
                 {value: "Yearly", text: "Yearly"},
             ],
+            newStartDate: ''
         }
     },
     mounted() {
@@ -92,9 +96,6 @@ export default {
                 this.defaultDate = year + '-0' + month + '-0' + date
             }          
         }
-        // if(date > 9){
-        //     this.defaultDate = year + '0' 
-        // }   
         this.form.startDate = this.defaultDate
         this.form.endDate = this.defaultDate
         console.log('this is the start date', this.form.startDate)
@@ -125,10 +126,7 @@ export default {
             date_end.setHours(hours_end, minutes_end)
             this.form.endDate = date_end
 
-            /////POSSIBLE ERROR
-            //// this monthly function might have an error with daylight savings too
 
-            /// solution if so == date format to UTC
             if(this.selected === 'monthly'){
                 for(let i = 0; i < 12; i++){
                     const start = new Date(this.form.startDate)
@@ -179,7 +177,7 @@ export default {
                         start_UTC = new Date(Date.UTC(year_start,month_start,date_start,hours_start,minutes_start))
                     }
 
-                    start_UTC.setUTCDate(start_UTC.getUTCDate() + 7)
+                    start_UTC.setUTCDate(start_UTC.getUTCDate())
                     this.form.startDate = start_UTC.toUTCString()
 
                     ///setting end date
@@ -195,10 +193,8 @@ export default {
 
                     var end_UTC = new Date(Date.UTC(year_end,month_end,date_end,hour_end,minute_end))
 
-                    end_UTC.setUTCDate(end_UTC.getUTCDate() + 7)
+                    end_UTC.setUTCDate(end_UTC.getUTCDate())
                     this.form.endDate = end_UTC.toUTCString()
-
-
 
                     console.log('start date',this.form.startDate )
                     // // console.log('end date',this.form.endDate)
@@ -211,6 +207,12 @@ export default {
                         this.$store.commit('setShowAddModal', false)
                         this.$bvModal.hide('add-item')
                     })
+                    
+                    start_UTC.setUTCDate(start_UTC.getUTCDate() + 7)
+                    this.form.startDate = start_UTC.toUTCString()
+
+                    end_UTC.setUTCDate(end_UTC.getUTCDate() + 7)
+                    this.form.endDate = end_UTC.toUTCString()
                 }
             }
 
@@ -230,7 +232,7 @@ export default {
 
                 // }
                 ///////Saving in database /////
-                for(let i = 0; i < 4; i++){
+                for(let i = 0; i < 7; i++){
                     const start = new Date(this.form.startDate)
                     start.setDate(start.getDate() + 1)
                     this.form.startDate = start
@@ -247,26 +249,29 @@ export default {
                         this.$store.commit('setShowAddModal', false)
                         this.$bvModal.hide('add-item')
                     })
+                    this.form.startDate = start
+                    this.form.endDate = end
                 }
             }
 
-            // axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
-            // .then(response => {
-            //     console.log("NEW EVENTS",response.data.events)
-            //     // "refreshes" the calendar and shows new event that was added
-            //     this.$store.dispatch('getAllEvents')
-            //     this.$store.commit('setShowAddModal', false)
-            //     this.$bvModal.hide('add-item')
-            // })
+            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            .then(response => {
+                console.log("NEW EVENTS",response.data.events)
+                // "refreshes" the calendar and shows new event that was added
+                this.$store.dispatch('getAllEvents')
+                this.$store.commit('setShowAddModal', false)
+                this.$bvModal.hide('add-item')
+            })
         },
         cancel() {
             this.$bvModal.hide('add-item')
             this.$store.commit('setShowAddModal', false)
         },
-        onOptionChange() {
-            if(this.selected === 'daily'){
-                this.$bvModal.show('daily-setting')            
+        onOptionChanged(){
+            if(this.selected === 'weekly'){
+                this.$bvModal.show('weekly-settings')                
             }
+
         }
     }
 }
