@@ -16,11 +16,20 @@ export default new Vuex.Store({
         errorsStatus: false,
 
         items: [],
+        name: '',
+        events: [],
 
         showAddModal: false,
         date: new Date()
     },
     getters:{
+        name: state => {
+            return state.name
+        },
+
+        events: state =>{
+            return state.events
+        }
     },
     mutations: {
         setLoggedInStatus(state, status){
@@ -46,6 +55,12 @@ export default new Vuex.Store({
 
         setDate(state, date){
             state.date = date
+        },
+        SET_NAME(state, name){
+            state.name = name  
+        },
+        SET_EVENTS(state, events){
+            state.events = events
         }
     },
     actions: {
@@ -64,6 +79,7 @@ export default new Vuex.Store({
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('userId', response.data.user._id)
                 console.log("Login Succesful", response.data.user)
+                context.commit("SET_NAME", response.data.user.name)
             })
             .catch(error => {
                 if(error){
@@ -113,6 +129,7 @@ export default new Vuex.Store({
                     // this.items = response.data
                     context.commit('setCalendarItems', response.data)
                     console.log('EVENTS', response.data)
+                    context.commit("SET_EVENTS", response.data)
                 })
                 .catch(error => console.log(error))     
         },
