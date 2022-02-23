@@ -9,6 +9,7 @@ import Home from "@/pages/Home.vue"
 import PageNotFound from "@/pages/PageNotFound.vue"
 import Register from "@/pages/user/Register.vue"
 import Calendar from "@/pages/Calendar.vue"
+import MusicPlayer from "@/pages/MusicPlayer.vue"
 
 
 
@@ -102,6 +103,11 @@ export default new Router ({
             path: '/calendar/:id',
             name: 'calendar',
             component: Calendar,
+        },
+        {
+            path:'/music',
+            name: 'MusicPlayer',
+            component: MusicPlayer
         },
         
     ]
