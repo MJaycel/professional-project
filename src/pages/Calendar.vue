@@ -1,17 +1,18 @@
 <template>
-    <div>
+    <div class="container-fluid" style="padding:0px;">
         <div style="padding-top: 50px;background: #F8F2D1;" >
             <h2> Calendar</h2>
             <router-link :to="{name: 'home', params: userId}">Home</router-link>
         </div> 
-        <div class="row">
-            <div class="col-10">
+        <div class="row no-gutters">
+            <div class="col-10" >
                 <calendar-view
                     :show-date="showDate"
                     :items= this.$store.state.items
                     :show-times= true
                     :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
                     @click-date="clickdate"
+                    @click-item='clickItem'
                     class="theme-default holiday-us-traditional holiday-us-official cal">
                     <calendar-view-header
                         slot="header"
@@ -22,26 +23,34 @@
             </div>
 
             <div class="col-2 pt-3">
-                <div class="d-flex justify-content-between">
-                    <h3 v-if="!this.dateClicked">{{this.today}}</h3>
-                    <h3>{{this.clickedDate}}</h3>       
+                <div class="d-flex justify-content-between" style="padding-left:16px;margin-bottom: 16px;">
+                    <p class="event__date" v-if="!this.dateClicked">{{this.today}}</p>
+                    <p class="event__date">{{this.clickedDate}}</p>       
                     <div v-b-hover="handleHover" style="margin-right:20px;">
                         <b-icon v-if="isHovered" icon="plus-circle-fill" font-scale="2" style="color: #AA96DA" @click="showModal()"></b-icon>
                         <b-icon v-else icon="plus-circle-fill" font-scale="2" style="color: #CCC4DE"></b-icon>                             
                     </div>
                 </div>
 
-                <div class="pt-3" v-for="item in itemsFound" :key="item._id">
-                    <div style="background: yellow">
-                        <h6>{{item.title}}</h6>                    
-                        <p>{{item.description}}</p> 
-                        <p>{{item.startTime}}</p>                        
+                <div v-for="item in itemsFound" :key="item._id">
+                    <div @click="showEvent(item._id)" class="event__block"  v-b-modal.read-event>
+                        <p class="event__title">{{item.title}}</p>
+                        <p class="event__time">{{item.startTime}}</p>
                     </div>
                 </div>
             </div> 
         </div>
 
+        <b-modal id="read-event" hide-backdrop hide-header hide-footer hide-header-close content-class="shadow" >
+            <h4>{{this.event.title}}</h4>
+            <p>{{this.event.description}}</p>
+            <p v-if="this.eventEndDate === this.eventStartDate">{{this.eventStartDate}}</p>
+            <p v-if="this.eventEndDate != this.eventStartDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
+            <p>{{this.event.endTime}}</p>
+        </b-modal>
+
         <AddEvent v-if="showAddModal"/>
+        <!-- <ShowEvent :itemid="itemid"/> -->
     </div>
 </template>
 
@@ -57,8 +66,14 @@ import axios from 'axios'
 import {mapActions, mapState} from 'vuex' 
 
 import AddEvent from '@/components/AddEvent.vue'
+
 export default {
     name: "Calendar",
+    components: {
+        CalendarView,
+        CalendarViewHeader,
+        AddEvent,
+    },
     data() {
         return{
             userId: localStorage.getItem('userId'),
@@ -69,28 +84,32 @@ export default {
             dateItems: [],
 
             itemsFound: [],
+            itemid: '',
+            event: {},
+            eventStartDate: '',
+            eventEndDate: '',
 
             isHovered: false,
-            date: new Date()
+            date: new Date(),
+            today: new Date(),
+
+            item: {
+                id:""
+            }
         }
     },
-    components: {
-        CalendarView,
-        CalendarViewHeader,
-        AddEvent
-    },
     computed: {
-        ...mapState(['items','showAddModal','date'])
+        ...mapState(['items','showAddModal','date','item_id'])
     },
     mounted() {
         this.$store.dispatch('getAllEvents')
         
         if(this.dateClicked === false){
-            this.today = new Date()
+            // this.today = new Date()
             this.today = this.today.toDateString().slice(0,-4).trim();
-            console.log(this.today);
+            // console.log(this.today);
         }
-
+        this.todaysEvents()
     },
     methods: {
 
@@ -109,10 +128,14 @@ export default {
             
             this.date = new Date(d)
             this.clickedDate = this.date.toDateString().slice(0,-4).trim();
-            console.log(this.clickedDate);    
+            // console.log(this.clickedDate);    
             this.$store.commit('setDate', this.date)
-            
             this.getEventsInDate()
+        },
+        clickItem(originalItem){
+            this.item.id = originalItem.originalItem._id
+            this.showEvent(this.item.id)
+            this.$bvModal.show('read-event')
         },
         ///// get all events 
         getAllEvents() {
@@ -124,15 +147,13 @@ export default {
             axios.get(`http://localhost:3030/calendar/${this.$route.params.id}`)
             .then(response=> {
                 this.dateItems = response.data
-                    console.log('this is date items',this.dateItems)
-                    console.log('this is the dates ',this.dateItems[0].startDate)
 
                     this.dateItems.forEach(events => {
                         this.dates = new Date(events.startDate)
                         events.startDate = this.dates.toDateString().slice(0,-4).trim()
 
                         this.itemsFound = this.dateItems.filter(events => events.startDate === this.clickedDate)
-                        console.log('startDates',events.startDate)
+                        // console.log('startDates',events.startDate)
                     });
                     console.log(this.itemsFound)
             })
@@ -141,6 +162,40 @@ export default {
 
         showModal() {
             this.$store.commit('setShowAddModal', true)
+        },
+        todaysEvents() {
+            //get all events first
+            axios.get(`http://localhost:3030/calendar/${this.$route.params.id}`)
+            .then(response=> {
+                this.dateItems = response.data
+                    this.dateItems.forEach(events => {
+                        this.dates = new Date(events.startDate)
+                        events.startDate = this.dates.toDateString().slice(0,-4).trim()
+
+                        this.itemsFound = this.dateItems.filter(events => events.startDate === this.today)
+                    });
+            })
+            .catch(error => console.log(error))    
+        },
+        showEvent(id) {
+            axios.get(`http://localhost:3030/calendar/event/${id}`)
+            .then(response => {
+                console.log('Found Event', response.data)
+                this.event = response.data
+
+                const event_start_date = new Date(response.data.startDate)
+                this.eventStartDate = event_start_date.toDateString().slice(0,10)
+
+                const event_end_date = new Date(response.data.endDate)
+                this.eventEndDate = event_end_date.toDateString().slice(0,10)
+
+                console.log(this.eventDate)
+
+            }) 
+            .catch(error => console.log(error))
+        },
+        editItem(){
+            console.log('DOUBLE CLICKED')
         }
     },
 
@@ -148,12 +203,45 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
+
 .cal{ 
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        color: #2c3e50;
-        height: 85vh;
-        /* width: 90vw; */
-        margin-left: vw;
-        /* margin-right: auto;  */
-    }
+    font-family: 'Poppins', sans-serif;
+    color: #2c3e50;
+    height: 85vh;
+    /* width: 90vw; */
+    margin-left: vw;
+    /* margin-right: auto;  */
+}
+
+.event__title{
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 0px !important;
+}
+
+.event__time{
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #808080;
+}
+
+.event__block{
+    height: 68px;
+    padding-left: 26px;
+    padding-top: 10px;
+}
+
+.event__block:hover{
+    background-color: #F5F2FB;
+}
+
+.event__date{
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    
+}
 </style>

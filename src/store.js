@@ -16,6 +16,7 @@ export default new Vuex.Store({
         errorsStatus: false,
 
         items: [],
+        item_id: '',
         name: '',
         events: [],
 
@@ -61,6 +62,9 @@ export default new Vuex.Store({
         },
         SET_EVENTS(state, events){
             state.events = events
+        },
+        SET_ITEM_ID(state, item_id){
+            state.item_id = item_id
         }
     },
     actions: {
