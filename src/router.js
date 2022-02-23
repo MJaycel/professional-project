@@ -29,17 +29,19 @@ export default new Router ({
                 //if there is token, set log in state as true
                 if(localStorage.getItem('token')){
                     store.commit('setLoggedInStatus', true);
-                }
-
-                //check if logged in
-                if(store.state.isLoggedIn || to.name === 'LandingPage') {
-                    console.log('token pass', localStorage.getItem('token'));
-                    next(false) 
-                    if(!next(false)){
-                        next({name : 'page_not_found'})
-                    }
+                    next({name: 'home'})
                 } else 
                     next()
+
+                //check if logged in
+                // if(store.state.isLoggedIn || to.name === 'LandingPage') {
+                //     console.log('token pass', localStorage.getItem('token'));
+                //     next(false) 
+                //     if(!next(false)){
+                //         next({name : 'page_not_found'})
+                //     }
+                // } else 
+                //     next()
             }
         },
         {

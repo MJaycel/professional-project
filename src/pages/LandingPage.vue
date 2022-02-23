@@ -9,9 +9,6 @@
             <br>
             <router-link :to="{path: '/register'}">Create an Account</router-link>
       </div>
-      <div v-else>
-        You are in Landing Page
-      </div>
   </div>
 </template>
 
