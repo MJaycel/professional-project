@@ -129,13 +129,47 @@ export default {
 
             if(this.selected === 'monthly'){
                 for(let i = 0; i < 12; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setMonth(i)
-                    this.form.startDate = start
+                    // const start = new Date(this.form.startDate)
+                    // start.setMonth(i)
+                    // this.form.startDate = start
 
+                    // const end = new Date(this.form.endDate)
+                    // end.setMonth(i)
+                    // this.form.endDate = end
+
+                    ////setting start date
+                    const start = new Date(this.form.startDate)
+                    const userInputStart = this.form.startTime
+                    const hours_start = userInputStart.slice(0,2)
+                    const minutes_start = userInputStart.slice(3)
+                    const year_start = start.getFullYear()
+                    const month_start = start.getMonth()
+                    const date_start = start.getDate()
+                    
+                    if(this.isAllDay){
+                        start_UTC = new Date(Date.UTC(year_start,month_start,date_start))
+                    } else {
+                        start_UTC = new Date(Date.UTC(year_start,month_start,date_start,hours_start,minutes_start))
+                    }
+
+                    start_UTC.setUTCMonth(i)
+                    this.form.startDate = start_UTC.toUTCString()
+
+                    ///setting end date
                     const end = new Date(this.form.endDate)
-                    end.setMonth(i)
-                    this.form.endDate = end
+                    const userInputEnd = this.form.endTime
+                    const hours_end = userInputEnd.slice(0,2)
+                    const minutes_end = userInputEnd.slice(3)
+                    const year_end = end.getFullYear()
+                    const month_end = end.getMonth()
+                    const date_end = end.getDate()
+                    const hour_end = hours_end
+                    const minute_end = minutes_end
+
+                    end_UTC = new Date(Date.UTC(year_end,month_end,date_end,hour_end,minute_end))
+
+                    end_UTC.setUTCMonth(i)
+                    this.form.endDate = end_UTC.toUTCString()
 
                     axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
                     .then(response => {
