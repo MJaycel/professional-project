@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- EDIT ITEM MODAL -->
-        <b-modal id="edit-item" hide-footer hide-header-close no-close-on-backdrop title="Edit Event">
+        <b-modal id="edit-item" hide-footer centered hide-header-close no-close-on-backdrop title="Edit Event">
             <b-form-input v-model="form.title" placeholder="Add a title" class="title__input" ></b-form-input>
             <br>
             <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>

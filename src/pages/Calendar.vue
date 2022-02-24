@@ -51,7 +51,7 @@
             </div> 
         </div>
 
-        <b-modal id="read-event" hide-backdrop hide-header hide-footer  hide-header-close content-class="shadow" >
+        <b-modal id="read-event" hide-backdrop hide-header centered hide-footer  hide-header-close content-class="shadow" >
             <div class="d-flex justify-content-between">
                 <h4>{{this.event.title}}</h4> 
                 <div>
