@@ -1,18 +1,18 @@
 <template>
 
     <div class="container-fluid">
-        <router-link :to="{name: 'home', params: userId}">Home</router-link>
+        <router-link :to="{name: 'home', params: {id: userId} }">Home</router-link>
 
         <div>
             <div class="row" style="height: 90vh;">
                 <div class="card col-2 col-sm-2 to__do__lists" style="padding-top: 20px;">
-                    <div style="padding-left: 20px;padding-right:16px;">
+                    <div class="d-flex justify-content-between" style="padding-left: 20px;padding-right:16px;">
                         <p class="to__do">ToDo Lists</p>
-                            <!-- <b-icon icon="plus" style="width: 30px; height: 30px;"></b-icon> -->
+                            <!-- <b-icon icon="house-fill" style="width: 20px; height: 20px;"></b-icon> -->
 
                     </div>
                     <div>
-                        <b-input-group>
+                        <b-input-group  style="margin-bottom: 16px;">
                             <template #append>
                                 <b-input-group-text>
                                 <b-icon icon="plus" style="width: 20px; height: 20px;" @click="addList"></b-icon>
@@ -24,6 +24,7 @@
                             v-model="form.list_title"
                             type="text"
                             class="input__style no__outline"
+                            placeholder="Add new list"
                             >
                             </b-form-input>
                             
@@ -31,14 +32,21 @@
                         
                     </div>
                     <div v-for="list in lists" :key="list._id" >
-                        <div class="list__block">
+                        <div class="list__block" @click="getListItems(list._id)">
                             <p class="to-do__title">{{list.list_title}}</p>
                         </div>
                     </div>
 
                 </div>
-                <div class="card col-8" style="background: blue;">
-                    <p>Todo Title</p>
+                <div class="card col-8">
+                    <!-- <p class="to__do" style="padding-top: 16px;">{{toDoTitle}}</p> -->
+                    <b-form-input
+                        id="input-1"
+                        v-model="toDoTitle"
+                        type="text"
+                        class="todo_title_input"
+                        >
+                    </b-form-input>
                 </div>
                 <div class="card col-2" style="background: #F8F2D1;">
                     <p>Task title</p>
@@ -60,12 +68,14 @@ export default({
             lists: [],
             form: {
                 list_title: ''                
-            }
+            },
+            toDoTitle: ''
 
         }
     },
     mounted() {
         this.getData()
+        this.getListItems()
     },
     methods: {
         ...mapActions(['getAllToDo']),
@@ -94,7 +104,18 @@ export default({
                     this.getData()
                 }) 
                 .catch(error => console.log(error))
-        }
+        },
+
+        getListItems(id) {
+            console.log('got the id', id)
+
+            axios.get(`http://localhost:3030/todo/list/${id}`)
+            .then(response => {
+                this.toDoTitle = response.data.list_title
+                console.log('single list', response.data)
+            })
+            .catch(error => console.log(error))
+        },
     },
 })
 </script>
@@ -116,8 +137,9 @@ export default({
 }
 
 .list__block{
-    height: 60px;
+    height: 50px;
     padding-top: 16px;
+    
 }
 
 .list__block:hover{
@@ -126,7 +148,7 @@ export default({
 
 .to-do__title{
     font-family: 'Poppins',sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     text-indent: 21px;
 }
 
@@ -141,5 +163,19 @@ export default({
 .input__style:focus{
     outline:0px !important; 
      box-shadow: none !important;
+}
+
+.todo_title_input{
+    margin-top: 16px ;
+    border-bottom: 1px solid #B5ACC0 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0px !important;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px !important;
+    font-weight: 500 !important;
+
 }
 </style>
