@@ -4,6 +4,15 @@
             <h2> Calendar</h2>
             <router-link :to="{name: 'home', params: userId}">Home</router-link>
         </div> 
+        <b-alert class="m-1"
+          :show="dismissCountDown"
+          dismissible
+          variant="success"
+          @dismissed="dismissCountDown=0"
+          @dismiss-count-down="countDownChanged"
+        >
+          Event deleted
+        </b-alert>
         <div class="row no-gutters">
             <div class="col-10" >
                 <calendar-view
@@ -64,8 +73,10 @@
             <b-button @click="deleteEvent()">Delete</b-button>
         </b-modal>
 
+
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
+
     </div>
 </template>
 
@@ -94,6 +105,8 @@ export default {
     },
     data() {
         return{
+            dismissSecs: 5,
+            dismissCountDown: 0,
             userId: localStorage.getItem('userId'),
             showDate: new Date(),
             //user events
@@ -245,8 +258,16 @@ export default {
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('read-event')
                 this.hideDelete()
+                this.showAlert()
             }) 
             .catch(error => console.log(error))
+        },
+        ////// Dissmissable Alert //////
+        countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+        this.dismissCountDown = this.dismissSecs
         },
     }
 }
