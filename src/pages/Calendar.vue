@@ -42,13 +42,12 @@
             </div> 
         </div>
 
-        <b-modal id="read-event" hide-backdrop hide-header hide-footer hide-header-close content-class="shadow" >
+        <b-modal id="read-event" hide-backdrop hide-header hide-footer  hide-header-close content-class="shadow" >
             <div class="d-flex justify-content-between">
                 <h4>{{this.event.title}}</h4> 
-                <p>{{this.event._id}}</p>     
                 <div>
                 <b-icon  style="width: 20px;height: 20px; margin-right: 20px;" icon="pencil-square" @click="showEdit(event._id)"></b-icon>       
-                <b-icon style="width: 20px;height: 20px;" icon="trash-fill"></b-icon>                            
+                <b-icon style="width: 20px;height: 20px;"  @click="showDelete(event._id)" icon="trash-fill"></b-icon>                            
                 </div>
             </div>
 
@@ -57,6 +56,12 @@
             <p v-if="this.eventEndDate != this.eventStartDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
             <p>{{this.event.startTime}}</p>
             <p>{{this.event.endTime}}</p>
+        </b-modal>
+
+        <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
+            <p>Are you sure you want to delete this event?</p>
+            <b-button @click="hideDelete">Cancel</b-button>
+            <b-button @click="deleteEvent()">Delete</b-button>
         </b-modal>
 
         <AddEvent v-if="showAddModal"/>
@@ -220,10 +225,30 @@ export default {
             this.id = id
             console.log(this.id)
         },
-        editItem(){
-        }
-    },
 
+        showDelete(id) {
+            this.id = id
+            console.log(this.$route.params.id, this.id)
+            this.$bvModal.show('delete-event')
+
+            // console.log('delete')
+        },
+        hideDelete() {
+            this.$bvModal.hide('delete-event')
+        },
+        deleteEvent() {
+            axios.delete(`http://localhost:3030/calendar/delete/user/${this.$route.params.id}/event/${this.id}`)
+            .then(response => {
+                console.log('Deleted', response)
+
+                
+                this.$store.dispatch('getAllEvents')
+                this.$bvModal.hide('read-event')
+                this.hideDelete()
+            }) 
+            .catch(error => console.log(error))
+        },
+    }
 }
 </script>
 
