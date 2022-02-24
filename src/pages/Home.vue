@@ -3,7 +3,7 @@
         <h2>Welcome, You are logged in!</h2>
         <!-- <b-button @click="logout()">Logout</b-button> -->
         <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
-        <router-link :to="{name: 'todo'}">To Do</router-link> |
+        <router-link :to="{name: 'todo',params: {id: this.userId} }">To Do</router-link> |
         <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> | 
         <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link>
         <b-button variant="warning" @click="logout()">Logout</b-button>        

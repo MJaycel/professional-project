@@ -119,7 +119,7 @@ export default new Router ({
             component: Timer
         },
         {
-            path:'/todo',
+            path:'/todo/:id',
             name: 'todo',
             component: ToDo,
             beforeEnter: (to,from,next) => {
