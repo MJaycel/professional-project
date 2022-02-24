@@ -1,7 +1,7 @@
 <template>
     <div>
-        <!-- ADD ITEM MODAL -->
-        <b-modal id="add-item" hide-footer hide-header-close no-close-on-backdrop title="Add Event">
+        <!-- EDIT ITEM MODAL -->
+        <b-modal id="edit-item" hide-footer hide-header-close no-close-on-backdrop title="Edit Event">
             <b-form-input v-model="form.title" placeholder="Add a title" class="title__input" ></b-form-input>
             <br>
             <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>
@@ -34,7 +34,7 @@
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="cancel"> Cancel</b-button>
 
-                <b-button class="addItem__btn" @click="addItem"> Save</b-button>                
+                <b-button class="addItem__btn" @click="editItem"> Save</b-button>                
             </div>
         </b-modal>
 
@@ -50,8 +50,13 @@
 import axios from 'axios'
 import {mapState, mapActions} from 'vuex'
 
+
+
 export default {
     name: "AddEvent",  
+    props: [
+        'id'
+    ],
     components:{
     },
     data() {
@@ -74,37 +79,82 @@ export default {
                 {value: "weekly", text: "Weekly"},
                 {value: "monthly", text: "Monthly"},
             ],
-            newStartDate: ''
+            newStartDate: '',
+            start: '',
+            end: ''
         }
-    },
-    mounted() {
-        this.$bvModal.show('add-item')
-        const year = this.$store.state.date.getFullYear()
-        const month = this.$store.state.date.getMonth() + 1
-        const date = this.$store.state.date.getDate()
-
-        
-        if(month > 9){
-            this.defaultDate = year + '-' + month + '-' + date
-            if(date > 9){
-                this.defaultDate = year + '-' + month + '-' + date
-            }            
-        } else {
-            this.defaultDate = year + '-0' + month + '-' + date
-            if(date < 9){
-                this.defaultDate = year + '-0' + month + '-0' + date
-            }          
-        }
-        this.form.startDate = this.defaultDate
-        this.form.endDate = this.defaultDate
-        console.log('this is the start date', this.form.startDate)
     },
     computed: {
-        ...mapState(['showAddModal','date'])
+        ...mapState(['showEditModal'])
+    },
+    mounted() {
+        this.$bvModal.show('edit-item')
+        console.log('id', this.id)
+        this.getData()
     },
     methods: {
         ...mapActions(['getAllEvents']),
-        addItem() {
+        getData(){
+            axios.get(`http://localhost:3030/calendar/event/${this.id}`)
+            .then(response => {
+                console.log('Found Event', response.data)
+                // this.event = response.data
+                this.form.title = response.data.title
+                this.form.description = response.data.description
+                this.form.startTime = response.data.startTime
+                this.form.endTime = response.data.endTime
+
+                const start = new Date(response.data.startDate)
+                
+                const yearStart = start.getFullYear()
+                const monthStart = start.getMonth() + 1
+                const dateStart = start.getDate()
+
+                if(monthStart > 9){
+                    this.start = yearStart + '-' + monthStart + '-' + dateStart
+                    if(dateStart > 9){
+                        this.start = yearStart + '-' + monthStart + '-' + dateStart
+                    }            
+                } else {
+                    this.start = yearStart + '-0' + monthStart + '-' + dateStart
+                    if(dateStart < 9){
+                        this.start = yearStart + '-0' + monthStart + '-0' + dateStart
+                    }          
+                }
+
+                const end = new Date(response.data.endDate)
+                
+                const yearEnd = end.getFullYear()
+                const monthEnd = end.getMonth() + 1
+                const dateEnd = end.getDate()
+
+                if(monthEnd > 9){
+                    this.end = yearEnd + '-' + monthEnd + '-' + dateEnd
+                    if(dateEnd > 9){
+                        this.end = yearEnd + '-' + monthEnd + '-' + dateEnd
+                    }            
+                } else {
+                    this.end = yearEnd + '-0' + monthEnd + '-' + dateEnd
+                    if(dateEnd < 9){
+                        this.end = yearEnd + '-0' + monthEnd + '-0' + dateEnd
+                    }          
+                }
+                this.form.startDate = this.start
+                this.form.endDate = this.end
+
+                // const event_start_date = new Date(response.data.startDate)
+                // this.eventStartDate = event_start_date.toDateString().slice(0,10)
+
+                // const event_end_date = new Date(response.data.endDate)
+                // this.eventEndDate = event_end_date.toDateString().slice(0,10)
+
+
+                console.log(this.eventDate)
+
+            }) 
+            .catch(error => console.log(error))
+        },
+        editItem() {
 
             const userInputStart = this.form.startTime
             const userInputEnd = this.form.endTime
@@ -170,13 +220,13 @@ export default {
                     end_UTC.setUTCMonth(i)
                     this.form.endDate = end_UTC.toUTCString()
 
-                    axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                    axios.post(`http://localhost:3030/calendar/edit/event/${this.id}` , this.form )
                     .then(response => {
                         console.log("NEW EVENTS",response.data.events)
                         // "refreshes" the calendar and shows new event that was added
                         this.$store.dispatch('getAllEvents')
-                        this.$store.commit('setShowAddModal', false)
-                        this.$bvModal.hide('add-item')
+                        this.$store.commit('setShowEditModal', false)
+                        this.$bvModal.hide('edit-item')
                     })
                 }
             }
@@ -232,13 +282,13 @@ export default {
                     console.log('start date',this.form.startDate )
                     // // console.log('end date',this.form.endDate)
 
-                    axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                    axios.post(`http://localhost:3030/calendar/edit/event/${this.id}` , this.form )
                     .then(response => {
                         console.log("NEW EVENTS",response.data.events)
                         // "refreshes" the calendar and shows new event that was added
                         this.$store.dispatch('getAllEvents')
-                        this.$store.commit('setShowAddModal', false)
-                        this.$bvModal.hide('add-item')
+                        this.$store.commit('setShowEditModal', false)
+                        this.$bvModal.hide('edit-item')
                     })
                     
                     start_UTC.setUTCDate(start_UTC.getUTCDate() + 7)
@@ -279,26 +329,26 @@ export default {
                         console.log("NEW EVENTS",response.data.events)
                         // "refreshes" the calendar and shows new event that was added
                         this.$store.dispatch('getAllEvents')
-                        this.$store.commit('setShowAddModal', false)
-                        this.$bvModal.hide('add-item')
+                        this.$store.commit('setShowEditModal', false)
+                        this.$bvModal.hide('edit-item')
                     })
                     this.form.startDate = start
                     this.form.endDate = end
                 }
             }
 
-            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            axios.post(`http://localhost:3030/calendar/edit/event/${this.id}` , this.form )
             .then(response => {
                 console.log("NEW EVENTS",response.data.events)
                 // "refreshes" the calendar and shows new event that was added
                 this.$store.dispatch('getAllEvents')
-                this.$store.commit('setShowAddModal', false)
-                this.$bvModal.hide('add-item')
+                this.$store.commit('setShowEditModal', false)
+                this.$bvModal.hide('edit-item')
             })
         },
         cancel() {
-            this.$bvModal.hide('add-item')
-            this.$store.commit('setShowAddModal', false)
+            this.$bvModal.hide('edit-item')
+            this.$store.commit('setShowEditModal', false)
         },
         onOptionChanged(){
             if(this.selected === 'weekly'){

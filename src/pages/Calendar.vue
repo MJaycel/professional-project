@@ -31,26 +31,36 @@
                         <b-icon v-else icon="plus-circle-fill" font-scale="2" style="color: #CCC4DE"></b-icon>                             
                     </div>
                 </div>
-
+                <p  v-if="itemsFound.length < 1">you have nothing for today</p>
                 <div v-for="item in itemsFound" :key="item._id">
                     <div @click="showEvent(item._id)" class="event__block"  v-b-modal.read-event>
                         <p class="event__title">{{item.title}}</p>
                         <p class="event__time">{{item.startTime}}</p>
                     </div>
+                    
                 </div>
             </div> 
         </div>
 
         <b-modal id="read-event" hide-backdrop hide-header hide-footer hide-header-close content-class="shadow" >
-            <h4>{{this.event.title}}</h4>
+            <div class="d-flex justify-content-between">
+                <h4>{{this.event.title}}</h4> 
+                <p>{{this.event._id}}</p>     
+                <div>
+                <b-icon  style="width: 20px;height: 20px; margin-right: 20px;" icon="pencil-square" @click="showEdit(event._id)"></b-icon>       
+                <b-icon style="width: 20px;height: 20px;" icon="trash-fill"></b-icon>                            
+                </div>
+            </div>
+
             <p>{{this.event.description}}</p>
             <p v-if="this.eventEndDate === this.eventStartDate">{{this.eventStartDate}}</p>
             <p v-if="this.eventEndDate != this.eventStartDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
+            <p>{{this.event.startTime}}</p>
             <p>{{this.event.endTime}}</p>
         </b-modal>
 
         <AddEvent v-if="showAddModal"/>
-        <!-- <ShowEvent :itemid="itemid"/> -->
+        <EditEvent v-if="showEditModal" :id='id'/>
     </div>
 </template>
 
@@ -66,6 +76,8 @@ import axios from 'axios'
 import {mapActions, mapState} from 'vuex' 
 
 import AddEvent from '@/components/AddEvent.vue'
+import EditEvent from '@/components/EditEvent.vue'
+
 
 export default {
     name: "Calendar",
@@ -73,6 +85,7 @@ export default {
         CalendarView,
         CalendarViewHeader,
         AddEvent,
+        EditEvent
     },
     data() {
         return{
@@ -84,6 +97,7 @@ export default {
             dateItems: [],
 
             itemsFound: [],
+            noItemsFound: false,
             itemid: '',
             event: {},
             eventStartDate: '',
@@ -99,7 +113,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['items','showAddModal','date','item_id'])
+        ...mapState(['items','showAddModal','date','item_id','showEditModal'])
     },
     mounted() {
         this.$store.dispatch('getAllEvents')
@@ -154,6 +168,9 @@ export default {
 
                         this.itemsFound = this.dateItems.filter(events => events.startDate === this.clickedDate)
                         // console.log('startDates',events.startDate)
+                        if(this.itemsFound.length < 1) {
+                            this.noItemsFound = true
+                        }
                     });
                     console.log(this.itemsFound)
             })
@@ -173,6 +190,9 @@ export default {
                         events.startDate = this.dates.toDateString().slice(0,-4).trim()
 
                         this.itemsFound = this.dateItems.filter(events => events.startDate === this.today)
+                        if(this.itemsFound.length < 1) {
+                            this.noItemsFound = true
+                        }
                     });
             })
             .catch(error => console.log(error))    
@@ -194,8 +214,13 @@ export default {
             }) 
             .catch(error => console.log(error))
         },
+        showEdit(id) { 
+            this.$store.commit('setShowEditModal',true)
+            this.$bvModal.hide('read-event')
+            this.id = id
+            console.log(this.id)
+        },
         editItem(){
-            console.log('DOUBLE CLICKED')
         }
     },
 

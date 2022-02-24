@@ -21,6 +21,7 @@ export default new Vuex.Store({
         events: [],
 
         showAddModal: false,
+        showEditModal: false,
         date: new Date()
     },
     getters:{
@@ -65,6 +66,10 @@ export default new Vuex.Store({
         },
         SET_ITEM_ID(state, item_id){
             state.item_id = item_id
+        },
+
+        setShowEditModal(state, showEditModal){
+            state.showEditModal = showEditModal
         }
     },
     actions: {
