@@ -178,6 +178,8 @@ export default {
                         this.$store.commit('setShowAddModal', false)
                         this.$bvModal.hide('add-item')
                     })
+                    .catch(error => console.log(error))     
+
                 }
             }
 
@@ -240,6 +242,8 @@ export default {
                         this.$store.commit('setShowAddModal', false)
                         this.$bvModal.hide('add-item')
                     })
+                    .catch(error => console.log(error))     
+
                     
                     start_UTC.setUTCDate(start_UTC.getUTCDate() + 7)
                     this.form.startDate = start_UTC.toUTCString()
@@ -282,6 +286,8 @@ export default {
                         this.$store.commit('setShowAddModal', false)
                         this.$bvModal.hide('add-item')
                     })
+                    .catch(error => console.log(error))     
+    
                     this.form.startDate = start
                     this.form.endDate = end
                 }
@@ -295,6 +301,8 @@ export default {
                 this.$store.commit('setShowAddModal', false)
                 this.$bvModal.hide('add-item')
             })
+            .catch(error => console.log(error))     
+
         },
         cancel() {
             this.$bvModal.hide('add-item')

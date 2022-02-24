@@ -11,6 +11,7 @@ import Register from "@/pages/user/Register.vue"
 import Calendar from "@/pages/Calendar.vue"
 import MusicPlayer from "@/pages/MusicPlayer.vue"
 import Timer from '@/pages/Timer.vue'
+import ToDo from '@/pages/ToDo.vue'
 
 
 
@@ -116,6 +117,17 @@ export default new Router ({
             path:'/PomodoroTimer',
             name: 'PomodoroTimer',
             component: Timer
+        },
+        {
+            path:'/todo',
+            name: 'todo',
+            component: ToDo,
+            beforeEnter: (to,from,next) => {
+                if(!localStorage.getItem('token') && !store.state.isLoggedIn){
+                    next({name: 'page_not_found'})
+                } else 
+                    next()
+            }
         }
     ]
 })

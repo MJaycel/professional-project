@@ -20,6 +20,8 @@ export default new Vuex.Store({
         name: '',
         events: [],
 
+        lists: [],
+
         showAddModal: false,
         showEditModal: false,
         date: new Date()
@@ -49,6 +51,9 @@ export default new Vuex.Store({
 
         setCalendarItems(state, items){
             state.items = items
+        },
+        setToDoLists(state, lists){
+            state.lists = lists
         },
 
         setShowAddModal(state, showAddModal){
@@ -142,5 +147,16 @@ export default new Vuex.Store({
                 })
                 .catch(error => console.log(error))     
         },
+
+        // getAllToDo(context) {
+        //     let userId = localStorage.getItem('userId')
+        //     axios.get(`http://localhost:3030/todo/${userId}`)
+        //         .then(response => {
+        //             context.commit('setToDoLists', response.data)
+        //             console.log('Lists', response.data)
+        //         }) 
+
+        //         .catch(error => console.log(error))
+        // }
     }
 })
