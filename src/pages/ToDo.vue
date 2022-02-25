@@ -48,9 +48,8 @@
                                     <b-icon style="width: 16px;height: 16px;color: #C5C5C5;" icon="trash" @click="showDelete(list._id)"></b-icon>         
                         </b-list-group-item>
                     </b-list-group>                        
-
                 </div>
-                <div class="card col-8">
+                <div class="card col-8 items__block">
                     <!-- <p @click="setEdit" v-if="!edit" class="to__do" style="padding-top: 16px;">{{this.editForm.list_title}}</p> -->
                     
                     <b-form-input
@@ -60,6 +59,12 @@
                         v-on:keyup.enter='EditListName'
                         >
                     </b-form-input>
+                        <b-list-group v-for="item in items" :key="item._id" >
+                            <b-list-group-item  class="item__block d-flex justify-content-between" @click="getListItems(list._id)">
+                                <p>{{item.item_title}}</p>
+                            </b-list-group-item>
+                        </b-list-group>                           
+  
                 </div>
                 <div class="card col-2" style="background: #F8F2D1;">
                     <p>Task title</p>
@@ -97,6 +102,7 @@ export default({
                 list_title: ''
             },
             toDoTitle: '',
+            items: [],
 
             isHovered: false
         }
@@ -152,6 +158,7 @@ export default({
             .then(response => {
                 this.toDoTitle = response.data.list_title
                 this.editForm.list_title = response.data.list_title
+                this.items = response.data.items
                 console.log('single list', response.data)
             })
             .catch(error => console.log(error))
@@ -225,6 +232,19 @@ export default({
 
 .list__block:hover{
     background:#F5F2FB ;
+}
+
+.items__block{
+    background:#F9F9F9 !important;
+
+}
+
+.item__block{
+    height: 50px;
+    padding-top: 16px;
+    margin-top:14px;
+
+    border: none !important;  
 }
 
 .to-do__title{
