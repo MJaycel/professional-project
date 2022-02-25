@@ -25,6 +25,7 @@
                             type="text"
                             class="input__style no__outline"
                             placeholder="Add new list"
+                            v-on:keyup.enter='addList'
                             >
                             </b-form-input>
                             
@@ -32,10 +33,11 @@
                         
                     </div>
                     <b-list-group v-for="list in lists" :key="list._id" >
-                        <b-list-group-item class="list__block" @click="getListItems(list._id)">
-                            <p class="to-do__title border-0">{{list.list_title}}</p>
+                        <b-list-group-item  class="list__block d-flex justify-content-between" @click="getListItems(list._id)">
+                                <p class="to-do__title border-0">{{list.list_title}}</p>
+                                    <b-icon style="width: 16px;height: 16px;color: #C5C5C5;" icon="trash" @click="showDelete(list._id)"></b-icon>         
                         </b-list-group-item>
-                    </b-list-group>
+                    </b-list-group>                        
 
                 </div>
                 <div class="card col-8">
@@ -54,6 +56,14 @@
                 </div>
             </div>
         </div>     
+        <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
+            <p>Are you sure you want to delete this List?</p>
+            <div class="d-flex justify-content-end">
+                <b-button class="cancel__btn" @click="hideDelete"> Cancel</b-button>
+
+            <b-button class="delete__list_btn" @click="deleteList">Delete</b-button>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -76,7 +86,7 @@ export default({
             },
             toDoTitle: '',
 
-            edit: false
+            isHovered: false
         }
     },
     mounted() {
@@ -84,6 +94,9 @@ export default({
     },
     methods: {
         ...mapActions(['getAllToDo']),
+        handleHover(hovered) {
+            this.isHovered = hovered
+        },
         getData() {
 
             let userId = localStorage.getItem('userId')
@@ -136,14 +149,33 @@ export default({
                     this.getData()
                     this.getListItems(response.data._id)
                     this.toDoTitle = response.data.list_title
-                    this.edit = false
                 }) 
                 .catch(error => console.log(error))
         },
-        setEdit(){
-            this.edit = true
-        }
-        
+        showDelete(id) {
+            this.id = id
+            console.log(this.$route.params.id, this.id)
+            this.$bvModal.show('delete-event')
+
+            // console.log('delete')
+        },
+        hideDelete() {
+            this.$bvModal.hide('delete-event')
+        },
+        deleteList() {
+            let userId = localStorage.getItem('userId')
+
+            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.id}`)
+            .then(response => {
+                console.log('Deleted', response)
+
+                this.getData()
+                this.editForm.list_title = ''
+                this.hideDelete()
+                this.showAlert()
+            }) 
+            .catch(error => console.log(error))
+        },
     },
 })
 </script>
@@ -223,5 +255,20 @@ export default({
     border-top: none !important;
     border-bottom: none !important;
 
+}
+
+.delete__list_btn{
+    background-color: #AA96DA !important;
+    border-color: #AA96DA !important;
+
+    width: 100px;
+    border-radius: 4px !important;
+}
+
+.cancel__btn{
+    background-color: white !important;
+    border-color: white !important;
+
+    color: black  !important;
 }
 </style>
