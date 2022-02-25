@@ -209,6 +209,11 @@ export default({
     color: black !important;
 
 }
+
+.todo_title_input:hover{
+    background-color: #f2edf8 !important;
+
+}
 .todo_title_input:focus{
     color: rgb(134, 134, 134) !important;
     background-color: #efe8f8 !important;
