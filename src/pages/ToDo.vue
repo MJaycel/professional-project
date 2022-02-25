@@ -39,12 +39,13 @@
 
                 </div>
                 <div class="card col-8">
-                    <!-- <p class="to__do" style="padding-top: 16px;">{{toDoTitle}}</p> -->
+                    <!-- <p @click="setEdit" v-if="!edit" class="to__do" style="padding-top: 16px;">{{this.editForm.list_title}}</p> -->
+                    
                     <b-form-input
-                        id="input-1"
-                        v-model="toDoTitle"
+                        v-model="editForm.list_title"
                         type="text"
                         class="todo_title_input"
+                        v-on:keyup.enter='EditListName'
                         >
                     </b-form-input>
                 </div>
@@ -66,16 +67,20 @@ export default({
         return {
             userId: localStorage.getItem('userId'),
             lists: [],
+            listId: '',
             form: {
                 list_title: ''                
             },
-            toDoTitle: ''
+            editForm: {
+                list_title: ''
+            },
+            toDoTitle: '',
 
+            edit: false
         }
     },
     mounted() {
         this.getData()
-        this.getListItems()
     },
     methods: {
         ...mapActions(['getAllToDo']),
@@ -107,15 +112,38 @@ export default({
         },
 
         getListItems(id) {
-            console.log('got the id', id)
+            console.log('id', id)
 
-            axios.get(`http://localhost:3030/todo/list/${id}`)
+            this.listId = id
+
+            axios.get(`http://localhost:3030/todo/list/${this.listId}`)
             .then(response => {
                 this.toDoTitle = response.data.list_title
+                this.editForm.list_title = response.data.list_title
                 console.log('single list', response.data)
             })
             .catch(error => console.log(error))
+
+            
         },
+
+        EditListName(){
+            console.log('got the id', this.listId)
+
+            axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.editForm)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.getData()
+                    this.getListItems(response.data._id)
+                    this.toDoTitle = response.data.list_title
+                    this.edit = false
+                }) 
+                .catch(error => console.log(error))
+        },
+        setEdit(){
+            this.edit = true
+        }
+        
     },
 })
 </script>
@@ -176,6 +204,10 @@ export default({
     font-family: 'Poppins', sans-serif;
     font-size: 24px !important;
     font-weight: 500 !important;
+    color: black !important;
 
+}
+.todo_title_input:focus{
+    background-color: #efe8f8 !important;
 }
 </style>
