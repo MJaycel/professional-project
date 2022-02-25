@@ -4,6 +4,16 @@
         <router-link :to="{name: 'home', params: {id: userId} }">Home</router-link>
 
         <div>
+            <b-alert class="m-1"
+            :show="dismissCountDown"
+            dismissible
+            variant="success"
+            @dismissed="dismissCountDown=0"
+            @dismiss-count-down="countDownChanged"
+            >
+            List deleted
+            </b-alert>
+
             <div class="row" style="height: 90vh;">
                 <div class="card col-2 col-sm-2 to__do__lists" style="padding-top: 20px;">
                     <div class="d-flex justify-content-between" style="padding-left: 20px;padding-right:16px;">
@@ -75,6 +85,8 @@ export default({
     name: 'todo',
     data() {
         return {
+            dismissSecs: 5,
+            dismissCountDown: 0,
             userId: localStorage.getItem('userId'),
             lists: [],
             listId: '',
@@ -96,6 +108,13 @@ export default({
         ...mapActions(['getAllToDo']),
         handleHover(hovered) {
             this.isHovered = hovered
+        },
+        ////// Dissmissable Alert //////
+        countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+        this.dismissCountDown = this.dismissSecs
         },
         getData() {
 
