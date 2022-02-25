@@ -31,11 +31,11 @@
                         </b-input-group>
                         
                     </div>
-                    <div v-for="list in lists" :key="list._id" >
-                        <div class="list__block" @click="getListItems(list._id)">
-                            <p class="to-do__title">{{list.list_title}}</p>
-                        </div>
-                    </div>
+                    <b-list-group v-for="list in lists" :key="list._id" >
+                        <b-list-group-item class="list__block" @click="getListItems(list._id)">
+                            <p class="to-do__title border-0">{{list.list_title}}</p>
+                        </b-list-group-item>
+                    </b-list-group>
 
                 </div>
                 <div class="card col-8">
@@ -167,6 +167,8 @@ export default({
 .list__block{
     height: 50px;
     padding-top: 16px;
+
+    border: none !important;
     
 }
 
@@ -208,6 +210,13 @@ export default({
 
 }
 .todo_title_input:focus{
+    color: rgb(134, 134, 134) !important;
     background-color: #efe8f8 !important;
+}
+
+.card > .list-group{
+    border-top: none !important;
+    border-bottom: none !important;
+
 }
 </style>
