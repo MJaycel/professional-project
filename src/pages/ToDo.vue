@@ -51,17 +51,32 @@
                 </div>
                 <div class="card col-8 items__block">
                     <!-- <p @click="setEdit" v-if="!edit" class="to__do" style="padding-top: 16px;">{{this.editForm.list_title}}</p> -->
-                    
-                    <b-form-input
-                        v-model="editForm.list_title"
-                        type="text"
-                        class="todo_title_input"
-                        v-on:keyup.enter='EditListName'
-                        >
-                    </b-form-input>
+                    <b-input-group>
+                        <template #append>
+                                <b-input-group-text style="height: 50px;margin-top: 16px;border:none">
+                                <b-icon @click="showItemInput = true" icon="plus" style="width: 20px; height: 20px;"></b-icon>
+                                </b-input-group-text>
+                        </template>
+                        <b-form-input
+                            v-model="editForm.list_title"
+                            type="text"
+                            class="todo_title_input"
+                            v-on:keyup.enter='EditListName'
+                            >
+                        </b-form-input>                        
+                        </b-input-group>
+
+                        <b-form-input
+                            v-if="showItemInput"
+                            type="text"
+                            class="todo_item_input"
+                            v-on:keyup.enter='EditListName'
+                            >
+                        </b-form-input>  
+
                         <b-list-group v-for="item in items" :key="item._id" >
                             <b-list-group-item  class="item__block d-flex justify-content-between" @click="getListItems(list._id)">
-                                <p>{{item.item_title}}</p>
+                                <p class="to_do__item">{{item.item_title}}</p>
                             </b-list-group-item>
                         </b-list-group>                           
   
@@ -104,7 +119,8 @@ export default({
             toDoTitle: '',
             items: [],
 
-            isHovered: false
+            isHovered: false,
+            showItemInput: false
         }
     },
     mounted() {
@@ -234,17 +250,39 @@ export default({
     background:#F5F2FB ;
 }
 
+.todo_item_input{
+    height: 40px !important;
+
+    margin-top: 16px ;
+    border-bottom: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 4px !important;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px !important;
+    font-weight: 500 !important;
+    color: black !important;
+}
+
 .items__block{
-    background:#F9F9F9 !important;
+    background:#F2F9F3 !important;
 
 }
 
 .item__block{
     height: 50px;
     padding-top: 16px;
-    margin-top:14px;
+    margin-top:11px;
 
     border: none !important;  
+}
+
+.to_do__item{
+    font-family: 'Poppins',sans-serif;
+    font-size: 14px;
+    text-indent: 21px; 
 }
 
 .to-do__title{
