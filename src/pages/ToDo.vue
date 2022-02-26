@@ -50,13 +50,8 @@
                     </b-list-group>                        
                 </div>
                 <div class="card col-8 items__block">
-                    <!-- <p @click="setEdit" v-if="!edit" class="to__do" style="padding-top: 16px;">{{this.editForm.list_title}}</p> -->
-                    <b-input-group>
-                        <template #append>
-                                <b-input-group-text style="height: 50px;margin-top: 16px;border:none">
-                                <b-icon @click="showItemInput = true" icon="plus" style="width: 20px; height: 20px;"></b-icon>
-                                </b-input-group-text>
-                        </template>
+                    <!------------------------  Edit list name input ------------------------->
+                        <b-input-group class="edit__input_group">
                         <b-form-input
                             v-model="editForm.list_title"
                             type="text"
@@ -66,13 +61,23 @@
                         </b-form-input>                        
                         </b-input-group>
 
-                        <b-form-input
-                            v-if="showItemInput"
-                            type="text"
-                            class="todo_item_input"
-                            v-on:keyup.enter='EditListName'
-                            >
-                        </b-form-input>  
+                        <!-- add new task input -->
+                        <b-input-group>
+                            <template #append>
+                                <b-input-group-text style="height: 40px;margin-top: 16px;border:none;background-color:transparent !important;">
+                                <b-icon @click="showItemInput = true" icon="plus" style="width: 20px; height: 20px;"></b-icon>
+                                </b-input-group-text>
+                            </template>
+                            <b-form-input
+                                v-model="taskForm.item_title"
+                                type="text"
+                                class="todo_item_input"
+                                v-on:keyup.enter='addTask'
+                                placeholder="Add new task"
+                                >
+                            </b-form-input>                              
+                        </b-input-group>
+
 
                         <b-list-group v-for="item in items" :key="item._id" >
                             <b-list-group-item  class="item__block d-flex justify-content-between" @click="getListItems(list._id)">
@@ -117,6 +122,10 @@ export default({
                 list_title: ''
             },
             toDoTitle: '',
+            taskForm: {
+                item_title: '',
+            },
+            
             items: [],
 
             isHovered: false,
@@ -218,6 +227,20 @@ export default({
             }) 
             .catch(error => console.log(error))
         },
+
+        addTask() {
+            // console.log('add', this.listId)
+            let userId = localStorage.getItem('userId')
+
+            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.listId}`, this.taskForm)
+            .then(response => {
+                console.log('New task added', response.data)
+                this.taskForm.item_title = ''
+                this.getData()
+                this.getListItems(this.listId)
+            })
+            .catch(error => console.log(error))
+        }
     },
 })
 </script>
@@ -247,7 +270,7 @@ export default({
 }
 
 .list__block:hover{
-    background:#F5F2FB ;
+    background:#D2EAD3 ;
 }
 
 .todo_item_input{
@@ -261,14 +284,19 @@ export default({
     border-radius: 4px !important;
 
     font-family: 'Poppins', sans-serif;
-    font-size: 24px !important;
+    font-size: 14px !important;
     font-weight: 500 !important;
     color: black !important;
+    background:#D2EAD3 !important;
+
+}
+
+.todo_item_input:focus{
+    background:#daebdb !important;
 }
 
 .items__block{
     background:#F2F9F3 !important;
-
 }
 
 .item__block{
@@ -317,15 +345,17 @@ export default({
     font-weight: 500 !important;
     color: black !important;
 
+    background-color: transparent !important;
+
 }
 
 .todo_title_input:hover{
-    background-color: #f2edf8 !important;
+    background-color: #daebdb !important;
 
 }
 .todo_title_input:focus{
     color: rgb(134, 134, 134) !important;
-    background-color: #efe8f8 !important;
+    /* background-color: #daebdb !important; */
 }
 
 .card > .list-group{
@@ -347,5 +377,9 @@ export default({
     border-color: white !important;
 
     color: black  !important;
+}
+
+.edit__input_group{
+    background: none !important;
 }
 </style>
