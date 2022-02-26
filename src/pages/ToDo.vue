@@ -272,6 +272,9 @@ export default({
                 this.getListItems(this.listId)
             })
             .catch(error => console.log(error))
+        },
+        setComplete() {
+            
         }
     },
 })
