@@ -79,11 +79,19 @@
                         </b-input-group>
 
 
-                        <b-list-group v-for="item in items" :key="item._id" >
+                        <!-- <b-list-group v-for="item in items" :key="item._id" >
                             <b-list-group-item  class="item__block d-flex justify-content-between" @click="getListItems(list._id)">
                                 <p class="to_do__item">{{item.item_title}}</p>
                             </b-list-group-item>
-                        </b-list-group>                           
+                        </b-list-group>                            -->
+                        <div>
+                            <b-table responsive :items="items" :fields="headings">
+                                <template #cell(isComplete)="data">
+                                    <b-icon v-if="data.item.isComplete === false" icon="circle"></b-icon>
+                                    <b-icon v-else icon="check-circle-fill"></b-icon>
+                                </template>
+                            </b-table>
+                        </div>
   
                 </div>
                 <div class="card col-2" style="background: #F8F2D1;">
@@ -127,6 +135,25 @@ export default({
             },
             
             items: [],
+            headings: [
+                {
+                    key: 'isComplete',
+                    label: ''
+                },
+                {
+                    key: 'item_title',
+                    label: ''
+                },
+                {
+                    key: 'priorityLevel',
+                    label: ''
+                },
+                {
+                    key: 'progress',
+                    label: ''
+                }
+            ],  
+            isComplete: false,
 
             isHovered: false,
             showItemInput: false
@@ -184,6 +211,7 @@ export default({
                 this.toDoTitle = response.data.list_title
                 this.editForm.list_title = response.data.list_title
                 this.items = response.data.items
+                
                 console.log('single list', response.data)
             })
             .catch(error => console.log(error))
