@@ -232,6 +232,10 @@ export default({
             // console.log('add', this.listId)
             let userId = localStorage.getItem('userId')
 
+            if(this.taskForm.item_title === ''){
+                this.taskForm.item_title = 'Untitled'
+            }
+
             axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.listId}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
