@@ -79,23 +79,38 @@
                         </b-input-group>
 
 
-                        <!-- <b-list-group v-for="item in items" :key="item._id" >
-                            <b-list-group-item  class="item__block d-flex justify-content-between" @click="getListItems(list._id)">
-                                <p class="to_do__item">{{item.item_title}}</p>
+                        <b-list-group v-for="item in items" :key="item._id" >
+                            <b-list-group-item  class="item__block d-flex justify-content-start" @click="getItemData(item._id)">
+                                <b-icon v-b-tooltip.hover title="Set task as complete" v-if="item.isComplete === false" icon="circle" style="color: green" @click="setComplete(item._id)"></b-icon>
+                                <b-icon  v-else icon="check-circle-fill" style="color: green" @click="setCompleteFalse(item._id)"></b-icon>
+                            
+                                <p v-if="item.isComplete" class="to_do__item" style="text-decoration: line-through;">{{item.item_title}}</p>
+                                <p v-else class="to_do__item">{{item.item_title}}</p>
                             </b-list-group-item>
-                        </b-list-group>                            -->
-                        <div>
+                        </b-list-group>                           
+                        <!-- <div>
                             <b-table responsive :items="items" :fields="headings">
                                 <template #cell(isComplete)="data">
+                                    <b-form-checkbox v-model="itemForm.isComplete"></b-form-checkbox>
                                     <b-icon v-if="data.item.isComplete === false" icon="circle"></b-icon>
                                     <b-icon v-else icon="check-circle-fill"></b-icon>
                                 </template>
                             </b-table>
-                        </div>
+                        </div> -->
   
                 </div>
                 <div class="card col-2" style="background: #F8F2D1;">
-                    <p>Task title</p>
+                    <b-list-group>
+                        <b-list-group-item  class="item__block d-flex justify-content-start">
+                            <b-icon v-b-tooltip.hover title="Set task as complete" v-if="foundItem.isComplete === false" icon="circle" style="color: green" @click="setComplete(foundItem._id)"></b-icon>
+                            <b-icon  v-else icon="check-circle-fill" style="color: green" @click="setCompleteFalse(foundItem._id)"></b-icon>
+                        
+                            <p v-if="foundItem.isComplete" class="to_do__item" style="text-decoration: line-through;">{{foundItem.item_title}}</p>
+                            <p v-else class="to_do__item">{{foundItem.item_title}}</p>
+                        </b-list-group-item>
+                    </b-list-group> 
+                    <b-form-textarea class="item__desc no__outline mt-5" v-model="foundItem.item_note" placeholder="Add a description" @focus="showSaveBtn = true" @blur="showSaveBtn = false"></b-form-textarea>
+                    <b-button v-if="showSaveBtn">Save</b-button>
                 </div>
             </div>
         </div>     
@@ -127,14 +142,20 @@ export default({
                 list_title: ''                
             },
             editForm: {
-                list_title: ''
+                list_title: '',
             },
             toDoTitle: '',
             taskForm: {
                 item_title: '',
             },
+
+            itemForm: {
+                isComplete: false
+            },
             
             items: [],
+            foundItem: {},
+            itemId: '',
             headings: [
                 {
                     key: 'isComplete',
@@ -156,7 +177,8 @@ export default({
             isComplete: false,
 
             isHovered: false,
-            showItemInput: false
+            showItemInput: false,
+            showSaveBtn: false
         }
     },
     mounted() {
@@ -202,20 +224,18 @@ export default({
         },
 
         getListItems(id) {
-            console.log('id', id)
-
+            // console.log('id', id)
             this.listId = id
+            let userId = localStorage.getItem('userId')
 
-            axios.get(`http://localhost:3030/todo/list/${this.listId}`)
+            /////getting from users collection
+            axios.get(`http://localhost:3030/todo/user/${userId}/list/${this.listId}`)
             .then(response => {
-                this.toDoTitle = response.data.list_title
-                this.editForm.list_title = response.data.list_title
-                this.items = response.data.items
-                
-                console.log('single list', response.data)
+                console.log(response.data[0])
+                this.editForm.list_title = response.data[0].list_title
+                this.items = response.data[0].items
             })
             .catch(error => console.log(error))
-
             
         },
 
@@ -227,7 +247,7 @@ export default({
                     console.log('edited', response.data)
                     this.getData()
                     this.getListItems(response.data._id)
-                    this.toDoTitle = response.data.list_title
+                    // this.toDoTitle = response.data.list_title
                 }) 
                 .catch(error => console.log(error))
         },
@@ -241,6 +261,7 @@ export default({
         hideDelete() {
             this.$bvModal.hide('delete-event')
         },
+        ////// deletes list
         deleteList() {
             let userId = localStorage.getItem('userId')
 
@@ -256,6 +277,7 @@ export default({
             .catch(error => console.log(error))
         },
 
+        ///////// add task to list
         addTask() {
             // console.log('add', this.listId)
             let userId = localStorage.getItem('userId')
@@ -273,9 +295,63 @@ export default({
             })
             .catch(error => console.log(error))
         },
-        setComplete() {
-            
+
+        ////// Sets task as complete
+        setComplete(id) {
+            let userId = localStorage.getItem('userId')
+
+            this.itemForm.isComplete = true
+            console.log('true',this.itemForm.isComplete)
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.itemForm)
+            .then(response => {
+                console.log('New task added', response.data)
+                this.getData()
+                this.getListItems(this.listId)
+                this.getItemData(this.itemId)
+
+            })
+            .catch(error => console.log(error))
+        },
+
+        //////// Sets task to false
+        setCompleteFalse(id) {
+            if(this.itemForm.isComplete){
+                this.itemForm.isComplete = false
+            }
+            let userId = localStorage.getItem('userId')
+
+            console.log('false',this.itemForm.isComplete)
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.itemForm)
+            .then(response => {
+                console.log('New task added', response.data)
+                this.getData()
+                this.getListItems(this.listId)
+                this.getItemData(this.itemId)
+
+            })
+            .catch(error => console.log(error))
+        },
+
+        ////// Get tasks infos
+        getItemData(id){
+            let userId = localStorage.getItem('userId')
+            this.itemId = id
+
+            axios.get(`http://localhost:3030/todo/user/${userId}/list/${this.listId}/item/${id}`)
+            .then(response => {
+                console.log(response.data[0].todoLists.items.item_title)
+                this.foundItem = response.data[0].todoLists.items
+            })
+            .catch(error => console.log(error))
+        },
+
+        ///// show save btn
+        saveBtn(){
+            this.showSaveBtn = true
         }
+
     },
 })
 </script>
