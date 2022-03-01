@@ -52,13 +52,13 @@
                 <div class="card col-8 items__block">
                     <!------------------------  Edit list name input ------------------------->
                         <b-input-group class="edit__input_group">
-                        <b-form-input
-                            v-model="editForm.list_title"
-                            type="text"
-                            class="todo_title_input"
-                            v-on:keyup.enter='EditListName'
-                            >
-                        </b-form-input>                        
+                            <b-form-input
+                                v-model="editForm.list_title"
+                                type="text"
+                                class="todo_title_input"
+                                v-on:keyup.enter='EditListName'
+                                >
+                            </b-form-input>                        
                         </b-input-group>
 
                         <!-- add new task input -->
@@ -100,7 +100,7 @@
   
                 </div>
                 <div class="card col-2" style="background: #F8F2D1;">
-                    <b-list-group>
+                    <!-- <b-list-group>
                         <b-list-group-item  class="item__block d-flex justify-content-start">
                             <b-icon v-b-tooltip.hover title="Set task as complete" v-if="foundItem.isComplete === false" icon="circle" style="color: green" @click="setComplete(foundItem._id)"></b-icon>
                             <b-icon  v-else icon="check-circle-fill" style="color: green" @click="setCompleteFalse(foundItem._id)"></b-icon>
@@ -108,9 +108,21 @@
                             <p v-if="foundItem.isComplete" class="to_do__item" style="text-decoration: line-through;">{{foundItem.item_title}}</p>
                             <p v-else class="to_do__item">{{foundItem.item_title}}</p>
                         </b-list-group-item>
-                    </b-list-group> 
-                    <b-form-textarea class="item__desc no__outline mt-5" v-model="foundItem.item_note" placeholder="Add a description" @focus="showSaveBtn = true" @blur="showSaveBtn = false"></b-form-textarea>
-                    <b-button v-if="showSaveBtn">Save</b-button>
+                    </b-list-group>  -->
+                        <b-input-group class="edit__input_group">
+                            <b-form-input
+                                v-model="editTaskForm.item_title"
+                                type="text"
+                                class="todo_title_input"
+                                v-on:keyup.enter='editTask(foundItem._id)'
+                                >
+                            </b-form-input>                        
+                        </b-input-group>
+                    <!-- desc text area -->
+                    <b-form-textarea class="item__desc no__outline mt-5" v-model="editTaskForm.item_note" placeholder="Add a description" @focus="showSaveBtn = true">
+                        
+                    </b-form-textarea>
+                    <b-button v-if="showSaveBtn" class="save__btn" @click="editTask(foundItem._id)">Save</b-button>
                 </div>
             </div>
         </div>     
@@ -138,18 +150,36 @@ export default({
             userId: localStorage.getItem('userId'),
             lists: [],
             listId: '',
+
+            //// Add new list
             form: {
                 list_title: ''                
             },
+
+            ////editing list title
             editForm: {
                 list_title: '',
             },
             toDoTitle: '',
+
+            //// when adding new task only takes in the title of the task
             taskForm: {
                 item_title: '',
             },
 
-            itemForm: {
+            ///// editing task
+            editTaskForm: {
+                item_title: '',
+                item_note: '',
+                startDate: '',
+                endDate: '',
+                startTime: '',
+                endTime: '',
+                priorityLevel: '',
+                progress: ''
+            },
+
+            CompleteStatus: {
                 isComplete: false
             },
             
@@ -303,7 +333,7 @@ export default({
             this.itemForm.isComplete = true
             console.log('true',this.itemForm.isComplete)
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.itemForm)
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.CompleteStatus)
             .then(response => {
                 console.log('New task added', response.data)
                 this.getData()
@@ -323,7 +353,7 @@ export default({
 
             console.log('false',this.itemForm.isComplete)
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.itemForm)
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.CompleteStatus)
             .then(response => {
                 console.log('New task added', response.data)
                 this.getData()
@@ -343,14 +373,33 @@ export default({
             .then(response => {
                 console.log(response.data[0].todoLists.items.item_title)
                 this.foundItem = response.data[0].todoLists.items
+                this.editTaskForm.item_title = response.data[0].todoLists.items.item_title
+                this.editTaskForm.item_note = response.data[0].todoLists.items.item_note
+                this.editTaskForm.startDate = response.data[0].todoLists.items.startDate
+                this.editTaskForm.endDate = response.data[0].todoLists.items.endDate
+                this.editTaskForm.startTime = response.data[0].todoLists.items.startTime
+                this.editTaskForm.endTime = response.data[0].todoLists.items.endTime
+                this.editTaskForm.priorityLevel = response.data[0].todoLists.items.priorityLevel
+                this.editTaskForm.progress = response.data[0].todoLists.items.progress
+
             })
             .catch(error => console.log(error))
         },
 
-        ///// show save btn
-        saveBtn(){
-            this.showSaveBtn = true
+        editTask(id){
+            let userId = localStorage.getItem('userId')
+            this.itemId = id
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.editTaskForm)
+            .then(response => {
+                console.log(response)
+                this.getData()
+                this.getListItems(this.listId)
+                this.getItemData(this.itemId)
+            })
+            .catch(error => console.log(error))
         }
+
 
     },
 })
@@ -493,4 +542,27 @@ export default({
 .edit__input_group{
     background: none !important;
 }
+
+.save__btn{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
+    background-color: #AA96DA !important;
+    border-color: #AA96DA !important;
+
+    width: 80px;
+    border-radius: 4px !important;
+    letter-spacing: 0.02em;
+    margin-top: 10px;
+    align-self: flex-end;
+}
+
+.item__desc{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
+    border-radius: 4px !important;
+    border-style: none !important;
+
+    /* background-color: #F2EFF9 !important; */
+}
+
 </style>
