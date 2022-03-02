@@ -119,10 +119,34 @@
                             </b-form-input>                        
                         </b-input-group>
                     <!-- desc text area -->
-                    <b-form-textarea class="item__desc no__outline mt-5" v-model="editTaskForm.item_note" placeholder="Add a description" @focus="showSaveBtn = true">
+                    <b-form-textarea class="item__desc no__outline mt-5" v-model="editTaskForm.item_note" placeholder="Add a description" @focus="showSaveBtn = true"  @blur="showSaveBtn = false">
                         
                     </b-form-textarea>
                     <b-button v-if="showSaveBtn" class="save__btn" @click="editTask(foundItem._id)">Save</b-button>
+
+                    <b-button v-b-toggle.collapse-2 class="mt-3 add_to_cal__btn">
+                        Add to Calendar
+                    </b-button>
+
+                    <b-collapse id="collapse-2">
+                        <b-card>
+                                <div v-if="!isAllDay" style="margin-top: 10px;">
+                                    <b-form-input style="border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                                    <b-form-input style="margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
+                                </div>
+
+                                <div v-else style="margin-top: 10px;">
+                                    <b-form-input style="border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                                    <b-form-input style="margin-top: 16px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                                </div>
+
+                                <div v-if="!isAllDay" style="margin-top: 10px;">
+                                <b-form-input style="border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
+                                <b-form-input style="margin-top: 16px; border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                      
+                                </div>
+
+                        </b-card>
+                    </b-collapse>
                 </div>
             </div>
         </div>     
@@ -565,4 +589,18 @@ export default({
     /* background-color: #F2EFF9 !important; */
 }
 
+
+
+.add_to_cal__btn{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
+    color: #2c1d4e !important;
+    background: white !important;
+    border: none !important;
+}
+
+.add_to_cal__btn:focus{
+    outline:0px !important; 
+     box-shadow: none !important;
+}
 </style>
