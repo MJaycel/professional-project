@@ -25,8 +25,9 @@
                 <div class="row col-12" style="margin-left: 20px;padding:0px;">
                 <!-- to do list card -->
 
-                    <div v-for="list in lists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;">
+                    <div v-for="list in lists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;" @click="goToList(list._id)">
                         <p class="list__title">{{list.list_title}}</p>
+                        <!-- <router-link class="list__title" :to="{name: 'single_todo', params: {id: userId}}">{{list.list_title}}</router-link> -->
                     </div>
 
                     <!-- add to do list card -->
@@ -64,6 +65,7 @@
 
 <script>
 import axios from 'axios'
+import {mapState} from 'vuex'
 export default({
     name: 'ToDoPage',
     data() {
@@ -92,6 +94,9 @@ export default({
     },
     mounted(){
         this.getAllLists()
+    },
+    computed:{
+        ...mapState(['listId'])
     },
     methods: {
         handleHover(hovered) {
@@ -133,6 +138,17 @@ export default({
                 .catch(error => console.log(error))
         },
 
+        /// direct page to single list
+        goToList(id){
+            this.$store.commit('setListId', id)
+            this.$router.push({
+                name: 'single_todo',
+                params: {
+                    id: this.userId
+                }
+            })
+        }
+
 
     }
 })
@@ -170,6 +186,10 @@ export default({
     border: none !important;
     height: 140px;
 
+}
+
+.list_card:hover{
+    cursor: pointer;
 }
 
 /* font styles */

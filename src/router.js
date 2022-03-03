@@ -13,6 +13,8 @@ import MusicPlayer from "@/pages/MusicPlayer.vue"
 import Timer from '@/pages/Timer.vue'
 import ToDo from '@/pages/ToDo.vue'
 import ToDoPage from '@/pages/ToDoPage.vue'
+import SingleToDo from '@/pages/SingleToDo.vue'
+
 
 
 
@@ -132,7 +134,7 @@ export default new Router ({
             }
         },
         {
-            path:'/todopage/:id',
+            path:'/todo/lists/:id',
             name: 'todo_page',
             component: ToDoPage,
             beforeEnter: (to,from,next) => {
@@ -141,6 +143,11 @@ export default new Router ({
                 } else 
                     next()
             }
+        },
+        {
+            path:'/todo/list/:id',
+            name: 'single_todo',
+            component: SingleToDo,
         }
     ]
 })
