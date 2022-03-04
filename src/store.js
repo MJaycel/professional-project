@@ -26,7 +26,9 @@ export default new Vuex.Store({
         showEditModal: false,
         date: new Date(),
 
-        listId: ''
+        listId: '',
+
+        completed: ''
     },
     getters:{
         name: state => {
@@ -77,6 +79,10 @@ export default new Vuex.Store({
 
         setShowEditModal(state, showEditModal){
             state.showEditModal = showEditModal
+        },
+
+        setCompleted(state, completed){
+            state.completed = completed
         },
 
         ////////// to do lists 

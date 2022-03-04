@@ -21,7 +21,7 @@
             </div>
 
             <!-- tasks lists  -->
-            <div class="col-8 tasks_list_block">
+            <div class="col-8 tasks_list_block mt-3">
                 <div>
                     <!-- list title --> 
                     <div class="title__box">
@@ -42,6 +42,21 @@
                     </b-list-group-item>
                 </b-list-group> 
             </div>
+
+            <!-- <div class="col-3 mt-3" style="border:2px;background:yellow;padding:16px;">
+                <p style="font-size:24px;">{{this.completed}}%</p>
+            </div> -->
+            <!-- <div class="col-3 mt-3 circle-wrap">
+                <canvas id='circle' :dataPercent="completed">
+                </canvas>
+
+            </div> -->
+            <!-- <canvas /> -->
+
+            <div class="col-3">
+                <div id="p5Canvas"> </div>
+
+            </div>
         </div>
 
     </div>
@@ -51,13 +66,22 @@
 
 import {mapState} from 'vuex'
 import axios from 'axios'
+// import CircularProgress from '@/components/CircularProgress.vue'
+var CircularProgress = require('@//components/CircularProgress.js')
+// import canvasHtml from '@/components/canvasHtml.vue'
+// import canvas from '@/components/canvas.html'
 
 export default ({
     name: 'SingleToDo',
+    components: { 
+        // canvasHtml, 
+        },
     data() {
         return{
+            // canvas,
             userId: localStorage.getItem('userId'),
             items: [],
+            // completed: '',
             theme: '',
             headings: [
                 {
@@ -83,14 +107,19 @@ export default ({
             ////form 
             form: {
                 list_title: '',
-            }
+            },
+            percNum: ''
         }
     },
     mounted() {
         this.getListData()
+        const P5 = require('p5')
+        CircularProgress.setPercentage(this.percNum);
+        console.log('this', this.$store.state.completed)
+        new P5(CircularProgress.main);
     },
     computed: {
-        ...mapState(['listId'])
+        ...mapState(['listId', 'completed'])
     },
     methods:{
         ///////////// GET LIST DATA 
@@ -103,10 +132,67 @@ export default ({
                 this.form.list_title = response.data[0].list_title
                 this.theme = response.data[0].theme
                 this.items = response.data[0].items
+
+                this.countItems()
+            })
+            .catch(error => console.log(error))
+        },
+        /////// count array items
+        countItems() {
+            let result = this.items.length
+            console.log('result', result)
+
+            const totalPercentage = 100
+            const num = totalPercentage / result
+
+            const completedItems = this.items.filter(item => 
+            item.isComplete === true)
+
+            console.log('completed', completedItems.length)
+            this.percNum = completedItems.length * num
+            this.$store.commit('setCompleted', this.percNum)
+        }, 
+        ////// Sets task as complete
+        setComplete(id) {
+            let userId = localStorage.getItem('userId')
+
+            this.CompleteStatus.isComplete = true
+            // console.log('true',this.itemForm.isComplete)
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.CompleteStatus)
+            .then(response => {
+                console.log('New task added', response.data)
+                this.getListData()
+                // this.getListItems(this.listId)
+                // this.getItemData(this.itemId)
+
             })
             .catch(error => console.log(error))
         },
 
+        //////// Sets task to false
+        setCompleteFalse(id) {
+            // if(this.itemForm.isComplete){
+            //     this.itemForm.isComplete = false
+            // }
+            let userId = localStorage.getItem('userId')
+
+            if(this.CompleteStatus.isComplete){
+                this.CompleteStatus.isComplete = false
+            }
+
+            // console.log('false',this.itemForm.isComplete)
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.CompleteStatus)
+            .then(response => {
+                console.log('New task added', response.data)
+                this.getListData()
+                // this.getListItems(this.listId)
+                // this.getItemData(this.itemId)
+
+            })
+            .catch(error => console.log(error))
+        },
     }
 })
 </script>
@@ -129,7 +215,6 @@ export default ({
     background-color: transparent !important;
 
 }
-
 .todo_title_input:hover{
     background-color: #daebdb !important;
 }
@@ -143,7 +228,6 @@ export default ({
     font-size: 24px;
     font-weight: 500;
 }
-
 .tasks_list_block{
     margin-left: 16px;
     padding-top: 24px;

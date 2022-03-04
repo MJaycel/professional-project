@@ -535,7 +535,6 @@ export default({
 
 .todo_title_input:hover{
     background-color: #daebdb !important;
-
 }
 .todo_title_input:focus{
     color: rgb(134, 134, 134) !important;
