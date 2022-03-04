@@ -70,7 +70,7 @@ import axios from 'axios'
 var CircularProgress = require('@//components/CircularProgress.js')
 // import canvasHtml from '@/components/canvasHtml.vue'
 // import canvas from '@/components/canvas.html'
-
+const P5 = require('p5');
 export default ({
     name: 'SingleToDo',
     components: { 
@@ -108,20 +108,23 @@ export default ({
             form: {
                 list_title: '',
             },
-            percNum: ''
+            percNum: '',
         }
     },
     mounted() {
         this.getListData()
-        const P5 = require('p5')
-        CircularProgress.setPercentage(this.percNum);
-        console.log('this', this.$store.state.completed)
-        new P5(CircularProgress.main);
+        this.setPercNum();
     },
     computed: {
         ...mapState(['listId', 'completed'])
     },
     methods:{
+        setPercNum(){
+            var res = CircularProgress.setPercentage(this.percNum);
+            if(res){
+                new P5(CircularProgress.main);
+            }  
+        },
         ///////////// GET LIST DATA 
         getListData(){
             /////getting from users collection
@@ -193,6 +196,18 @@ export default ({
             })
             .catch(error => console.log(error))
         },
+    },
+    watch: {
+        percNum: {
+            handler(){
+                console.log("chaaaange")
+                var res = CircularProgress.setPercentage(this.percNum);
+                if(res){
+                    CircularProgress.main;
+                }
+            }
+            
+        }
     }
 })
 </script>
