@@ -21,7 +21,7 @@
             </div>
 
             <!-- tasks lists  -->
-            <div class="col-8 tasks_list_block mt-3">
+            <div class="col-7 tasks_list_block mt-3">
                 <div>
                     <!-- list title --> 
                     <div class="title__box">
@@ -43,20 +43,13 @@
                 </b-list-group> 
             </div>
 
-            <!-- <div class="col-3 mt-3" style="border:2px;background:yellow;padding:16px;">
-                <p style="font-size:24px;">{{this.completed}}%</p>
-            </div> -->
-            <!-- <div class="col-3 mt-3 circle-wrap">
-                <canvas id='circle' :dataPercent="completed">
-                </canvas>
-
-            </div> -->
-            <!-- <canvas /> -->
-
-            <div class="col-3">
+            <div class="col-4" style="background: white;">
+                <div style="background:green;height:40vh;">
+                    <p>hello</p>
+                </div>       
                 <div id="p5Canvas"> </div>
-
             </div>
+
         </div>
 
     </div>
@@ -66,11 +59,9 @@
 
 import {mapState} from 'vuex'
 import axios from 'axios'
-// import CircularProgress from '@/components/CircularProgress.vue'
-var CircularProgress = require('@//components/CircularProgress.js')
-// import canvasHtml from '@/components/canvasHtml.vue'
-// import canvas from '@/components/canvas.html'
+var CircularProgress = require('@/components/CircularProgress.js')
 const P5 = require('p5');
+
 export default ({
     name: 'SingleToDo',
     components: { 
@@ -119,9 +110,11 @@ export default ({
         ...mapState(['listId', 'completed'])
     },
     methods:{
+        //set percentage number
         setPercNum(){
             var res = CircularProgress.setPercentage(this.percNum);
             if(res){
+                //create p5 instance -- components/CircularProgress.js
                 new P5(CircularProgress.main);
             }  
         },
@@ -144,8 +137,9 @@ export default ({
         countItems() {
             let result = this.items.length
             console.log('result', result)
-
-            const totalPercentage = 100
+            
+            //circle progress - degrees
+            const totalPercentage = 360
             const num = totalPercentage / result
 
             const completedItems = this.items.filter(item => 
@@ -204,6 +198,7 @@ export default ({
                 var res = CircularProgress.setPercentage(this.percNum);
                 if(res){
                     CircularProgress.main;
+                    console.log(this.$store.state.completed)
                 }
             }
             
