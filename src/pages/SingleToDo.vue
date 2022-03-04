@@ -43,8 +43,8 @@
                 </b-list-group> 
             </div>
 
-            <div class="col-4" style="background: white;">
-                <div style="background:green;height:40vh;">
+            <div class="col-4 mt-3" style="background: white;">
+                <div style="background:white; height:40vh;">
                     <p>hello</p>
                 </div>       
                 <div id="p5Canvas"> </div>
@@ -148,6 +148,7 @@ export default ({
             console.log('completed', completedItems.length)
             this.percNum = completedItems.length * num
             this.$store.commit('setCompleted', this.percNum)
+            console.log('deg', this.percNum)
         }, 
         ////// Sets task as complete
         setComplete(id) {
@@ -198,7 +199,7 @@ export default ({
                 var res = CircularProgress.setPercentage(this.percNum);
                 if(res){
                     CircularProgress.main;
-                    console.log(this.$store.state.completed)
+                    // console.log(this.$store.state.completed)
                 }
             }
             

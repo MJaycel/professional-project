@@ -24,41 +24,40 @@ export function main(_p5){
     p5.draw = () =>{
         p5.clear();
         p5.translate(p5.width/2, p5.height/2); // change center
-        // p5.rotate((1 / 2 + 0 / 180) * Math.PI); // rotate -90 deg
         
-        // if(percentage == 100){
-            p5.drawCircle('#000', 360, 16);
-        // } else if(percentage == 0){
-        //     p5.drawCircle('#efefef', 0, 15);
-        // } else {
-        //     p5.drawCircle('#efefef', 0, 15);
-        //     p5.drawCircle('#000', percentage, 16);
-        // }
-        p5.drawCircle('#efefef', percentage, 15);
+         p5.drawCircle('#efefef', 360);
+         p5.drawCircle('#000', percentage);
+        
         //text - percentage
         p5.drawText();
-        
     }
 
-    p5.drawCircle = (color, percent, lineW) =>{
+    p5.drawCircle = (color,percent) => {
         p5.beginShape();
-        p5.strokeWeight(lineW);
-        // p5.arc(0, 0, radius, 0, (Math.PI/180) * 2 * Math.floor(percent/100), false);
-        p5.arc( 0, 0, radius, radius, (Math.PI/180) * 270, (Math.PI/180) * (270 + percent) );
-        p5.lineCap = 'square';
-        p5.lineWidth = lineWidth
+        p5.strokeWeight(15);
         p5.stroke(color);
+        p5.noFill();
+        //arc(x,y,width,height,start, stop);
+        p5.arc(0, 0, radius, radius, (Math.PI/180) * 270, (Math.PI/180) * (270 + percent), false );
+        p5.lineWidth = lineWidth;
     }
 
 
     p5.drawText = () => {
         p5.beginShape();
-        // p5.rotate((1 / 2 + 0 / 180) * Math.PI);        
         p5.strokeWeight(2)
-        // p5.fill(0);
         p5.textSize(27);
+        p5.fill(0);
+        /* 
+           Change degrees percentage to 100%
+           e.g 120 degrees (2 tasks done) 
+           Math.floor -- round up 
+           120/360 * 100 = 33% -- FORMULA 
+        */
+
+        //text(word, x, y);
         p5.text(Math.floor((percentage/360)*100) + '%', -30, 0);
-        // console.log(Math.floor(percentage/360)*100)
+        // p5.endShape();
     }
 }
 
