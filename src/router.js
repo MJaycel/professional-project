@@ -113,7 +113,7 @@ export default new Router ({
             component: Calendar,
         },
         {
-            path:'/music',
+            path:'/music/:id',
             name: 'MusicPlayer',
             component: MusicPlayer
         },

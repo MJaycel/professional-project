@@ -56,7 +56,7 @@ export default {
             const CURRENT_DATE = new Date();
             // NOTE = had to manually add a "0" so once it gets to doube digits this will probs break
             // temporary fix btw
-            const date = CURRENT_DATE.getFullYear()+'-0'+(CURRENT_DATE.getMonth()+1)+'-'+CURRENT_DATE.getDate();
+            const date = CURRENT_DATE.getFullYear()+'-0'+(CURRENT_DATE.getMonth()+1)+'-0'+CURRENT_DATE.getDate();
 
             console.log("todays date is", date)
             var numEvents = this.$store.getters.events
