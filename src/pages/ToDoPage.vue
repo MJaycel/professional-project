@@ -1,8 +1,8 @@
 <template>
     <div class="container-fluid">
-        <div class="row" style="height: 100vh;">
+        <div class="row">
             <!-- sidebar  -->
-            <div class="side__bar" style="width: 65px !important;">
+            <div class="side__bar" style="height: 100vh;width: 65px !important;">
                 <div class="mt-5 links">
                     <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
                         <b-icon icon="house-door-fill"></b-icon>
@@ -232,30 +232,37 @@ export default({
 
 .blue {
     background-color: #201E80 !important;
+    color: #615DF6 !important;
 }
 
 .red{
     background-color: #E36161 !important;
+    color: #B53636 !important;
 }
 
 .darkGreen{
     background-color: #1E8074 !important;
+    color: #00584E !important;
 }
 
 .green{
     background-color: #7BC17E !important;
+    color: #278A2B !important;
 }
 
 .purple{
     background-color: #AA96DA !important;
+    color: #3F1F8D !important;
 }
 
 .yellow{
     background-color: #E7C71C !important;
+        color: #B89B00 !important;
 }
 
 .pink{
     background-color: #ECCFCF !important;
+    color: #C95555 !important;
 }
 
 /* end of colors */

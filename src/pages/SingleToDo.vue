@@ -1,27 +1,26 @@
 <template>
-    <div class="container-fluid">
-        <div class="row" style="height: 100vh;">
-            <!-- sidebar  -->
-            <div class="side__bar" style="width: 65px !important;">
-                <div class="mt-5 links">
-                    <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                        <b-icon icon="house-door-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                        <b-icon icon="calendar-date-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
-                        <b-icon icon="card-checklist"></b-icon>
-                    </router-link>
-                </div>
+    <div class="container-fluid d-flex" style="padding:0px;">
+        <!-- sidebar  -->
+        <div style="width: 65px !important;padding:0px;background: white;" class="side__bar">
+            <div class="mt-5"  style="padding: 20px;">
+                <router-link :class="theme" style="font-size: 18px;background-color: transparent !important;" :to="{name: 'home', params: {id: this.userId}}">
+                    <b-icon icon="house-door-fill" ></b-icon>
+                </router-link>
             </div>
-
+            <div style="padding: 20px;">
+                <router-link :class="theme" style="font-size: 18px;background-color: transparent !important;" :to="{name: 'calendar',params: {id: this.userId} }">
+                    <b-icon icon="calendar-date-fill" ></b-icon>
+                </router-link>
+            </div>
+            <div style="padding: 20px;">
+                <router-link :class="theme" style="font-size: 18px;background-color: transparent !important;" :to="{name: 'todo_page',params: {id: this.userId} }">
+                    <b-icon icon="card-checklist"></b-icon>
+                </router-link>
+            </div>
+        </div>
+        <div class="col-10" style="color:black !important;" :class="theme">
             <!-- tasks lists  -->
-            <div class="col-7 tasks_list_block mt-3">
+            <div class="tasks_list_block mt-3">
                 <div>
                     <!-- list title --> 
                     <div class="title__box">
@@ -33,22 +32,31 @@
                     </b-input-group> -->
                 </div>
                 <b-list-group v-for="item in items" :key="item._id">
-                    <b-list-group-item  class="item__block d-flex justify-content-start">
-                        <b-icon v-b-tooltip.hover title="Set task as complete" v-if="item.isComplete === false" icon="circle" style="color: green" @click="setComplete(item._id)"></b-icon>
-                        <b-icon  v-else icon="check-circle-fill" style="color: green" @click="setCompleteFalse(item._id)"></b-icon>
-                    
-                        <p v-if="item.isComplete" class="to_do__item" style="text-decoration: line-through;">{{item.item_title}}</p>
-                        <p v-else class="to_do__item">{{item.item_title}}</p>
+                    <b-list-group-item  class="item__block d-flex justify-content-between">
+                        <div class="d-flex justify-content-start">
+                            <b-icon v-b-tooltip.hover title="Set task as complete" v-if="item.isComplete === false" icon="circle" style="color: green" @click="setComplete(item._id)"></b-icon>
+                            <b-icon  v-else icon="check-circle-fill" style="color: green" @click="setCompleteFalse(item._id)"></b-icon>
+                        
+                            <p v-if="item.isComplete" class="to_do__item" style="text-decoration: line-through;">{{item.item_title}}</p>
+                            <p v-else class="to_do__item">{{item.item_title}}</p>                            
+                        </div>
+
+                        <!-- priority Level and progress -->
+                        <div>
+                            <b-button v-if="item.priorityLevel === 'Low Priority'" pill style="color: #E7C71C; border-color: #E7C71C; background: transparent;">{{item.priorityLevel}}</b-button>
+                            <b-button v-if="item.priorityLevel === 'High Priority'" pill style="color: red; border-color: red; background: transparent;">{{item.priorityLevel}}</b-button>
+                            <b-button v-if="item.priorityLevel === 'Medium Priority'" pill style="color: orange; border-color: orange; background: transparent;">{{item.priorityLevel}}</b-button>
+                        </div>
                     </b-list-group-item>
                 </b-list-group> 
             </div>
 
-            <div class="col-4 mt-3" style="background: white;">
-                <div style="background:white; height:40vh;">
+            <!-- <div class="col-5 mt-3 details" style="background: orange;">
+                <div style="background:blue; height:60vh;">
                     <p>hello</p>
                 </div>       
-                <div id="p5Canvas"> </div>
-            </div>
+                <div class="mt-5" style="" id="p5Canvas"></div>
+            </div> -->
 
         </div>
 
@@ -209,6 +217,9 @@ export default ({
 </script>
 
 <style>
+.side__bar{
+    height: 100vh !important;
+}
 /* input styles */
 .todo_title_input{
     margin-top: 16px ;
@@ -222,6 +233,7 @@ export default ({
     font-size: 24px !important;
     font-weight: 500 !important;
     color: black !important;
+
 
     background-color: transparent !important;
 
@@ -246,6 +258,12 @@ export default ({
     margin-bottom: 24px;
 
     border-radius: 8px;
-    box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.25);
+    /* box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.25); */
+
+    background-color: white;
+}
+
+.details{
+    margin-left:24px;
 }
 </style>

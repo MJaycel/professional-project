@@ -17,7 +17,7 @@ export function setPercentage(_percentage){
 export function main(_p5){
     p5 = _p5;
     p5.setup = () =>{
-        var canvas = p5.createCanvas(600,500);
+        var canvas = p5.createCanvas(400,300);
         canvas.parent("p5Canvas")
         p5.background(255);
     }
