@@ -1,14 +1,22 @@
-
 let sizeWidth = 500; 
 let lineWidth = 15;
 let radius = (sizeWidth - lineWidth) / 2;
 let p5;
 let percentage;
+// let inProgress;
+
+// let angles = [percentage, inProgress]
 
 export function setPercentage(_percentage){
     percentage = _percentage;
     return true;
 }
+
+// export function setVal(_percentage, _inProgress){
+//     percentage = _percentage;
+//     inProgress = _inProgress
+//     return true;
+// }
 
 //link showing how to use p5 in vue
 //https://medium.com/js-dojo/experiment-with-p5-js-on-vue-7ebc05030d33 **
@@ -23,11 +31,11 @@ export function main(_p5){
     }
 
     p5.draw = () =>{
-        // p5.clear();
+        p5.clear();
         p5.background(255);
         p5.translate(p5.width/2, p5.height/2); // change center
         p5.drawCircle('#efefef', 360);
-        p5.drawCircle('#000', percentage);
+        p5.drawCircle('#339637', percentage);
         
         // let startPercentage = 0;
         // var arcInterval = setInterval(function() {
@@ -72,6 +80,8 @@ export function main(_p5){
     //     }, 10);
     // }
 
+
+    ///////////////////////////////////////// 
     p5.drawCircle = (color, percent) => {
         p5.beginShape();
         p5.strokeWeight(15);
@@ -90,15 +100,16 @@ export function main(_p5){
         p5.fill(0);
 
         /* 
-           Change degrees percentage to 100%
-           e.g 120 degrees (2 tasks done) 
-           Math.floor -- round up 
-           120/360 * 100 = 33% -- FORMULA 
+        Change degrees percentage to 100%
+        e.g 120 degrees (2 tasks done) 
+        Math.floor -- round up 
+        120/360 * 100 = 33% -- FORMULA 
         */
 
         //text(word, x, y);
         p5.text(Math.floor((percentage/360)*100) + '%', -30, 0);
     }
+
 }
 
 

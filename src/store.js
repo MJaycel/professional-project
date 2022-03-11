@@ -28,7 +28,8 @@ export default new Vuex.Store({
 
         listId: '',
 
-        completed: ''
+        completed: '',
+        priority: ''
     },
     getters:{
         name: state => {
@@ -83,6 +84,10 @@ export default new Vuex.Store({
 
         setCompleted(state, completed){
             state.completed = completed
+        },
+
+        setPriorityValue(state, priority){
+            state.priority = priority
         },
 
         ////////// to do lists 

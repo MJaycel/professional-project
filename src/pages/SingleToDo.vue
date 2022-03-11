@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid d-flex" style="padding:0px;">
+    <div class="container-fluid d-flex" style="padding:0px;" :class="theme">
         <!-- sidebar  -->
         <div style="width: 65px !important;padding:0px;background: white;" class="side__bar">
             <div class="mt-5"  style="padding: 20px;">
@@ -18,45 +18,116 @@
                 </router-link>
             </div>
         </div>
-        <div class="col-10" style="color:black !important;" :class="theme">
+        <div class="col-11" style="color:black !important;margin-left: 22px;" :class="theme">
             <!-- tasks lists  -->
             <div class="tasks_list_block mt-3">
-                <div>
-                    <!-- list title --> 
-                    <div class="title__box">
-                        <p>{{this.form.list_title}}</p>
-                    </div>
-                    <!-- <b-input-group>
-                        <b-form-input v-model="form.list_title" type="text" class="todo_title_input">
-                        </b-form-input>
-                    </b-input-group> -->
+                <!-- list title --> 
+                <div class="title__box">
+                    <p>{{this.form.list_title}}</p>
                 </div>
-                <b-list-group v-for="item in items" :key="item._id">
-                    <b-list-group-item  class="item__block d-flex justify-content-between">
-                        <div class="d-flex justify-content-start">
-                            <b-icon v-b-tooltip.hover title="Set task as complete" v-if="item.isComplete === false" icon="circle" style="color: green" @click="setComplete(item._id)"></b-icon>
-                            <b-icon  v-else icon="check-circle-fill" style="color: green" @click="setCompleteFalse(item._id)"></b-icon>
-                        
-                            <p v-if="item.isComplete" class="to_do__item" style="text-decoration: line-through;">{{item.item_title}}</p>
-                            <p v-else class="to_do__item">{{item.item_title}}</p>                            
-                        </div>
 
-                        <!-- priority Level and progress -->
-                        <div>
-                            <b-button v-if="item.priorityLevel === 'Low Priority'" pill style="color: #E7C71C; border-color: #E7C71C; background: transparent;">{{item.priorityLevel}}</b-button>
-                            <b-button v-if="item.priorityLevel === 'High Priority'" pill style="color: red; border-color: red; background: transparent;">{{item.priorityLevel}}</b-button>
-                            <b-button v-if="item.priorityLevel === 'Medium Priority'" pill style="color: orange; border-color: orange; background: transparent;">{{item.priorityLevel}}</b-button>
-                        </div>
-                    </b-list-group-item>
-                </b-list-group> 
+                <!-- add new task input -->
+                <b-input-group class="input__group">
+                    <template #append>
+                        <b-input-group-text style="height: 40px;border:none;background-color:transparent !important;">
+                        <b-icon @click="showItemInput = true" icon="plus" style="width: 20px; height: 20px;"></b-icon>
+                        </b-input-group-text>
+                    </template>
+                    <b-form-input
+                        v-model="taskForm.item_title"
+                        type="text"
+                        class="todo_item_input"
+                        v-on:keyup.enter='addTask'
+                        placeholder="Add new task"
+                        >
+                    </b-form-input>                              
+                </b-input-group>
+
+                <div>
+                    <b-table responsive :items="items" :fields="headings">
+                    <template #cell(progress)="data">
+                        <b-dropdown id="dropdown-2" no-caret>
+                            <template  #button-content>
+                                <div v-if="data.item.progress==='In Progress'"  :class="orange" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
+                                    <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
+                                </div>
+                                <div v-if="data.item.progress==='Not Started'" :class="blue" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
+                                    <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
+                                </div>
+                                <div v-if="data.item.progress==='Completed'"  :class="green" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
+                                    <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
+                                </div>
+                            </template>        
+                            <b-dropdown-item class="dropdown_" @click="(progress = 'Not Started'),editProgress(data.item._id)" value="Not Started">Not Started</b-dropdown-item>
+                            <b-dropdown-item class="dropdown_" @click="(progress = 'In Progress'),editProgress(data.item._id)" value="In Progress">In Progress</b-dropdown-item>                    
+                            <b-dropdown-item class="dropdown_" @click="(progress = 'Completed'),editProgress(data.item._id)" value="Completed">Completed</b-dropdown-item>
+                        </b-dropdown>
+                    </template>
+
+                        <template #cell(priorityLevel)="data">
+                            <b-dropdown id="dropdown-1" no-caret>
+                                <template #button-content class="button_priority">
+                                    <p v-if="data.item.priorityLevel === 'Low Priority'" class="priority__level" id="priority" >
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                        {{data.item.priorityLevel}}
+                                    </p>        
+                                    <p v-if="data.item.priorityLevel === 'High Priority'" class="priority__level" >
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                        {{data.item.priorityLevel}}
+                                    </p>     
+                                    <p v-if="data.item.priorityLevel === 'Medium Priority'" class="priority__level" >
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                        {{data.item.priorityLevel}}
+                                    </p> 
+                                </template>
+                                <b-dropdown-item @click="(priority = 'High Priority'),editPriority(data.item._id)" value="High Priority">High Priority</b-dropdown-item>
+                                <b-dropdown-item @click="(priority = 'Medium Priority'),editPriority(data.item._id)" value="Medium Priority">Medium Priority</b-dropdown-item>
+                                <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item>
+                            </b-dropdown>
+                        </template>
+                        
+                        <template #cell(startDate)="data">
+                            <b-dropdown id="dropdown-3" no-caret>
+                                <template #button-content>
+                                    <div>                          
+                                        <p style="padding-top:6px;margin-bottom:0px;">{{data.item.startDate}}</p>
+                                        <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
+                                    </div>            
+                                </template>
+                                <b-dropdown-item>
+                                    <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                                </b-dropdown-item>
+                            </b-dropdown>
+
+                        </template>
+                    </b-table>
+                </div>
+
             </div>
 
-            <!-- <div class="col-5 mt-3 details" style="background: orange;">
-                <div style="background:blue; height:60vh;">
-                    <p>hello</p>
-                </div>       
-                <div class="mt-5" style="" id="p5Canvas"></div>
-            </div> -->
+            <!-- progress tracker -->
+            <div class="col-5 mt-3 details" style="background: white;border-radius: 20px;padding: 20px;">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p class="progress_tracker">Progress Tracker</p>
+                        <div style="margin-top:30px;">
+                            <p class="progress__tracker__titles" style="font-weight:600">
+                                <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
+                                Total : {{this.total}}
+                            </p>
+                            <p class="progress__tracker__titles">
+                                <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
+                                In Progress : {{this.total_in_progress.length}}
+                            </p>
+                            <p class="progress__tracker__titles">
+                                <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
+                                Completed: {{this.completedItems.length}}
+                            </p>                                  
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5" id="p5Canvas"></div>
+            </div>
 
         </div>
 
@@ -80,34 +151,73 @@ export default ({
             // canvas,
             userId: localStorage.getItem('userId'),
             items: [],
+            item: {},
+            total: '',
+            total_in_progress: '',
+            completedItems: '',
             // completed: '',
             theme: '',
-            headings: [
-                {
-                    key: 'isComplete',
-                    label: ''
-                },
-                {
-                    key: 'item_title',
-                    label: ''
-                },
-                {
-                    key: 'priorityLevel',
-                    label: ''
-                },
-                {
-                    key: 'progress',
-                    label: ''
-                }
-            ], 
             CompleteStatus:{
-                isComplete: false
-            }, 
-            ////form 
+                isComplete: false,
+                progress: ''
+            },
+            percNum: '',             
+            //// FORM //////
             form: {
                 list_title: '',
             },
-            percNum: '',
+            taskForm: {
+                item_title: '',
+                item_note: '',
+                startDate: '',
+                priorityLevel: '',
+                progress: ''
+            },
+            setPriority: {
+                priorityLevel: ''
+            },
+            setProgress: {
+                progress: '',
+                isComplete: false
+            },
+
+            /// color classes ////
+            orange: 'inProgress',
+            green: 'completed',
+            blue: 'toDo',
+            colorClass: '',
+
+
+            ///// TABLE //////
+            headings: [
+                // {
+                //     key: 'isComplete',
+                //     label: ''
+                // },
+                {
+                    key: 'item_title',
+                    label: 'Task',
+                    tdClass: 'title_table'
+                },
+                {
+                    key: 'startDate',
+                    label: 'Due Date',
+                    tdClass: 'date_table'
+                },
+                {
+                    key: 'priorityLevel',
+                    label: 'Priority',
+                    tdClass: 'priority_table'
+                },
+                {
+                    key: 'progress',
+                    label: 'Status',
+                    tdClass: 'progress_table'
+                }
+            ],  
+
+            priority: '',
+            progress: ''
         }
     },
     mounted() {
@@ -115,7 +225,7 @@ export default ({
         this.setPercNum();
     },
     computed: {
-        ...mapState(['listId', 'completed'])
+        ...mapState(['listId', 'completed','priorityValue'])
     },
     methods:{
         //set percentage number
@@ -126,6 +236,7 @@ export default ({
                 new P5(CircularProgress.main);
             }  
         },
+
         ///////////// GET LIST DATA 
         getListData(){
             /////getting from users collection
@@ -137,7 +248,47 @@ export default ({
                 this.theme = response.data[0].theme
                 this.items = response.data[0].items
 
+                /// looping through each items and setting date format as Month, D, Yr
+                Array.from(this.items).forEach((item)=> {
+                    if(item.startDate != null){
+                        const item_date = new Date(item.startDate).toDateString().slice(3)
+                        item.startDate = item_date                       
+                    }
+                    if(item.priorityLevel  === 'High Priority'){
+                        item.colorClass = 'pred'
+                    }
+                    if(item.priorityLevel === 'Medium Priority'){
+                        this.colorClass = 'porange'
+                    }
+                    if(item.priorityLevel === 'Low Priority'){
+                        this.colorClass = 'pyellow'
+                    }
+
+
+                    console.log('dATE', item.startDate)
+                })
+
+                this.total = this.items.length
+
+                this.total_in_progress = this.items.filter(item => item.progress === 'In Progress')
                 this.countItems()
+            })
+            .catch(error => console.log(error))
+        },
+        // Get Item
+        getItem(id) {
+            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}/item/${id}`)
+            .then(response => {
+                console.log('EDIT',response.data[0].todoLists.items)
+                this.item = response.data[0].todoLists.items
+
+                this.taskForm.item_title= this.item.item_title
+                this.taskForm.item_note = this.item.item_note
+                this.taskForm.startDate = this.item.startDate
+                this.taskForm.priorityLevel = this.item.priorityLevel
+                this.taskForm.progress = this.item.progress
+
+                console.log('form filled', this.taskForm)
             })
             .catch(error => console.log(error))
         },
@@ -150,11 +301,11 @@ export default ({
             const totalPercentage = 360
             const num = totalPercentage / result
 
-            const completedItems = this.items.filter(item => 
+            this.completedItems = this.items.filter(item => 
             item.isComplete === true)
 
-            console.log('completed', completedItems.length)
-            this.percNum = completedItems.length * num
+            console.log('completed', this.completedItems.length)
+            this.percNum = this.completedItems.length * num
             this.$store.commit('setCompleted', this.percNum)
             console.log('deg', this.percNum)
         }, 
@@ -162,10 +313,13 @@ export default ({
         setComplete(id) {
             let userId = localStorage.getItem('userId')
 
-            this.CompleteStatus.isComplete = true
+            this.getItem(id)
+
+            this.taskForm.isComplete = true
+            this.taskForm.progress = 'Completed'
             // console.log('true',this.itemForm.isComplete)
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.CompleteStatus)
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
                 this.getListData()
@@ -183,13 +337,14 @@ export default ({
             // }
             let userId = localStorage.getItem('userId')
 
-            if(this.CompleteStatus.isComplete){
-                this.CompleteStatus.isComplete = false
+            if(this.taskForm.isComplete){
+                this.taskForm.isComplete = false
+                this.taskForm.progress = 'Not Started'
             }
 
             // console.log('false',this.itemForm.isComplete)
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.CompleteStatus)
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
                 this.getListData()
@@ -199,6 +354,85 @@ export default ({
             })
             .catch(error => console.log(error))
         },
+
+        ///// Add new task
+        addTask() {
+            // console.log('add', this.listId)
+            let userId = localStorage.getItem('userId')
+
+            if(this.taskForm.item_title === ''){
+                this.taskForm.item_title = 'Untitled'
+            }
+
+            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.listId}`, this.taskForm)
+            .then(response => {
+                console.log('New task added', response.data)
+                this.taskForm.item_title = ''
+                // this.getData()
+                this.getListData()
+            })
+            .catch(error => console.log(error))
+        },
+
+        // Edit task
+        editTask(id) {
+            this.getItem(id)
+            let userId = localStorage.getItem('userId')
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm)
+            .then(response => {
+                console.log('item edited', response.data)
+
+            })
+            .catch(error => console.log(error))
+        },
+        getValue(evt){
+            if (evt && evt.target && evt.target.hasAttribute('value')) {
+                this.priority = evt.target.getAttribute('value')
+                // this.$store.commit('setPriorityValue', this.priority)
+                console.log('this is the value',this.priority)
+
+            }        
+        },
+        editPriority(id){
+            //  if (evt && evt.target && evt.target.hasAttribute('value')) {
+            //     // console.log('this is the value',evt.target.getAttribute('value'))
+            //     this.priorityValue = evt.target.getAttribute('value')
+            //     console.log('this is the value',this.priorityValue)
+            // }  
+            // console.log('this is the value',this.priority)
+            let userId = localStorage.getItem('userId')
+
+            this.setPriority.priorityLevel = this.priority
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.setPriority)
+            .then(response => {
+                this.getListData()
+                console.log('item edited', response.data)
+
+            })
+            .catch(error => console.log(error))
+            // console.log('p', this.taskForm.priorityLevel)
+
+            // console.log('id',id)
+        },
+        editProgress(id){
+            let userId = localStorage.getItem('userId')
+
+            this.setProgress.progress = this.progress
+            if(this.setProgress.progress === 'Completed'){
+                this.setProgress.isComplete = true
+            } else {
+                this.setProgress.isComplete = false
+            }
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.setProgress)
+            .then(response => {
+                this.getListData()
+                console.log('item edited', response.data)
+
+            })
+            .catch(error => console.log(error))
+        }
+
     },
     watch: {
         percNum: {
@@ -250,20 +484,184 @@ export default ({
     font-family: 'Poppins',sans-serif;
     font-size: 24px;
     font-weight: 500;
+    padding-left: 21px;
 }
 .tasks_list_block{
     margin-left: 16px;
-    padding-top: 24px;
+    padding: 24px 24px 18px 16px;
     margin-top: 24px;
     margin-bottom: 24px;
 
-    border-radius: 8px;
+    border-radius: 20px;
     /* box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.25); */
 
     background-color: white;
 }
 
 .details{
-    margin-left:24px;
+    margin-left:14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.todo_item_input{
+    height: 40px !important;
+    border-bottom: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 4px !important;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: black !important;
+    background:#E7E7E7 !important;
+}
+
+.todo_item_input:focus{
+    background:#f1f1f1 !important;
+}
+.input__group{
+    padding: 6px 20px 20px 20px;
+}
+
+.progress_tracker{
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.progress__tracker__titles{
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+
+    margin-top:30px;
+}
+
+.priority__level{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    margin-bottom: 0px !important;
+    text-align:start;
+    padding-top:6px;
+}
+
+.to_do__item{
+    font-family: 'Poppins',sans-serif;
+    font-size: 14px;
+}
+
+
+/* Color classes for progress level */
+.inProgress{
+    border-color: #FF9900;
+    color: #FF9900;
+}
+
+.completed{
+    border-color: #339637;
+    color: #339637;
+}
+
+.toDo{
+    border-color: #909090;
+    color: #909090;
+}
+
+.noProgress{
+    border-color: transparent;
+    color: transparent;
+}
+
+.pred{
+    color: #E30000;
+}
+
+.porange{
+    color: #FF8B4A
+}
+
+.pyellow{
+    color: #F3CC00
+}
+/*  */
+
+/* TABLE STYLINGS */
+.title_table{
+    max-width: 300px;
+}
+
+.progress_table{
+    width: 160px;
+    font-family: 'Poppins',sans-serif;
+    font-size: 14px;
+}
+
+.progress_table:hover{
+    background-color: #f5f5f5;
+}
+
+.date_table{
+    width:200px;
+    font-family: 'Poppins',sans-serif;
+    font-size: 14px;
+}
+
+.priority_table{
+    width:200px;
+    max-width: 300px;
+}
+
+.priority_table:hover{
+    background-color: #f5f5f5;
+}
+
+.tr{
+    padding:20px;
+}
+
+#dropdown-1__BV_toggle_{
+    background-color: transparent !important;
+    color:black;
+    border:none;
+    padding: 0px;
+}
+
+#dropdown-1__BV_toggle_:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+}
+
+#dropdown-2__BV_toggle_{
+    background-color: transparent !important;
+    color:black;
+    border:none;
+    padding: 0px;
+
+}
+
+#dropdown-2__BV_toggle_:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+}
+
+#dropdown-3__BV_toggle_{
+    background-color: transparent !important;
+    color:black;
+    border:none;
+    padding: 0px;
+
+}
+
+#dropdown-3__BV_toggle_:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+}
+
+.dropdown_{
+    font-size:14px;
+    overflow-y: hidden;
 }
 </style>

@@ -457,7 +457,7 @@ export default({
     background:#D2EAD3 ;
 }
 
-.todo_item_input{
+/* .todo_item_input{
     height: 40px !important;
 
     margin-top: 16px ;
@@ -472,12 +472,11 @@ export default({
     font-weight: 500 !important;
     color: black !important;
     background:#D2EAD3 !important;
-
 }
 
 .todo_item_input:focus{
     background:#daebdb !important;
-}
+} */
 
 .items__block{
     background:#F2F9F3 !important;
