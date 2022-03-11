@@ -44,10 +44,10 @@
                 </b-input-group>
 
                 <div>
-                    <b-table responsive :items="items" :fields="headings">
+                    <b-table responsive :items="items" :fields="headings" style="overflow: inherit">
                     <template #cell(progress)="data">
-                        <b-dropdown id="dropdown-2" no-caret>
-                            <template  #button-content>
+                        <b-dropdown id="dropdown-2" no-caret block>
+                            <template #button-content>
                                 <div v-if="data.item.progress==='In Progress'"  :class="orange" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
                                     <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
                                 </div>
@@ -64,42 +64,46 @@
                         </b-dropdown>
                     </template>
 
-                        <template #cell(priorityLevel)="data">
-                            <b-dropdown id="dropdown-1" no-caret>
-                                <template #button-content class="button_priority">
-                                    <p v-if="data.item.priorityLevel === 'Low Priority'" class="priority__level" id="priority" >
-                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-right:10px;margin-bottom:4px;"></b-icon>
-                                        {{data.item.priorityLevel}}
-                                    </p>        
-                                    <p v-if="data.item.priorityLevel === 'High Priority'" class="priority__level" >
-                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-right:10px;margin-bottom:4px;"></b-icon>
-                                        {{data.item.priorityLevel}}
-                                    </p>     
-                                    <p v-if="data.item.priorityLevel === 'Medium Priority'" class="priority__level" >
-                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-right:10px;margin-bottom:4px;"></b-icon>
-                                        {{data.item.priorityLevel}}
-                                    </p> 
-                                </template>
-                                <b-dropdown-item @click="(priority = 'High Priority'),editPriority(data.item._id)" value="High Priority">High Priority</b-dropdown-item>
-                                <b-dropdown-item @click="(priority = 'Medium Priority'),editPriority(data.item._id)" value="Medium Priority">Medium Priority</b-dropdown-item>
-                                <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item>
-                            </b-dropdown>
-                        </template>
-                        
-                        <template #cell(startDate)="data">
-                            <b-dropdown id="dropdown-3" no-caret>
-                                <template #button-content>
-                                    <div>                          
-                                        <p style="padding-top:6px;margin-bottom:0px;">{{data.item.startDate}}</p>
-                                        <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
-                                    </div>            
-                                </template>
-                                <b-dropdown-item>
-                                    <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                                </b-dropdown-item>
-                            </b-dropdown>
+                    <template #cell(priorityLevel)="data">
+                        <b-dropdown id="dropdown-1" no-caret>
+                            <template #button-content class="button_priority">
+                                <p v-if="data.item.priorityLevel === 'Low Priority'" class="priority__level" id="priority" >
+                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                    {{data.item.priorityLevel}}
+                                </p>        
+                                <p v-if="data.item.priorityLevel === 'High Priority'" class="priority__level" >
+                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                    {{data.item.priorityLevel}}
+                                </p>     
+                                <p v-if="data.item.priorityLevel === 'Medium Priority'" class="priority__level" >
+                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                    {{data.item.priorityLevel}}
+                                </p> 
+                            </template>
+                            <b-dropdown-item @click="(priority = 'High Priority'),editPriority(data.item._id)" value="High Priority">High Priority</b-dropdown-item>
+                            <b-dropdown-item @click="(priority = 'Medium Priority'),editPriority(data.item._id)" value="Medium Priority">Medium Priority</b-dropdown-item>
+                            <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item>
+                        </b-dropdown>
+                    </template>
+                    
+                    <template #cell(startDate)="data">
+                        <b-dropdown id="dropdown-3" no-caret ref="date_dropdown">
+                            <template #button-content>
+                                <div>                          
+                                    <p style="padding-top:6px;margin-bottom:0px;">{{data.item.startDate}}</p>
+                                    <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
+                                </div>            
+                            </template>
+                            <div>
+                                <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
+                                <div class="d-flex justify-content-end"> 
+                                    <b-button style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Save</b-button>    
+                                </div>
+                                
+                            </div>
+                        </b-dropdown>
 
-                        </template>
+                    </template>
                     </b-table>
                 </div>
 
@@ -149,6 +153,7 @@ export default ({
     data() {
         return{
             // canvas,
+             hideHeader: false,
             userId: localStorage.getItem('userId'),
             items: [],
             item: {},
@@ -180,6 +185,10 @@ export default ({
                 progress: '',
                 isComplete: false
             },
+            addDueDate:{
+                startDate: ''
+            },
+
 
             /// color classes ////
             orange: 'inProgress',
@@ -431,6 +440,19 @@ export default ({
 
             })
             .catch(error => console.log(error))
+        },
+        dueDate(id) {
+            console.log('due date',this.addDueDate.startDate)
+            let userId = localStorage.getItem('userId')
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
+            .then(response => {
+                this.getListData()
+                this.$refs.date_dropdown.hide()
+                console.log('item edited', response.data)
+
+            })
+            .catch(error => console.log(error))
         }
 
     },
@@ -597,6 +619,8 @@ export default ({
     width: 160px;
     font-family: 'Poppins',sans-serif;
     font-size: 14px;
+
+    /* width:10%; */
 }
 
 .progress_table:hover{
@@ -607,6 +631,10 @@ export default ({
     width:200px;
     font-family: 'Poppins',sans-serif;
     font-size: 14px;
+}
+
+.date_table:hover{
+    background-color: #f5f5f5;
 }
 
 .priority_table{
@@ -662,6 +690,10 @@ export default ({
 
 .dropdown_{
     font-size:14px;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
+    display: block;
+    /* position:relative;
+    z-index: 9999; */
 }
+
 </style>
