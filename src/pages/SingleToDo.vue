@@ -18,7 +18,7 @@
                 </router-link>
             </div>
         </div>
-        <div class="col-11" style="color:black !important;margin-left: 22px;" :class="theme">
+        <div class="col-7" style="color:black !important;margin-left: 5px;" :class="theme">
             <!-- tasks lists  -->
             <div class="tasks_list_block mt-3">
                 <!-- list title --> 
@@ -115,30 +115,31 @@
 
             </div>
 
-            <!-- progress tracker -->
-            <div class="col-5 mt-3 details" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <p class="progress_tracker">Progress Tracker</p>
-                        <div style="margin-top:30px;">
-                            <p class="progress__tracker__titles" style="font-weight:600">
-                                <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
-                                Total : {{this.total}}
-                            </p>
-                            <p class="progress__tracker__titles">
-                                <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
-                                In Progress : {{this.total_in_progress.length}}
-                            </p>
-                            <p class="progress__tracker__titles">
-                                <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
-                                Completed: {{this.completedItems.length}}
-                            </p>                                  
-                        </div>
+
+
+        </div>
+                <!-- progress tracker -->
+        <div class="col-4 details mt-3" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;height: 100%;padding-left:30px;color:black">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p class="progress_tracker">Progress Tracker</p>
+                    <div style="margin-top:30px;">
+                        <p class="progress__tracker__titles" style="font-weight:600">
+                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
+                            Total : {{this.total}}
+                        </p>
+                        <p class="progress__tracker__titles">
+                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
+                            In Progress : {{this.total_in_progress.length}}
+                        </p>
+                        <p class="progress__tracker__titles">
+                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
+                            Completed: {{this.completedItems.length}}
+                        </p>                                  
                     </div>
                 </div>
-                <div class="mt-5" id="p5Canvas"></div>
             </div>
-
+            <div class="mt-5" style="margin-left:10px;" id="p5Canvas"></div>
         </div>
         <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData"/>
     </div>
@@ -594,7 +595,7 @@ top: 0px;
 .details{
     margin-left:14px;
     display: flex;
-    justify-content: space-between;
+    justify-content: start;
 }
 
 .todo_item_input{

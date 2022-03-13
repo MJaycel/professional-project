@@ -28,6 +28,7 @@ export function main(_p5){
         var canvas = p5.createCanvas(400,300);
         canvas.parent("p5Canvas")
         p5.background(255);
+       
         // angles = [50,80,percentage]
     }
 
@@ -78,7 +79,7 @@ export function main(_p5){
     ///////////////////////////////////////// 
     p5.drawCircle = (data) => {
         p5.beginShape();
-        p5.strokeWeight(15);
+        p5.strokeWeight(25);
         // p5.stroke(color);
         p5.noFill();
         //arc(x, y, width, height, start, stop);
@@ -97,7 +98,7 @@ export function main(_p5){
 
     p5.circle = (color, data) => {
         p5.beginShape();
-        p5.strokeWeight(15);
+        p5.strokeWeight(25);
         p5.stroke(color);
         p5.noFill();
         //arc(x, y, width, height, start, stop);
