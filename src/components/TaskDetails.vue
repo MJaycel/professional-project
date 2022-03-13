@@ -3,7 +3,7 @@
         <b-modal id="task-details-modal" hide-footer centered hide-header-close hide-header @hide="hideModal">
             <!-- <p class="my-4 modal_item_title">{{this.taskForm.item_title}}</p> -->
             <div>
-                <div class="col-5 float-right">
+                <div class="col-5 float-right" style="margin-bottom:10px;">
                     <form v-if="progress === 'In Progress'" :class="orange" class="mt-2" style="border-radius:20px;">
                         <select  class="progress_select orange_border" v-model="progress">
                             <option v-for="(option,idx) in options" :key="idx" class="p_options">
@@ -29,8 +29,9 @@
                     </form>
 
                 </div>
-                <div class="col d-flex align-items-center mt-2" style="padding:0px;">
+                <div class="col d-flex justify-content-between" style="padding:0px;margin:0px !important;">
                     <b-form-input v-model="taskForm.item_title" placeholder="Add a title" class="modal_item_title" ></b-form-input>
+                    <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="deleteTask"></b-icon>
                 </div>
                 
             </div>
@@ -248,6 +249,18 @@ export default ({
 
             })
             .catch(error => console.log(error))       
+        },
+        deleteTask() {
+            let userId = localStorage.getItem('userId')
+
+            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.list_id}/item/${this.id}`)
+            .then(response => {
+                console.log(response)
+                this.$bvModal.hide('task-details-modal')
+                this.$store.commit('setShowTask', false)
+                // this.$emit('getListData')
+                this.method()            
+            })
         }
     },
 })
