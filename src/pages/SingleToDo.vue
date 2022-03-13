@@ -45,6 +45,13 @@
 
                 <div>
                     <b-table responsive :items="items" :fields="headings" style="overflow: inherit">
+                    <template #cell(item_title)="data">
+                        <div @click="viewDetails(data.item._id)" id="task">
+                            <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.item_title}}</p>
+                            <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.item_title}}</p>                            
+                        </div>
+
+                    </template>
                     <template #cell(progress)="data">
                         <b-dropdown id="dropdown-2" no-caret block>
                             <template #button-content>
@@ -90,7 +97,7 @@
                         <b-dropdown id="dropdown-3" no-caret ref="date_dropdown">
                             <template #button-content>
                                 <div>                          
-                                    <p style="padding-top:6px;margin-bottom:0px;">{{data.item.startDate}}</p>
+                                    <p style="padding-top:8px;margin-bottom:0px;font-size:14px;">{{data.item.startDate}}</p>
                                     <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
                                 </div>            
                             </template>
@@ -99,7 +106,6 @@
                                 <div class="d-flex justify-content-end"> 
                                     <b-button style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Save</b-button>    
                                 </div>
-                                
                             </div>
                         </b-dropdown>
 
@@ -110,7 +116,7 @@
             </div>
 
             <!-- progress tracker -->
-            <div class="col-5 mt-3 details" style="background: white;border-radius: 20px;padding: 20px;">
+            <div class="col-5 mt-3 details" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;">
                 <div class="d-flex justify-content-between">
                     <div>
                         <p class="progress_tracker">Progress Tracker</p>
@@ -134,7 +140,7 @@
             </div>
 
         </div>
-
+        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData"/>
     </div>
 </template>
 
@@ -142,6 +148,7 @@
 
 import {mapState} from 'vuex'
 import axios from 'axios'
+import TaskDetails from '@/components/TaskDetails.vue'
 var CircularProgress = require('@/components/CircularProgress.js')
 const P5 = require('p5');
 
@@ -149,11 +156,13 @@ export default ({
     name: 'SingleToDo',
     components: { 
         // canvasHtml, 
+        TaskDetails
         },
     data() {
         return{
             // canvas,
-             hideHeader: false,
+            hideHeader: false,
+            showTask: false,
             userId: localStorage.getItem('userId'),
             items: [],
             item: {},
@@ -232,9 +241,13 @@ export default ({
     mounted() {
         this.getListData()
         this.setPercNum();
+
+        /// When the page is reloaded while the modal is open the modal stays open (showTask is still true)
+        /// To keep modal close after reloading ive set showTask as false
+        this.$store.commit('setShowTask',false)
     },
     computed: {
-        ...mapState(['listId', 'completed','priorityValue'])
+        ...mapState(['listId', 'completed','priorityValue','showTask'])
     },
     methods:{
         //set percentage number
@@ -373,6 +386,9 @@ export default ({
                 this.taskForm.item_title = 'Untitled'
             }
 
+            this.taskForm.priorityLevel = 'Medium Priority'
+            this.taskForm.progress = 'Not Started'
+
             axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.listId}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
@@ -453,7 +469,16 @@ export default ({
 
             })
             .catch(error => console.log(error))
-        }
+        },
+        viewDetails(id){
+            console.log('details id', id)
+            console.log('show Task', this.$store.state.showTask)
+
+            this.id = id
+            this.list_id = this.listId
+            // this.showTask = true
+            this.$store.commit('setShowTask', true)
+        },
 
     },
     watch: {
@@ -473,8 +498,17 @@ export default ({
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
+
+.container{
+    flex-grow: 1;
+}
+
 .side__bar{
-    height: 100vh !important;
+    /* height: 100vh !important; */
+height: 100vh ;
+position: sticky;
+top: 0px;
 }
 /* input styles */
 .todo_title_input{
@@ -573,23 +607,47 @@ export default ({
 .to_do__item{
     font-family: 'Poppins',sans-serif;
     font-size: 14px;
+    font-weight:400;
 }
 
 
 /* Color classes for progress level */
 .inProgress{
-    border-color: #FF9900;
-    color: #FF9900;
+    border-color: #FF9900 !important;
+    color: #FF9900 !important;
 }
+
+.inProgress:hover{
+    border-color: #FF9900;
+    color: white !important;
+    background: #FF9900;
+}
+/* .inProgress:focus{
+    border-color: #FF9900;
+    color: white;
+    background: #FF9900;
+} */
 
 .completed{
     border-color: #339637;
     color: #339637;
 }
 
+.completed:hover{
+    border-color: #339637;
+    color: white;
+    background: #339637;
+}
+
 .toDo{
     border-color: #909090;
     color: #909090;
+}
+
+.toDo:hover{
+    border-color: #909090;
+    color: white;
+    background: #909090;
 }
 
 .noProgress{
@@ -613,6 +671,7 @@ export default ({
 /* TABLE STYLINGS */
 .title_table{
     max-width: 300px;
+    /* padding-left:0px !important; */
 }
 
 .progress_table{
@@ -623,9 +682,9 @@ export default ({
     /* width:10%; */
 }
 
-.progress_table:hover{
+/* .progress_table:hover{
     background-color: #f5f5f5;
-}
+} */
 
 .date_table{
     width:200px;
@@ -633,18 +692,18 @@ export default ({
     font-size: 14px;
 }
 
-.date_table:hover{
+/* .date_table:hover{
     background-color: #f5f5f5;
-}
+} */
 
 .priority_table{
     width:200px;
     max-width: 300px;
 }
-
+/* 
 .priority_table:hover{
     background-color: #f5f5f5;
-}
+} */
 
 .tr{
     padding:20px;
@@ -655,6 +714,8 @@ export default ({
     color:black;
     border:none;
     padding: 0px;
+    display: flex;
+    justify-content: start;
 }
 
 #dropdown-1__BV_toggle_:focus{
@@ -667,7 +728,8 @@ export default ({
     color:black;
     border:none;
     padding: 0px;
-
+    display: flex;
+    justify-content: start;
 }
 
 #dropdown-2__BV_toggle_:focus{
@@ -680,7 +742,8 @@ export default ({
     color:black;
     border:none;
     padding: 0px;
-
+    display: flex;
+    justify-content: start;
 }
 
 #dropdown-3__BV_toggle_:focus{

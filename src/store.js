@@ -3,11 +3,16 @@ import Vue from "vue"
 import Vuex from "vuex"
 import Router from "vue-router"
 import router from "./router"
+import createPersistedState from 'vuex-persistedstate'
+
 // import router from "./router"
 
 Vue.use(Vuex, Router)
 
 export default new Vuex.Store({
+    plugins: [createPersistedState({
+        storage: window.sessionStorage,
+    })],
     state: {
         /////user
         isLoggedIn: false,
@@ -24,6 +29,7 @@ export default new Vuex.Store({
 
         showAddModal: false,
         showEditModal: false,
+        showTask: false,
         date: new Date(),
 
         listId: '',
@@ -88,6 +94,10 @@ export default new Vuex.Store({
 
         setPriorityValue(state, priority){
             state.priority = priority
+        },
+
+        setShowTask(state, showTask){
+            state.showTask = showTask
         },
 
         ////////// to do lists 

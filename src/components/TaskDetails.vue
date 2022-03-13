@@ -1,0 +1,533 @@
+<template>
+    <div>
+        <b-modal id="task-details-modal" hide-footer centered hide-header-close hide-header @hide="hideModal">
+            <!-- <p class="my-4 modal_item_title">{{this.taskForm.item_title}}</p> -->
+            <div>
+                <div class="col-5 float-right">
+                    <form v-if="progress === 'In Progress'" :class="orange" class="mt-2" style="border-radius:20px;">
+                        <select  class="progress_select orange_border" v-model="progress">
+                            <option v-for="(option,idx) in options" :key="idx" class="p_options">
+                                {{option.text}}
+                            </option>                        
+                        </select>
+                    </form>
+
+                    <form v-if="progress === 'Completed'" :class="green" class="mt-2" style="border-radius:20px;">
+                        <select  class="progress_select green_border" v-model="progress">
+                            <option v-for="(option,idx) in options" :key="idx" class="p_options" >
+                                {{option.text}}
+                            </option>                        
+                        </select>
+                    </form>
+
+                    <form v-if="progress === 'Not Started'" :class="blue" class="mt-2" style="border-radius:20px;">
+                        <select  class="progress_select blue_border" v-model="progress">
+                            <option v-for="(option,idx) in options" :key="idx" class="p_options" >
+                                {{option.text}}
+                            </option>                        
+                        </select>
+                    </form>
+
+                </div>
+                <div class="col d-flex align-items-center mt-2" style="padding:0px;">
+                    <b-form-input v-model="taskForm.item_title" placeholder="Add a title" class="modal_item_title" ></b-form-input>
+                </div>
+                
+            </div>
+
+            <div class="row mt-3 d-flex justify-content-start">
+                <div class="col-4">
+                    <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Priority</p>
+                </div>
+                <div class="col-8">
+
+                    <div class="col d-flex justify-content-start priority_div" style="padding:0px;">
+                        <div>
+                            <b-icon v-if="priority === 'Low Priority'" icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+                            <b-icon v-if="priority === 'High Priority'" icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+                            <b-icon v-if="priority === 'Medium Priority'" icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+
+                        </div>
+                        <div>
+                            <form v-if="priority === 'Low Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                <select class="priority_select" v-model="priority">
+                                    <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
+                                            {{option.text}}
+                                    </option>                        
+                                </select>
+                            </form>  
+
+                            <form v-if="priority === 'Medium Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                <select  class="priority_select" v-model="priority">
+                                    <option v-for="(option,idx) in pOptions" :key="idx" class="p_options" >
+                                        {{option.text}}
+                                    </option>                        
+                                </select>
+                            </form>          
+
+                            <form v-if="priority === 'High Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                <select  class="priority_select" v-model="priority">
+                                    <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
+                                        {{option.text}}
+                                    </option>                        
+                                </select>
+                            </form>                               
+                        </div>
+                    </div>
+        
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-4">
+                    <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Due Date</p>
+                </div>
+                <div class="col-8 mt-1 ">
+                    <b-input-group class="date_picker_div">
+                      <b-form-datepicker
+                        class="date_picker"
+                        id="datepicker-buttons"
+                        locale="en"
+                        v-model="taskForm.startDate"
+                        :date-format-options="{ weekday: 'long', month: 'short', day: 'numeric', year: undefined }"
+                        >
+                        </b-form-datepicker>                        
+                        <template v-slot:append>
+                            <b-button style="background:transparent;border:none;" aria-label="Clear date" @click="taskForm.startDate = null">
+                            <b-icon icon="x" style="color:black"></b-icon>
+                            </b-button>
+                        </template>
+                    </b-input-group>
+
+
+                    <!-- <div style="padding:20px 10px 10px 10px;">
+                        <b-icon icon="x" style="width: 20px; height: 20px;" @click="onChange()"></b-icon>
+                    </div> -->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4 mt-2">
+                    <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
+                </div>
+                <div class="col-7 mt-2" style="padding: 0px;">
+                    <b-form-textarea v-if="taskForm.item_note === ''" class="desc__task__input_focus no__outline" v-model="taskForm.item_note" placeholder="Add a description"></b-form-textarea>
+                    <b-form-textarea v-else class="desc__task__input no__outline" v-model="taskForm.item_note"></b-form-textarea>
+                </div>                
+            </div>
+
+
+           <div class="d-flex justify-content-end mt-4">
+                <b-button class="cancel__btn" style="margin-right: 10px;" @click="hideModal"> Cancel</b-button>
+
+                <b-button class="addItem__btn" @click="save"> Save</b-button>                
+            </div>        
+        </b-modal>
+    </div>
+</template>
+
+<script>
+
+import {mapState} from 'vuex'
+import axios from 'axios'
+export default ({
+    name:'TaskDetails',
+    // props: [
+    //     'id',
+    //     'list_id'
+    // ],
+    props: {
+        id: String,
+        list_id: String,
+        method: { type: Function },
+    },
+    data() {
+        return{
+            taskForm: {
+                item_title: '',
+                item_note: '',
+                startDate: '',
+                priorityLevel: '',
+                progress: '',
+                isComplete: ''
+            },
+            userId: localStorage.getItem('userId'),
+            /// color classes ////
+            orange: 'inProgress',
+            green: 'completed',
+            blue: 'toDo',
+            progress: '',
+            options: [
+                {idx:1,value: 'Not Started', text: 'Not Started'},
+                {idx:2,value: 'In Progress', text: 'In Progress'},
+                {idx:3,value: 'Completed', text: 'Completed'}
+            ],
+            priority: '',
+            pOptions: [
+                {idx:1,value: 'High Priority', text: 'High Priority'},
+                {idx:2,value: 'Medium Priority', text: 'Medium Priority'},
+                {idx:3,value: 'Low Priority', text: 'Low Priority'}           
+            ],
+            dueDate: '',
+            noDate: false
+        }
+    },
+    computed: {
+        ...mapState(['showTask'])
+    },
+    mounted(){
+        this.getItem()
+        this.$bvModal.show('task-details-modal')
+
+        console.log('id', this.id)
+        console.log('WTF', this.$store.state.showTask)
+    },
+    methods:{
+        hideModal(){
+            this.$bvModal.hide('task-details-modal')
+            this.$store.commit('setShowTask', false)
+        },
+        // Get Item
+        getItem() {
+            // let userId = localStorage.getItem('userId')
+
+            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.list_id}/item/${this.id}`)
+            .then(response => {
+                console.log('EDIT',response.data[0].todoLists.items)
+                this.item = response.data[0].todoLists.items
+
+                this.taskForm.item_title= this.item.item_title
+                this.taskForm.item_note = this.item.item_note
+                this.taskForm.startDate = this.item.startDate
+                this.taskForm.priorityLevel = this.item.priorityLevel
+                this.taskForm.progress = this.item.progress
+
+                this.progress = this.taskForm.progress
+
+                this.priority = this.taskForm.priorityLevel
+
+                // if(this.taskForm.startDate != null){
+                //     const date = new Date(this.taskForm.startDate).toDateString().slice(3)
+                //     this.taskForm.startDate = date                   
+                // } else {
+                //     this.taskForm.startDate = this.item.startDate
+                // }
+
+
+                console.log('form filled', this.taskForm.item_note)
+
+                
+            })
+            .catch(error => console.log(error))
+        },
+        onChange() {
+            this.noDate = true
+            this.taskForm.startDate = null
+        },
+        save() {
+            let userId = localStorage.getItem('userId')
+            this.taskForm.progress = this.progress
+            this.taskForm.priorityLevel = this.priority
+
+            this.taskForm.progress = this.progress
+            if(this.taskForm.progress === 'Completed'){
+                this.taskForm.isComplete = true
+            } else {
+                this.taskForm.isComplete = false
+            }
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}`, this.taskForm)
+            .then(response => {
+                // this.getListData()
+                // this.$refs.date_dropdown.hide()
+                console.log('item edited', response.data)
+                this.$bvModal.hide('task-details-modal')
+                this.$store.commit('setShowTask', false)
+                // this.$emit('getListData')
+                this.method()
+
+            })
+            .catch(error => console.log(error))       
+        }
+    },
+})
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
+
+.modal_item_title{
+    font-family: 'Poppins',sans-serif;
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    padding-left:12px !important;
+    color:black !important;
+    /* margin-top: 16px ; */
+    border-bottom: none !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0px !important;
+
+    background-color: transparent !important;
+}
+
+.modal_item_title:hover{
+    background-color: #e6e6e6 !important;
+    border-radius: 8px !important;
+    color:rgb(88, 88, 88) !important;
+
+    cursor: pointer;
+}
+
+.modal_item_title:focus{
+    background-color: #e6e6e6 !important;
+    border-radius: 8px !important;
+    color:rgb(88, 88, 88) !important;
+
+    cursor: pointer;
+}
+
+.modal_forms{
+    font-family: 'Poppins',sans-serif;
+    font-size: 16px !important;
+    /* padding:16px 10px 10px 10px; */
+    margin:0px !important;
+    color: black;
+}
+
+#dropdown-5__BV_toggle_{
+    background-color: transparent !important;
+    color:black;
+    border:none;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+}
+
+#dropdown-5__BV_toggle_:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+}
+
+.b_dropdown{
+    background: transparent !important;
+    padding:10px 10px 10px 16px;
+    margin-top:10px;
+    width:100%;    
+    border-radius: 4px;
+    /* font-family: 'Poppins',sans-serif; */
+    /* font-size: 16px !important; */
+    /* font-weight: 400 !important;   */
+
+}
+
+.b_dropdown:hover{
+    background: #e7e7e7 !important;
+}
+
+.p_level{
+    font-family: 'Poppins',sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0px !important;
+    /* padding-top: 10px; */
+}
+
+.desc__task__input{
+    border-radius: 0px !important;
+    border-style: none !important;
+
+    background-color: transparent !important;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px !important;
+    color: #000000 !important;
+
+    padding:10px 0px 10px 0px !important;
+    margin: 0px 20px 0px 20px;
+    width:100%;
+}
+.desc__task__input:hover{
+    background-color: #f7f7f7 !important;
+    padding:10px 0px 10px 5px !important;
+}
+
+.desc__task__input:focus{
+    background-color: #f5f5f5 !important;
+    font-size: 15px !important;
+    color: #535353;
+    padding:10px 0px 10px 5px !important;
+    margin: 0px 20px 0px 20px;
+}
+
+.desc__task__input_focus{
+    border-radius: 4px !important;
+    border-style: none !important;
+
+    background-color: #f7f7f7 !important;
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px !important;
+    color: #535353;
+
+    padding:10px 0px 10px 5px !important;
+    margin: 0px 20px 0px 20px;
+    width:100%;
+}
+
+
+.desc__task__input_focus:hover{
+    background-color: #f7f7f7 !important;
+    padding:10px 0px 10px 5px !important;
+
+}
+
+.desc__task__input_focus:focus{
+    font-size: 15px !important;
+    color: #535353;
+    padding:10px 0px 10px 5px !important;
+}
+
+.no_select_caret{
+  background-image: none !important;
+}
+
+.no_select_caret:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+}
+
+.p_options{
+    color:black !important;
+    font-family: 'Poppins',sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    padding: 20px !important;
+}
+
+.progress_select{
+    outline:0px !important; 
+    box-shadow: none !important;
+    background: transparent !important;
+    padding:4px;
+
+    background-image: none !important;
+}
+
+.priority_select{
+    outline:0px !important; 
+    box-shadow: none !important;
+    background: transparent;
+    width:190%;
+    padding-bottom:10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0);
+
+    background-image: none !important;
+
+    font-family: 'Poppins',sans-serif;
+    font-size: 15px !important;
+}
+
+/* .priority_select:hover{
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0);
+
+    background: #e7e7e7 !important;
+} */
+
+.progress_select:hover{
+    color: white !important;
+}
+
+.priority_div{
+    outline:0px !important; 
+    box-shadow: none !important;
+    background: transparent;
+    width:100%;
+    padding:8px;
+    border-radius: 4px;
+    /* border: 1px solid rgba(255, 255, 255, 0); */
+
+    background-image: none !important;
+}
+
+.priority_div:hover{
+    border-radius: 4px;
+    /* border: 1px solid white; */
+
+    background: #e7e7e7 !important;
+}
+
+.orange_border{
+    border: 1px solid ;
+    border-color: #FF9900 !important;
+    border-radius:20px; 
+    text-align:center;
+    width:100%;
+    font-family: 'Poppins',sans-serif;
+    font-size: 15px;
+    color: #FF9900 !important;
+}
+
+.blue_border{
+    border: 1px solid ;
+    border-color: #909090 !important;
+    border-radius:20px; 
+    /* padding:0px 0px 0px 0px; */
+    text-align:center;
+    width:100%;
+    font-family: 'Poppins',sans-serif;
+    font-size: 15px;
+    color: #909090 !important;
+}
+
+.green_border{
+    border: 1px solid ;
+    border-color: #339637 !important;
+    border-radius:20px; 
+    text-align:center;
+    width:100%;
+    font-family: 'Poppins',sans-serif;
+    font-size: 15px;
+    color: #339637 !important;
+}
+
+select.custom-select.no-select-caret {
+  background-image: none !important;
+}
+
+.date_{
+    padding:0px;
+}
+
+.date_:hover{
+    background: #e7e7e7 !important;
+}
+
+.date_picker{
+    font-size: 15px !important;
+    border: none !important; 
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+
+    font-family: 'Poppins',sans-serif;
+    /* margin-top: 10px; */
+}
+
+.date_picker:hover{
+    background: #e7e7e7 !important;
+
+}
+
+.date_picker_div:hover{
+    background: #e7e7e7 !important;
+    border-radius: 4px !important;
+}
+
+#datepicker-buttons{
+    padding-left: 5px !important;
+}
+
+</style>
