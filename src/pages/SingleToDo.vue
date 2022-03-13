@@ -149,9 +149,9 @@
 import {mapState} from 'vuex'
 import axios from 'axios'
 import TaskDetails from '@/components/TaskDetails.vue'
-var CircularProgress = require('@/components/CircularProgress.js')
+// var CircularProgress = require('@/components/CircularProgress.js')
+var donutChart = require('@/components/donutChart.js')
 const P5 = require('p5');
-
 export default ({
     name: 'SingleToDo',
     components: { 
@@ -175,7 +175,9 @@ export default ({
                 isComplete: false,
                 progress: ''
             },
-            percNum: '',             
+            percNum: '', 
+            progressNum: '',
+            noStartedNum: '',            
             //// FORM //////
             form: {
                 list_title: '',
@@ -251,11 +253,18 @@ export default ({
     },
     methods:{
         //set percentage number
+        // setPercNum(){
+        //     var res = CircularProgress.setPercentage(this.percNum);
+        //     if(res){
+        //         //create p5 instance -- components/CircularProgress.js
+        //         new P5(CircularProgress.main);
+        //     }  
+        // },
         setPercNum(){
-            var res = CircularProgress.setPercentage(this.percNum);
+            var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
             if(res){
-                //create p5 instance -- components/CircularProgress.js
-                new P5(CircularProgress.main);
+                // create p5 instance -- components/CircularProgress.js
+                new P5(donutChart.main);
             }  
         },
 
@@ -326,10 +335,19 @@ export default ({
             this.completedItems = this.items.filter(item => 
             item.isComplete === true)
 
+            this.notStarted = this.items.filter(item => {
+                item.progress === 'Not Started'            
+            })
+
             console.log('completed', this.completedItems.length)
             this.percNum = this.completedItems.length * num
+
+            this.progressNum = this.total_in_progress.length * num
+
+            this.noStartedNum = this.notStarted.length * num
+
             this.$store.commit('setCompleted', this.percNum)
-            console.log('deg', this.percNum)
+            console.log('deg', this.progressNum, this.percNum)
         }, 
         ////// Sets task as complete
         setComplete(id) {
@@ -485,14 +503,33 @@ export default ({
         percNum: {
             handler(){
                 console.log("chaaaange")
-                var res = CircularProgress.setPercentage(this.percNum);
+                var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
                 if(res){
-                    CircularProgress.main;
+                    donutChart.main;
                     // console.log(this.$store.state.completed)
                 }
             }
-            
-        }
+        },
+        noStartedNum: {
+            handler(){
+                console.log("chaaaange")
+                var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
+                if(res){
+                    donutChart.main;
+                    // console.log(this.$store.state.completed)
+                }
+            }
+        },
+        progressNum: {
+            handler(){
+                console.log("chaaaange")
+                var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
+                if(res){
+                    donutChart.main;
+                    // console.log(this.$store.state.completed)
+                }
+            }
+        },    
     }
 })
 </script>
