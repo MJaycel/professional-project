@@ -40,10 +40,10 @@
                     </div>
 
                     <ul id="right-click-menu" tabindex="-1" ref="right" v-if="viewMenu" @focus="viewMenu = true" @blur="viewMenu=false" :style="{top:top,left:left}">
-                        <li @click="edit = true ">Edit</li>
+                        <li @click="editList">Edit</li>
                         <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li>
                     </ul>
-                                    <!-- add list form -->
+                    <!-- Edit list form -->
                     <b-sidebar v-if="edit" id="sidebar-edit" right visible no-header>
                         <template #default="{hide}">
                             <!-- color themes -->
@@ -54,8 +54,32 @@
 
                             <div class="row" style="padding:10px;margin-left:17px; width:300px">
                                 <div v-for="color in colorClasses" :key="color" class="col" style="padding:10px;">
-                                    <div :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="selectedTheme" v-show="color" icon="check"></b-icon>
+                                    <!-- <div :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-show="color" icon="check"></b-icon>
+                                    </div> -->
+                                    <div v-if="color === 'blue'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'blue'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'orange'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'orange'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'darkGreen'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'darkGreen'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'red'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'red'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'green'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'green'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'yellow'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'yellow'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'purple'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'purple'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'pink'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'pink'" v-show="color" icon="check"></b-icon>
                                     </div>
                                 </div>                            
                             </div>
@@ -65,7 +89,7 @@
                                 <p class="title__input__font">List Title</p>
                                 <b-form-input v-model="listForm.list_title" placeholder="add new list" class="list__title__input"></b-form-input>
 
-                                <b-button class="save__list" @click="saveList">Edit List</b-button>
+                                <b-button class="save__list" @click="EditListName">Edit List</b-button>
                             </div>                            
                         </template>
 
@@ -86,9 +110,32 @@
                         </div>                    
                         <div class="row" style="padding:10px;margin-left:17px; width:300px">
                             <div v-for="color in colorClasses" :key="color" class="col" style="padding:10px;">
-                                <div :class="color" class="color_themes" @click="setTheme(color)">
-                                    <b-icon v-if="selectedTheme" v-show="color" icon="check"></b-icon>
-                                </div>
+                                <!-- <div :class="color" class="color_themes" @click="setTheme(color)">
+                                </div> -->
+                                    <div v-if="color === 'blue'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'blue'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'orange'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'orange'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'darkGreen'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'darkGreen'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'red'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'red'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'green'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'green'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'yellow'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'yellow'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'purple'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'purple'" v-show="color" icon="check"></b-icon>
+                                    </div>
+                                    <div v-if="color === 'pink'" :class="color" class="color_themes" @click="setTheme(color)">
+                                        <b-icon v-if="listForm.theme === 'pink'" v-show="color" icon="check"></b-icon>
+                                    </div>
                             </div>                            
                         </div>
 
@@ -138,6 +185,7 @@ export default({
                 'yellow',
                 'pink'
             ],
+            colorSelected: false,
             selectedTheme: false,
             lists: [],
 
@@ -206,6 +254,9 @@ export default({
                 .then(response => {
                     this.lists = response.data
                     console.log('Lists', response.data) 
+                    // this.listForm.list_title = 
+                    // this.lists.filter(list => this.listForm.list_title = list.list_title)
+
                 }) 
                 .catch(error => console.log(error))
         },
@@ -214,6 +265,7 @@ export default({
             this.listForm.theme = color
             // this.selectedTheme = true
             this.selectedTheme = !this.selectedTheme
+            // this.colorSelected = true
             // console.log('color',this.listForm.theme)
         },        
         /// Add new list
@@ -270,8 +322,34 @@ export default({
         },
         editList(){
             console.log('edit list')
+            this.getListData()
             this.edit = true
+        },
+        getListData(){
+            /////getting from users collection
+            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}`)
+            .then(response => {
+                console.log(response.data[0])
+                // this.editForm.list_title = response.data[0].list_title
+                this.listForm.list_title = response.data[0].list_title
+                this.listForm.theme = response.data[0].theme
+            })
+            .catch(error => console.log(error))
+        },
+        EditListName() {
+            // console.log('got the id', this.listId)
+
+            axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.listForm)
+                .then(response => {
+                    console.log('edited', response.data)
+                    // this.getData()
+                    this.getListData()
+                    // this.getListItems(response.data._id)
+                    // this.toDoTitle = response.data.list_title
+                }) 
+                .catch(error => console.log(error))
         }
+
 
 
 

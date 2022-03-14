@@ -18,7 +18,18 @@
                 </router-link>
             </div>
         </div>
+
         <div class="col-7" style="color:black !important;margin-left: 5px;" :class="theme">
+            <!-- delete alert -->
+            <b-alert class="m-1"
+            :show="dismissCountDown"
+            dismissible
+            variant="success"
+            @dismissed="dismissCountDown=0"
+            @dismiss-count-down="countDownChanged"
+            >
+            Item deleted
+            </b-alert>
             <!-- tasks lists  -->
             <div class="tasks_list_block mt-3">
                 <!-- list title --> 
@@ -39,11 +50,11 @@
                 <b-input-group class="input__group">
                     <template #append>
                         <b-input-group-text style="height: 40px;border:none;background-color:transparent !important;">
-                        <b-icon @click="showItemInput = true" icon="plus" style="width: 20px; height: 20px;"></b-icon>
+                        <b-icon @click="addTask" icon="plus" style="width: 20px; height: 20px;"></b-icon>
                         </b-input-group-text>
                     </template>
                     <b-form-input
-                        v-model="taskForm.item_title"
+                        v-model="taskForm.title"
                         type="text"
                         class="todo_item_input"
                         v-on:keyup.enter='addTask'
@@ -54,13 +65,17 @@
 
                 <div>
                     <b-table responsive :items="items" :fields="headings" style="overflow: inherit">
-                    <template #cell(item_title)="data">
-                        <div @click="viewDetails(data.item._id)" id="task">
-                            <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.item_title}}</p>
-                            <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.item_title}}</p>                            
+                    <template #cell(title)="data" >
+                        <div @click="viewDetails(data.item._id)" @contextmenu="handler($event,data.item._id)"  id="task">
+                            <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.title}}</p>
+                            <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>                            
                         </div>
-
                     </template>
+                    <ul id="right-click-menu" tabindex="-1" ref="left" v-if="viewMenu" @blur="viewMenu=false" :style="{top:top,left:left}">
+                        <!-- <li @click="editList">Edit</li> -->
+                        <!-- <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li> -->
+                        <li >Edit</li> 
+                    </ul>
                     <template #cell(progress)="data">
                         <b-dropdown id="dropdown-2" no-caret block>
                             <template #button-content>
@@ -150,7 +165,7 @@
             </div>
             <div class="mt-5" style="margin-left:10px;" id="p5Canvas"></div>
         </div>
-        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData"/>
+        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData" :alert="showAlert"/>
     </div>
 </template>
 
@@ -170,6 +185,8 @@ export default ({
         },
     data() {
         return{
+            dismissSecs: 5,
+            dismissCountDown: 0,
             // canvas,
             hideHeader: false,
             showTask: false,
@@ -193,11 +210,12 @@ export default ({
                 list_title: '',
             },
             taskForm: {
-                item_title: '',
-                item_note: '',
+                title: '',
+                description: '',
                 startDate: '',
                 priorityLevel: '',
-                progress: ''
+                progress: '',
+                inCalendar: false
             },
             setPriority: {
                 priorityLevel: ''
@@ -207,10 +225,19 @@ export default ({
                 isComplete: false
             },
             addDueDate:{
-                startDate: ''
+                startDate: '',
+                inCalendar: false
             },
-
-
+            calForm: {
+                startDate: '',
+                endDate: '',
+                title: '',
+                description: '',
+                isComplete: ''
+            },
+            viewMenu: false,
+            top: '0px',
+            left: '0px',
             /// color classes ////
             orange: 'inProgress',
             green: 'completed',
@@ -225,24 +252,29 @@ export default ({
                 //     label: ''
                 // },
                 {
-                    key: 'item_title',
+                    key: 'title',
                     label: 'Task',
                     tdClass: 'title_table'
                 },
                 {
                     key: 'startDate',
                     label: 'Due Date',
-                    tdClass: 'date_table'
+                    tdClass: 'date_table',
+                    sortable: true
                 },
                 {
                     key: 'priorityLevel',
                     label: 'Priority',
-                    tdClass: 'priority_table'
+                    tdClass: 'priority_table',
+                    sortable: true
+
                 },
                 {
                     key: 'progress',
                     label: 'Status',
-                    tdClass: 'progress_table'
+                    tdClass: 'progress_table',
+                    sortable: true
+
                 }
             ],  
 
@@ -262,14 +294,36 @@ export default ({
         ...mapState(['listId', 'completed','priorityValue','showTask'])
     },
     methods:{
+        closeTab() {
+            this.viewMenu = false
+        },
+        setMenu(top,left) {
+            this.top = top + 'px';
+            this.left = left + 'px';
+
+            // console.log('offset',this.$refs.right.offsetHeight)
+
+        },
+        handler(e) {
+            this.viewMenu = true;
+            // this.listId = id
+            this.$nextTick(function() {
+                this.$refs.left.focus();
+
+                this.setMenu(e.y - 90, e.x -90)
+            }.bind(this));
+            e.preventDefault();
+
+            console.log('this is the listid',this.listId)
+        },
+        ////// Dissmissable Alert //////
+        countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+        this.dismissCountDown = this.dismissSecs
+        },
         //set percentage number
-        // setPercNum(){
-        //     var res = CircularProgress.setPercentage(this.percNum);
-        //     if(res){
-        //         //create p5 instance -- components/CircularProgress.js
-        //         new P5(CircularProgress.main);
-        //     }  
-        // },
         setPercNum(){
             var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
             if(res){
@@ -323,11 +377,17 @@ export default ({
                 console.log('EDIT',response.data[0].todoLists.items)
                 this.item = response.data[0].todoLists.items
 
-                this.taskForm.item_title= this.item.item_title
-                this.taskForm.item_note = this.item.item_note
+                this.taskForm.title= this.item.title
+                this.taskForm.description = this.item.description
                 this.taskForm.startDate = this.item.startDate
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
+
+                // this.calForm.title= this.item.title
+                // this.calForm.description = this.item.description
+                // this.calForm.startDate = this.item.startDate
+                // this.calForm.isComplete = this.item.isComplete
+                // this.taskForm.progress = this.item.progress
 
                 console.log('form filled', this.taskForm)
             })
@@ -410,8 +470,8 @@ export default ({
             // console.log('add', this.listId)
             let userId = localStorage.getItem('userId')
 
-            if(this.taskForm.item_title === ''){
-                this.taskForm.item_title = 'Untitled'
+            if(this.taskForm.title === ''){
+                this.taskForm.title = 'Untitled'
             }
 
             this.taskForm.priorityLevel = 'Medium Priority'
@@ -420,7 +480,7 @@ export default ({
             axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.listId}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
-                this.taskForm.item_title = ''
+                this.taskForm.title = ''
                 // this.getData()
                 this.getListData()
             })
@@ -481,7 +541,6 @@ export default ({
             .then(response => {
                 this.getListData()
                 console.log('item edited', response.data)
-
             })
             .catch(error => console.log(error))
         },
@@ -489,9 +548,15 @@ export default ({
             console.log('due date',this.addDueDate.startDate)
             let userId = localStorage.getItem('userId')
 
+            this.getItem(id)
+            this.addDueDate.inCalendar = true
+
+            
+
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
                 this.getListData()
+                this.addItemtoCal()
                 this.$refs.date_dropdown.hide()
                 console.log('item edited', response.data)
 
@@ -519,6 +584,24 @@ export default ({
                     // this.toDoTitle = response.data.list_title
                 }) 
                 .catch(error => console.log(error))
+        },
+        addItemtoCal() {
+            // getItem()
+            let userId = localStorage.getItem('userId')
+            this.calForm.startDate = this.addDueDate.startDate
+            this.calForm.title = this.taskForm.title
+            this.calForm.description = this.taskForm.description
+            this.calForm.isComplete = this.taskForm.isComplete
+            axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
+            .then(response => {
+                console.log("NEW EVENTS",response.data.events)
+                // "refreshes" the calendar and shows new event that was added
+                // this.$store.dispatch('getAllEvents')
+                // this.$store.commit('setShowAddModal', false)
+                // this.$bvModal.hide('add-item')
+                // this.getListData()
+            })
+            .catch(error => console.log(error))     
         }
 
     },
@@ -734,6 +817,7 @@ top: 0px;
 .title_table{
     max-width: 300px;
     /* padding-left:0px !important; */
+    cursor: pointer;
 }
 
 .progress_table{

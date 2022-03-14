@@ -30,8 +30,8 @@
 
                 </div>
                 <div class="col d-flex justify-content-between" style="padding:0px;margin:0px !important;">
-                    <b-form-input v-model="taskForm.item_title" placeholder="Add a title" class="modal_item_title" ></b-form-input>
-                    <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="deleteTask"></b-icon>
+                    <b-form-input v-model="taskForm.title" placeholder="Add a title" class="modal_item_title" ></b-form-input>
+                    <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="showDelete"></b-icon>
                 </div>
                 
             </div>
@@ -112,8 +112,8 @@
                     <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
                 </div>
                 <div class="col-7 mt-2" style="padding: 0px;">
-                    <b-form-textarea v-if="taskForm.item_note === ''" class="desc__task__input_focus no__outline" v-model="taskForm.item_note" placeholder="Add a description"></b-form-textarea>
-                    <b-form-textarea v-else class="desc__task__input no__outline" v-model="taskForm.item_note"></b-form-textarea>
+                    <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
+                    <b-form-textarea v-else class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
                 </div>                
             </div>
 
@@ -123,6 +123,15 @@
 
                 <b-button class="addItem__btn" @click="save"> Save</b-button>                
             </div>        
+        </b-modal>
+
+        <b-modal id="delete-item" hide-header centered  hide-footer hide-header-close>
+            <p>Are you sure you want to delete this List?</p>
+            <div class="d-flex justify-content-end">
+                <b-button class="cancel__btn" @click="$bvModal.hide('delete-item')"> Cancel</b-button>
+
+            <b-button class="delete__list_btn" @click="deleteTask">Delete</b-button>
+            </div>
         </b-modal>
     </div>
 </template>
@@ -141,16 +150,19 @@ export default ({
         id: String,
         list_id: String,
         method: { type: Function },
+        alert: {type: Function}
     },
     data() {
         return{
             taskForm: {
-                item_title: '',
-                item_note: '',
+                title: '',
+                description: '',
                 startDate: '',
                 priorityLevel: '',
                 progress: '',
-                isComplete: ''
+                isComplete: '',
+                inCalendar: false
+
             },
             userId: localStorage.getItem('userId'),
             /// color classes ////
@@ -197,8 +209,8 @@ export default ({
                 console.log('EDIT',response.data[0].todoLists.items)
                 this.item = response.data[0].todoLists.items
 
-                this.taskForm.item_title= this.item.item_title
-                this.taskForm.item_note = this.item.item_note
+                this.taskForm.title= this.item.title
+                this.taskForm.description = this.item.description
                 this.taskForm.startDate = this.item.startDate
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
@@ -215,7 +227,7 @@ export default ({
                 // }
 
 
-                console.log('form filled', this.taskForm.item_note)
+                console.log('form filled', this.taskForm.description)
 
                 
             })
@@ -229,6 +241,11 @@ export default ({
             let userId = localStorage.getItem('userId')
             this.taskForm.progress = this.progress
             this.taskForm.priorityLevel = this.priority
+
+            if(this.taskForm.startDate != null){
+                this.taskForm.inCalendar = true
+            }
+
 
             this.taskForm.progress = this.progress
             if(this.taskForm.progress === 'Completed'){
@@ -247,8 +264,14 @@ export default ({
                 // this.$emit('getListData')
                 this.method()
 
+
             })
             .catch(error => console.log(error))       
+        },
+        showDelete() {
+            // this.id = id
+            // console.log(this.$route.params.id, this.id)
+            this.$bvModal.show('delete-item')
         },
         deleteTask() {
             let userId = localStorage.getItem('userId')
@@ -258,8 +281,11 @@ export default ({
                 console.log(response)
                 this.$bvModal.hide('task-details-modal')
                 this.$store.commit('setShowTask', false)
+                this.$bvModal.hide('delete-item')
+                
                 // this.$emit('getListData')
-                this.method()            
+                this.method()   
+                this.alert()
             })
         }
     },
