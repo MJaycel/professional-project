@@ -515,7 +515,7 @@ export default({
      box-shadow: none !important;
 }
 
-.todo_title_input{
+/* .todo_title_input{
     margin-top: 16px ;
     border-bottom: 1px solid #B5ACC0 !important;
     border-top: none !important;
@@ -537,8 +537,7 @@ export default({
 }
 .todo_title_input:focus{
     color: rgb(134, 134, 134) !important;
-    /* background-color: #daebdb !important; */
-}
+} */
 
 .card > .list-group{
     border-top: none !important;

@@ -23,7 +23,16 @@
             <div class="tasks_list_block mt-3">
                 <!-- list title --> 
                 <div class="title__box">
-                    <p>{{this.form.list_title}}</p>
+                    <!-- <p>{{this.form.list_title}}</p> -->
+                        <b-input-group class="edit__input_group">
+                            <b-form-input
+                                v-model="form.list_title"
+                                type="text"
+                                class="todo_title_input"
+                                v-on:keyup.enter='EditListName'
+                                >
+                            </b-form-input>                        
+                        </b-input-group>
                 </div>
 
                 <!-- add new task input -->
@@ -498,6 +507,19 @@ export default ({
             // this.showTask = true
             this.$store.commit('setShowTask', true)
         },
+        EditListName() {
+            // console.log('got the id', this.listId)
+
+            axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.form)
+                .then(response => {
+                    console.log('edited', response.data)
+                    // this.getData()
+                    this.getListData()
+                    // this.getListItems(response.data._id)
+                    // this.toDoTitle = response.data.list_title
+                }) 
+                .catch(error => console.log(error))
+        }
 
     },
     watch: {
@@ -567,7 +589,8 @@ top: 0px;
 
 }
 .todo_title_input:hover{
-    background-color: #daebdb !important;
+    background-color: #f1f1f1 !important;
+    border-radius: 4px !important;
 }
 .todo_title_input:focus{
     color: rgb(134, 134, 134) !important;
@@ -578,7 +601,7 @@ top: 0px;
     font-family: 'Poppins',sans-serif;
     font-size: 24px;
     font-weight: 500;
-    padding-left: 21px;
+    /* padding-left: 21px; */
 }
 .tasks_list_block{
     margin-left: 16px;
@@ -613,11 +636,12 @@ top: 0px;
     background:#E7E7E7 !important;
 }
 
+
 .todo_item_input:focus{
     background:#f1f1f1 !important;
 }
 .input__group{
-    padding: 6px 20px 20px 20px;
+    padding: 6px 0px 20px 0px;
 }
 
 .progress_tracker{
@@ -651,14 +675,14 @@ top: 0px;
 
 /* Color classes for progress level */
 .inProgress{
-    border-color: #FF9900 !important;
-    color: #FF9900 !important;
+    border-color: #FA7045 !important;
+    color: #FA7045 !important;
 }
 
 .inProgress:hover{
-    border-color: #FF9900;
+    border-color: #FA7045;
     color: white !important;
-    background: #FF9900;
+    background: #FA7045;
 }
 /* .inProgress:focus{
     border-color: #FF9900;

@@ -2,6 +2,7 @@
     <div class="container pt-5">
         <h2>Welcome, You are logged in!</h2>
         <!-- <b-button @click="logout()">Logout</b-button> -->
+        <router-link :to="{name: 'profile',params: {id: this.userId} }">Profile</router-link> |
         <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
         <router-link :to="{name: 'todo',params: {id: this.userId} }">To Do</router-link> |
         <router-link :to="{name: 'todo_page',params: {id: this.userId} }">TO DO PAGE</router-link> |

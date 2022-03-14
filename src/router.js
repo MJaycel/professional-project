@@ -14,6 +14,8 @@ import Timer from '@/pages/Timer.vue'
 import ToDo from '@/pages/ToDo.vue'
 import ToDoPage from '@/pages/ToDoPage.vue'
 import SingleToDo from '@/pages/SingleToDo.vue'
+import Profile from '@/pages/user/Profile.vue'
+
 
 
 
@@ -148,6 +150,11 @@ export default new Router ({
             path:'/todo/list/:id',
             name: 'single_todo',
             component: SingleToDo,
-        }
+        },
+        {
+            path:'/profile/user/:id',
+            name: 'profile',
+            component: Profile,
+        },
     ]
 })
