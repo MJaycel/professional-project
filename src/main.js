@@ -5,7 +5,6 @@ import store from './store'
 import { BootstrapVue,  BootstrapVueIcons } from 'bootstrap-vue'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 
-
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap-vue/dist/bootstrap-vue-icons.min.css'

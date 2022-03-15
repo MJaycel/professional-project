@@ -342,8 +342,10 @@ export default({
             axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.listForm)
                 .then(response => {
                     console.log('edited', response.data)
-                    // this.getData()
+                    this.edit = false
                     this.getListData()
+                    this.getAllLists()
+                    // this.getData()
                     // this.getListItems(response.data._id)
                     // this.toDoTitle = response.data.list_title
                 }) 
@@ -358,6 +360,7 @@ export default({
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
 
 .side__bar{
     background: #7BC17E;

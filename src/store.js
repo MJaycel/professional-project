@@ -163,18 +163,18 @@ export default new Vuex.Store({
                 }
             })
         },
-        //////get all events
-        getAllEvents(context) {
-            let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/calendar/${userId}`)
-                .then(response=> {
-                    // this.items = response.data
-                    context.commit('setCalendarItems', response.data)
-                    console.log('EVENTS', response.data)
-                    context.commit("SET_EVENTS", response.data)
-                })
-                .catch(error => console.log(error))     
-        },
+        // //////get all events
+        // getAllEvents(context) {
+        //     let userId = localStorage.getItem('userId')
+        //     axios.get(`http://localhost:3030/calendar/${userId}`)
+        //         .then(response=> {
+        //             // this.items = response.data
+        //             context.commit('setCalendarItems', response.data)
+        //             console.log('EVENTS', response.data)
+        //             context.commit("SET_EVENTS", response.data)
+        //         })
+        //         .catch(error => console.log(error))     
+        // },
 
         // getAllToDo(context) {
         //     let userId = localStorage.getItem('userId')

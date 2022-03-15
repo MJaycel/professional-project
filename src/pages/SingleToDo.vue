@@ -143,7 +143,7 @@
 
         </div>
                 <!-- progress tracker -->
-        <div class="col-4 details mt-3" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;height: 100%;padding-left:30px;color:black">
+        <div class="col-4 details mt-3 flex-start" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;height: 100%;padding-left:30px;color:black">
             <div class="d-flex justify-content-between">
                 <div>
                     <p class="progress_tracker">Progress Tracker</p>
@@ -700,8 +700,8 @@ top: 0px;
 
 .details{
     margin-left:14px;
-    display: flex;
-    justify-content: start;
+    /* display: flex;
+    justify-content: start; */
 }
 
 .todo_item_input{

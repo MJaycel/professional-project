@@ -24,15 +24,16 @@
             <div>
                 <calendar-view
                     :show-date="showDate"
-                    :items= this.$store.state.items
+                    :items='items'
                     :show-times= true
+                    @click-date="clickdate"
                     :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
                     :displayPeriodUom="period"
                     class="theme-default cal">
                     <template #header="{ headerProps }">
                         <div class="row justify-content-between">
                             <div class="col row d-flex justify-content-start">
-                                <div class="col-1">
+                                <div style="width: 3em;">
                                     <button
                                         style="border:none;"
                                         type="button"
@@ -40,14 +41,18 @@
                                         aria-label="Current Period"
                                         @click.prevent="setShowDate(headerProps.previousPeriod)"
                                     >
-                                    <b-icon icon="caret-left-fill" style="color:#7BC17E;margin-top:0.4em;margin-left:0.8em;"></b-icon>
+                                    <b-icon icon="caret-left-fill" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
                                     </button>
                                 </div>
-                                <div class="cv-header button col-1 d-flex justify-content-center" style="color: #7BC17E;cursor:pointer" @click.prevent="setShowDate(headerProps.currentPeriod)">
-                                    <!-- <slot name="label">{{headerProps.periodLabel}}</slot>                             -->
-                                   <slot name="label">Today</slot>      
+                                <div v-if="period === 'week'" class="cv-header button col-3 d-flex justify-content-center" style="color: #7BC17E;cursor:pointer;padding:0px;">
+                                    <slot name="label">{{headerProps.periodLabel}}</slot>                            
+                                   <!-- <slot name="label">Today</slot>       -->
                                 </div>
-                                <div class="col-1">
+                                <div v-else class="cv-header button col-2 d-flex justify-content-center" style="color: #7BC17E;cursor:pointer;padding:0px;">
+                                    <slot name="label">{{headerProps.periodLabel}}</slot>                            
+                                   <!-- <slot name="label">Today</slot>       -->
+                                </div>
+                                <div style="width: 3em;">
                                     <button
                                         style="border:none;"
                                         type="button"
@@ -55,19 +60,18 @@
                                         aria-label="Current Period"
                                         @click.prevent="setShowDate(headerProps.nextPeriod)"
                                     >
-                                    <b-icon icon="caret-right-fill" style="color:#7BC17E;margin-top:0.4em;margin-left:0.8em;"></b-icon>
+                                    <b-icon icon="caret-right-fill" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
                                     </button>
                                 </div>
-                                <div class="cv-header button col-8" >
-                                    <slot name="label">{{headerProps.periodLabel}}</slot>                            
-                                   <!-- <slot name="label">Today</slot>       -->
+                                <div class="cv-header button col-3" style="cursor:pointer;"  @click.prevent="setShowDate(headerProps.currentPeriod)" >
+                                    <!-- <slot name="label">{{headerProps.periodLabel}}</slot>                             -->
+                                   <slot name="label">Today</slot>      
                                 </div>
                             </div>
-                            <div class="col-2">
+                            <div class="col-2" sty>
                                 <b-form-select class="period_select" v-model="period" :options="options"></b-form-select>
                             </div>
                         </div>
-
                     </template>
                     <!-- <calendar-view-header
                         slot="header"
@@ -80,14 +84,17 @@
             </div>
 
         </div>
-                                     
-       
+        <AddEvent v-if="showAddModal"/>
+
      
     </div>
 </template>
 
 <script>
 import { CalendarView} from "vue-simple-calendar"
+import { mapState } from "vuex"
+import AddEvent from '@/components/AddEvent.vue'
+import axios from 'axios'
 
 // require("vue-simple-calendar/static/css/default.css")
 // require("vue-simple-calendar/static/css/holidays-us.css")
@@ -100,6 +107,7 @@ export default ({
     components: {
         CalendarView,
         // CalendarViewHeader,
+        AddEvent
     },
     data() {
         return{
@@ -109,14 +117,54 @@ export default ({
             options: [
                 {value: 'month', text: 'Month'},
                 {value: 'week', text: 'Week' },
+            ],
+
+            //  event data
+            clickDate: '',
+            items: [],
+            offset: [
+                'offset0',
+                'offset1',
+                'offset2',
+                'offset3',
+                'offset4',
+                'offset5',
             ]
 
         }
     },
+    computed: {
+        ...mapState(['showAddModal','date','item_id','showEditModal'])
+    },
+    mounted() {
+        // this.$store.dispatch('getAllEvents'
+        this.getAllEvents()
+    },
     methods: {
+        // ...mapActions(['getAllEvents']),
+
         setShowDate(d) {
             this.showDate = d;
         },
+        clickdate(d) {
+            this.$store.commit('setShowAddModal', true)
+
+            this.clickDate = new Date(d)
+            this.$store.commit('setDate', this.clickDate)
+        },
+        getAllEvents() {
+        //////get all events
+            let userId = localStorage.getItem('userId')
+            axios.get(`http://localhost:3030/calendar/${userId}`)
+                .then(response=> {
+                    console.log('EVENTS', response.data)
+                    this.items = response.data
+                    // context.commit('setCalendarItems', response.data)
+                    // context.commit("SET_EVENTS", response.data)
+                })
+                .catch(error => console.log(error))     
+        }
+
     }
 })
 </script>
@@ -127,5 +175,9 @@ export default ({
 .period_select:focus{
     outline:0px !important; 
     box-shadow: none !important;
+}
+
+.event_class{
+    background: orange !important;
 }
 </style>
