@@ -8,7 +8,9 @@ import Login from "@/pages/user/Login.vue"
 import Home from "@/pages/Home.vue"
 import PageNotFound from "@/pages/PageNotFound.vue"
 import Register from "@/pages/user/Register.vue"
-import Calendar from "@/pages/Calendar.vue"
+import Calendar from "@/pages/CalendarPage.vue"
+import oldCal from "@/pages/Calendar.vue"
+
 import MusicPlayer from "@/pages/MusicPlayer.vue"
 import Timer from '@/pages/Timer.vue'
 import ToDo from '@/pages/ToDo.vue'
@@ -113,6 +115,11 @@ export default new Router ({
             path: '/calendar/:id',
             name: 'calendar',
             component: Calendar,
+        },
+        {
+            path: '/calendar/:id',
+            name: 'oldCal',
+            component: oldCal,
         },
         {
             path:'/music/:id',

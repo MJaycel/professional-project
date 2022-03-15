@@ -96,7 +96,7 @@ import EditEvent from '@/components/EditEvent.vue'
 
 
 export default {
-    name: "Calendar",
+    name: "oldCal",
     components: {
         CalendarView,
         CalendarViewHeader,
@@ -276,14 +276,12 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
 
-.cal{ 
+/* .cal{ 
     font-family: 'Poppins', sans-serif;
     color: #2c3e50;
     height: 85vh;
-    /* width: 90vw; */
     margin-left: vw;
-    /* margin-right: auto;  */
-}
+} */
 
 .event__title{
     font-family: 'Poppins', sans-serif;
