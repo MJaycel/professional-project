@@ -347,33 +347,5 @@ export default {
 
 }
 
-input:focus{ 
-     outline:0px !important; 
-     box-shadow: none !important;
-}
-
-.no__outline:focus{
-    outline:0px !important; 
-     box-shadow: none !important;
-}
-
-.addItem__btn{
-    background-color: #AA96DA !important;
-    border-color: #AA96DA !important;
-
-    width: 100px;
-    border-radius: 4px !important;
-}
-
-.cancel__btn{
-    background-color: white !important;
-    border-color: white !important;
-
-    color: black  !important;
-}
-
-.cancel__btn:hover{
-    text-decoration: underline !important;
-}
 
 </style>

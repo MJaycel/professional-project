@@ -174,9 +174,12 @@
 import {mapState} from 'vuex'
 import axios from 'axios'
 import TaskDetails from '@/components/TaskDetails.vue'
+
+
 // var CircularProgress = require('@/components/CircularProgress.js')
 var donutChart = require('@/components/donutChart.js')
 const P5 = require('p5');
+
 export default ({
     name: 'SingleToDo',
     components: { 
@@ -647,12 +650,6 @@ export default ({
     flex-grow: 1;
 }
 
-.side__bar{
-    /* height: 100vh !important; */
-height: 100vh ;
-position: sticky;
-top: 0px;
-}
 /* input styles */
 .todo_title_input{
     margin-top: 16px ;

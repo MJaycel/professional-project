@@ -7,6 +7,7 @@
 </template>
 
 <script>
+require("@/css/main.css")
 
 export default {
   name: 'App',
