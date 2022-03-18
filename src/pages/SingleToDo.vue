@@ -230,14 +230,16 @@ export default ({
             addDueDate:{
                 startDate: '',
                 inCalendar: false,
-                classes: ''
+                classes: '',
+
             },
             calForm: {
                 startDate: '',
                 endDate: '',
                 title: '',
                 description: '',
-                isComplete: ''
+                isComplete: false,
+                classes : ''
             },
             viewMenu: false,
             top: '0px',
@@ -283,7 +285,9 @@ export default ({
             ],  
 
             priority: '',
-            progress: ''
+            progress: '',
+            item_title: '',
+            data: {}
         }
     },
     mounted() {
@@ -304,8 +308,6 @@ export default ({
         setMenu(top,left) {
             this.top = top + 'px';
             this.left = left + 'px';
-
-            // console.log('offset',this.$refs.right.offsetHeight)
 
         },
         handler(e) {
@@ -334,13 +336,6 @@ export default ({
                 // create p5 instance -- components/CircularProgress.js
                 new P5(donutChart.main);
             }  
-        },
-        getData() {
-            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}`)
-            .then(response => {
-                console.log(response.data[0])
-            })
-            .catch(error => console.log(error))
         },
 
         ///////////// GET LIST DATA 
@@ -394,12 +389,6 @@ export default ({
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
 
-                // this.calForm.title= this.item.title
-                // this.calForm.description = this.item.description
-                // this.calForm.startDate = this.item.startDate
-                // this.calForm.isComplete = this.item.isComplete
-                // this.taskForm.progress = this.item.progress
-
                 console.log('form filled', this.taskForm)
             })
             .catch(error => console.log(error))
@@ -430,51 +419,6 @@ export default ({
             this.$store.commit('setCompleted', this.percNum)
             console.log('deg', this.progressNum, this.percNum)
         }, 
-        ////// Sets task as complete
-        setComplete(id) {
-            let userId = localStorage.getItem('userId')
-
-            this.getItem(id)
-
-            this.taskForm.isComplete = true
-            this.taskForm.progress = 'Completed'
-            // console.log('true',this.itemForm.isComplete)
-
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm)
-            .then(response => {
-                console.log('New task added', response.data)
-                this.getListData()
-                // this.getListItems(this.listId)
-                // this.getItemData(this.itemId)
-
-            })
-            .catch(error => console.log(error))
-        },
-
-        //////// Sets task to false
-        setCompleteFalse(id) {
-            // if(this.itemForm.isComplete){
-            //     this.itemForm.isComplete = false
-            // }
-            let userId = localStorage.getItem('userId')
-
-            if(this.taskForm.isComplete){
-                this.taskForm.isComplete = false
-                this.taskForm.progress = 'Not Started'
-            }
-
-            // console.log('false',this.itemForm.isComplete)
-
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm)
-            .then(response => {
-                console.log('New task added', response.data)
-                this.getListData()
-                // this.getListItems(this.listId)
-                // this.getItemData(this.itemId)
-
-            })
-            .catch(error => console.log(error))
-        },
 
         ///// Add new task
         addTask() {
@@ -519,19 +463,14 @@ export default ({
             }        
         },
         editPriority(id){
-            //  if (evt && evt.target && evt.target.hasAttribute('value')) {
-            //     // console.log('this is the value',evt.target.getAttribute('value'))
-            //     this.priorityValue = evt.target.getAttribute('value')
-            //     console.log('this is the value',this.priorityValue)
-            // }  
-            // console.log('this is the value',this.priority)
+
             let userId = localStorage.getItem('userId')
 
             this.setPriority.priorityLevel = this.priority
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.setPriority)
             .then(response => {
                 this.getListData()
-                console.log('item edited', response.data)
+                console.log('Priority Edited', response.data)
 
             })
             .catch(error => console.log(error))
@@ -551,15 +490,16 @@ export default ({
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.setProgress)
             .then(response => {
                 this.getListData()
-                console.log('item edited', response.data)
+                console.log('Progress Edited', response.data)
             })
             .catch(error => console.log(error))
         },
+
         dueDate(id) {
             console.log('due date',this.addDueDate.startDate)
             let userId = localStorage.getItem('userId')
 
-            // this.getItem(id)
+            this.getItem(id)
             this.addDueDate.inCalendar = true
             this.addDueDate.classes = 'eBlue'
 
@@ -567,11 +507,11 @@ export default ({
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
-                this.getListData()
-                // this.getData()
                 this.addItemtoCal()
+                this.getListData()
                 this.$refs.date_dropdown.hide()
                 console.log('item edited', response.data)
+                this.taskForm.title = ''
 
             })
             .catch(error => console.log(error))
@@ -582,7 +522,6 @@ export default ({
 
             this.id = id
             this.list_id = this.listId
-            // this.showTask = true
             this.$store.commit('setShowTask', true)
         },
         EditListName() {
@@ -591,10 +530,7 @@ export default ({
             axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.form)
                 .then(response => {
                     console.log('edited', response.data)
-                    // this.getData()
                     this.getListData()
-                    // this.getListItems(response.data._id)
-                    // this.toDoTitle = response.data.list_title
                 }) 
                 .catch(error => console.log(error))
         },
@@ -609,12 +545,7 @@ export default ({
 
             axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
             .then(response => {
-                console.log("NEW EVENTS",response.data.events)
-                // "refreshes" the calendar and shows new event that was added
-                // this.$store.dispatch('getAllEvents')
-                // this.$store.commit('setShowAddModal', false)
-                // this.$bvModal.hide('add-item')
-                // this.getListData()
+                console.log("Task added to calendar",response.data)
             })
             .catch(error => console.log(error))     
         }
