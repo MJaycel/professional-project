@@ -582,24 +582,14 @@ export default ({
             this.$store.dispatch('getAllEvents')
 
             console.log('EVENTS FROM CAL', this.$store.state.items)
-            /// looping through each items and setting date format as Month, D, Yr
+            /// looping through each events and find the item that has the id that is being passed 
+            // if found set event_id as the event that was found and use that id to edit the startDate on the task/event
             Array.from(this.$store.state.items).forEach((item)=> {
                 if(item.item_id === id){
                     this.event_id = item._id
                 }    
-                // console.log('dATE', item.startDate)
             })
-            
         }
-        // getEvent(){
-        //     axios.get(`http://localhost:3030/calendar/event/${this.id}`)
-        //     .then(response => {
-        //         console.log('Found Event', response.data)
-        //         this.itemEvent = response.data
-
-        //     }) 
-        //     .catch(error => console.log(error))
-        // },
 
 
     },

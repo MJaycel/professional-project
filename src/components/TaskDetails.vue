@@ -143,7 +143,7 @@
 
 <script>
 
-import {mapState} from 'vuex'
+import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 export default ({
     name:'TaskDetails',
@@ -189,6 +189,7 @@ export default ({
             ],
             dueDate: '',
             noDate: false,
+            event_id: ''
         }
     },
     computed: {
@@ -202,6 +203,7 @@ export default ({
         console.log('WTF', this.$store.state.showTask)
     },
     methods:{
+        ...mapActions(['getAllEvents']),
         hideModal(){
             this.$bvModal.hide('task-details-modal')
             this.$store.commit('setShowTask', false)
@@ -261,6 +263,10 @@ export default ({
             }
             this.taskForm.classes = 'eBlue'
 
+            if(this.taskForm.startDate === null){
+                this.deleteEvent()
+            }
+
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}`, this.taskForm)
             .then(response => {
                 // this.getListData()
@@ -289,10 +295,33 @@ export default ({
                 this.$bvModal.hide('task-details-modal')
                 this.$store.commit('setShowTask', false)
                 this.$bvModal.hide('delete-item')
+                this.deleteEvent()
                 
                 // this.$emit('getListData')
                 this.method()   
                 this.alert()
+            })
+        },
+        deleteEvent() {
+            this.findInEvents()
+            let userId = localStorage.getItem('userId')
+            axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
+            .then(response => {
+                console.log('Deleted', response)
+                // this.$store.dispatch('getAllEvents')
+            }) 
+            .catch(error => console.log(error))
+        },
+        findInEvents() {
+            this.$store.dispatch('getAllEvents')
+
+            console.log('EVENTS FROM CAL', this.$store.state.items)
+            /// looping through each events and find the item that has the id that is being passed 
+            // if found set event_id as the event that was found and use that id to edit the startDate on the task/event
+            Array.from(this.$store.state.items).forEach((item)=> {
+                if(item.item_id === this.id){
+                    this.event_id = item._id
+                }    
             })
         }
     },
