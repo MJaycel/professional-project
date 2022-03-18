@@ -128,7 +128,9 @@
                             <div>
                                 <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
                                 <div class="d-flex justify-content-end"> 
-                                    <b-button style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Save</b-button>    
+                                    <b-button v-if="taskForm.inCalendar === true" style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Edit</b-button>    
+                                    <b-button style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Save</b-button>
+
                                 </div>
                             </div>
                         </b-dropdown>
@@ -171,7 +173,7 @@
 
 <script>
 
-import {mapState} from 'vuex'
+import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 import TaskDetails from '@/components/TaskDetails.vue'
 
@@ -239,7 +241,8 @@ export default ({
                 title: '',
                 description: '',
                 isComplete: false,
-                classes : ''
+                classes : '',
+                item_id: ''
             },
             viewMenu: false,
             top: '0px',
@@ -287,12 +290,16 @@ export default ({
             priority: '',
             progress: '',
             item_title: '',
-            data: {}
+            data: {},
+            itemInCalendar: false,
+            events: [],
+            event_id: ''
         }
     },
     mounted() {
         this.getListData()
-        this.setPercNum();
+        this.setPercNum()
+        this.findInEvents()
 
         /// When the page is reloaded while the modal is open the modal stays open (showTask is still true)
         /// To keep modal close after reloading ive set showTask as false
@@ -302,6 +309,8 @@ export default ({
         ...mapState(['listId', 'completed','priorityValue','showTask'])
     },
     methods:{
+        ...mapActions(['getAllEvents']),
+
         closeTab() {
             this.viewMenu = false
         },
@@ -388,8 +397,15 @@ export default ({
                 this.taskForm.startDate = this.item.startDate
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
+                this.taskForm.inCalendar = this.item.inCalendar
+
+                if(this.taskForm.inCalendar === true){
+                    this.itemInCalendar = true
+                }
 
                 console.log('form filled', this.taskForm)
+                console.log('in cal', this.taskForm.inCalendar)
+
             })
             .catch(error => console.log(error))
         },
@@ -501,13 +517,11 @@ export default ({
 
             this.getItem(id)
             this.addDueDate.inCalendar = true
-            this.addDueDate.classes = 'eBlue'
-
-            
+            this.addDueDate.classes = 'eBlue'   
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
-                this.addItemtoCal()
+                this.addItemtoCal(id)
                 this.getListData()
                 this.$refs.date_dropdown.hide()
                 console.log('item edited', response.data)
@@ -534,21 +548,59 @@ export default ({
                 }) 
                 .catch(error => console.log(error))
         },
-        addItemtoCal() {
+        addItemtoCal(id) {
             // getItem()
-            let userId = localStorage.getItem('userId')
+            this.findInEvents(id)
+            // let userId = localStorage.getItem('userId')
             this.calForm.startDate = this.addDueDate.startDate
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
             this.calForm.classes = 'eBlue'
 
-            axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
-            .then(response => {
-                console.log("Task added to calendar",response.data)
+            this.calForm.item_id = id 
+
+
+            if(this.itemInCalendar === true){
+                axios.post(`http://localhost:3030/calendar/edit/event/${this.event_id}` , this.calForm )
+                .then(response => {
+                    console.log("Edit item due date",response.data.events)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                let userId = localStorage.getItem('userId')
+                axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
+                .then(response => {
+                    console.log("Task added to calendar",response.data)
+                })
+                .catch(error => console.log(error))     
+            }
+        },
+        findInEvents(id) {
+            this.$store.dispatch('getAllEvents')
+
+            console.log('EVENTS FROM CAL', this.$store.state.items)
+            /// looping through each items and setting date format as Month, D, Yr
+            Array.from(this.$store.state.items).forEach((item)=> {
+                if(item.item_id === id){
+                    this.event_id = item._id
+                }    
+                // console.log('dATE', item.startDate)
             })
-            .catch(error => console.log(error))     
+            
         }
+        // getEvent(){
+        //     axios.get(`http://localhost:3030/calendar/event/${this.id}`)
+        //     .then(response => {
+        //         console.log('Found Event', response.data)
+        //         this.itemEvent = response.data
+
+        //     }) 
+        //     .catch(error => console.log(error))
+        // },
+
 
     },
     watch: {

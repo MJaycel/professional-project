@@ -345,6 +345,9 @@ export default {
                 this.$store.commit('setShowEditModal', false)
                 this.$bvModal.hide('edit-item')
             })
+            .catch(error => {
+                console.log(error)
+            })
         },
         cancel() {
             this.$bvModal.hide('edit-item')
