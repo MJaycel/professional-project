@@ -1,7 +1,36 @@
 <template>
     <div>
         <!-- ADD ITEM MODAL -->
-        <b-modal id="add-item" hide-footer centered hide-header-close no-close-on-backdrop title="Add Event">
+        <b-modal id="add-item" hide-footer centered hide-header-close @hide="cancel" >
+            <template #modal-header>
+                <h3>Add Event</h3>
+                <b-dropdown id="dropdown-1"  v-b-tooltip.hover title="Select event color" class="color-dropdown">
+                    <template #button-content>
+                        <p style="margin: 0px !important;"><i :style="`color:${color};`" class="fa-solid fa-circle"></i></p>
+                    </template>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='eGreen'),(color = '#5EBC62')" id="color-dropdown-item" value="eGreen"><i class="fa-solid fa-circle" style="color:#5EBC62;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eDarkGreen'),(color = '#278A2B')" id="color-dropdown-item" value="eDarkGreen"><i class="fa-solid fa-circle" style="color:#278A2B;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='ePurple'),(color = '#AA96DA')" id="color-dropdown-item" value="ePurple"><i class="fa-solid fa-circle" style="color:#AA96DA;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eViolet'),(color = '#6F6EAD')" id="color-dropdown-item" value="eViolet"><i class="fa-solid fa-circle" style="color:#6F6EAD;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='eYellow'),(color = '#FFD74A')" id="color-dropdown-item" value="eYellow"><i class="fa-solid fa-circle" style="color:#FFD74A;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eOrange'),(color = '#F99500')" id="color-dropdown-item" value="eOrange"><i class="fa-solid fa-circle" style="color:#F99500;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='eBlue'),(color = '#259EE2')" id="color-dropdown-item" value="eBlue"><i class="fa-solid fa-circle" style="color:#259EE2;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eDarkBlue'),(color = '#0F5F8C')" id="color-dropdown-item" value="eDarkBlue"><i class="fa-solid fa-circle" style="color:#0F5F8C;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='ePink'),(color = '#F0A1A1')" id="color-dropdown-item" value="ePink"><i class="fa-solid fa-circle" style="color:#F0A1A1;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eRed'),(color = '#F11F1F')" id="color-dropdown-item" value="eRed"><i class="fa-solid fa-circle" style="color:#F11F1F;"></i></b-dropdown-item>                        
+                    </div>
+                    <!-- <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item> -->
+                </b-dropdown>
+            </template>
             <b-form-input v-model="form.title" placeholder="Add a title" class="title__input" ></b-form-input>
             <br>
             <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>
@@ -38,10 +67,10 @@
             </div>
         </b-modal>
 
-        <b-modal id="weekly-settings">
+        <!-- <b-modal id="weekly-settings">
             <p>Occurs every week until: </p>
             <b-form-input  style="width: 460px; border-radius: 4px;" v-model="newStartDate" type="date"></b-form-input>
-        </b-modal>
+        </b-modal> -->
     </div>
 </template>
 
@@ -64,7 +93,8 @@ export default {
                 startDate: "",
                 endDate: "",
                 startTime: "",
-                endTime: ""
+                endTime: "",
+                classes: "eBlue"
             },
             isAllDay: false,
             selected: null,
@@ -74,7 +104,12 @@ export default {
                 {value: "weekly", text: "Weekly"},
                 {value: "monthly", text: "Monthly"},
             ],
-            newStartDate: ''
+            newStartDate: '',
+            // setColorTheme: {
+            //     classes: ''
+            // }
+            colorClass: '',
+            color: '#AA96DA'
         }
     },
     mounted() {
@@ -105,7 +140,9 @@ export default {
     methods: {
         ...mapActions(['getAllEvents']),
         addItem() {
-
+            let newStartDate;
+            let newEndDate;
+            
             const userInputStart = this.form.startTime
             const userInputEnd = this.form.endTime
 
@@ -114,18 +151,40 @@ export default {
             const minutes_start = userInputStart.slice(3)
 
             const date_start = new Date(this.form.startDate)
-            date_start.setHours(hours_start, minutes_start)
-            this.form.startDate = date_start
+            // date_start.setHours(hours_start, minutes_start)
+            if(this.isAllDay){
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+            }else{
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+            }
+
+            this.form.startDate = newStartDate.toUTCString()
 
             /// setting end date 
             const hours_end = userInputEnd.slice(0,2)
             const minutes_end = userInputEnd.slice(3)
 
             const date_end = new Date(this.form.endDate)
-            date_end.setHours(hours_end, minutes_end)
-            this.form.endDate = date_end
+            // date_end.setHours(hours_end, minutes_end)
+            if(this.isAllDay){
+                newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+            } else{
+                newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+            }
+            this.form.endDate = newEndDate.toUTCString()
+            console.log(this.form.endDate)
 
-
+            // this.form.classes= this.colorClass
+            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            .then(response => {
+                console.log("NEW EVENTS",response.data.events)
+                // "refreshes" the calendar and shows new event that was added
+                this.$store.dispatch('getAllEvents')
+                this.$store.commit('setShowAddModal', false)
+                this.$bvModal.hide('add-item')
+            })
+            .catch(error => console.log(error))    
+            //////// MONTHLY SETTING
             if(this.selected === 'monthly'){
                 for(let i = 0; i < 12; i++){
                     // const start = new Date(this.form.startDate)
@@ -293,15 +352,7 @@ export default {
                 }
             }
 
-            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
-            .then(response => {
-                console.log("NEW EVENTS",response.data.events)
-                // "refreshes" the calendar and shows new event that was added
-                this.$store.dispatch('getAllEvents')
-                this.$store.commit('setShowAddModal', false)
-                this.$bvModal.hide('add-item')
-            })
-            .catch(error => console.log(error))     
+ 
 
         },
         cancel() {
@@ -312,8 +363,10 @@ export default {
             if(this.selected === 'weekly'){
                 this.$bvModal.show('weekly-settings')                
             }
-
-        }
+        },
+        // setColorTheme(){
+        //     // this.colorClass = 
+        // }
     }
 }
 </script>
@@ -347,5 +400,23 @@ export default {
 
 }
 
+#color-dropdown-item{
+    padding: 10px !important;
+}
+
+.dropdown-menu{
+    /* background: orange !important; */
+    min-width: 5rem !important;
+}
+
+.color-dropdown{
+    padding: 10px 10px 10px 10px;
+    border-radius: 4px !important;
+}
+
+.color-dropdown:hover{
+    background: #e7e7e7 !important;
+    /* padding: 10px; */
+}
 
 </style>

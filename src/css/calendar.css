@@ -128,8 +128,10 @@ having to override as much.
 
 .theme-default .cv-item .startTime,
 .theme-default .cv-item .endTime {
-	font-weight: bold;
-	color: #666;
+	/* font-weight: bold; */
+	font-family: 'Poppins', sans-serif !important;
+	font-weight: 500 !important;
+	color: rgb(255, 255, 255) !important;
 }
 
 /* Drag and drop */

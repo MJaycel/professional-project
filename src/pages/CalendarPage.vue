@@ -24,7 +24,7 @@
             <div>
                 <calendar-view
                     :show-date="showDate"
-                    :items='items'
+                    :items= this.$store.state.items
                     :show-times= true
                     @click-date="clickdate"
                     :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
@@ -94,7 +94,8 @@
 import { CalendarView} from "vue-simple-calendar"
 import { mapState } from "vuex"
 import AddEvent from '@/components/AddEvent.vue'
-import axios from 'axios'
+import {mapActions} from 'vuex'
+// import axios from 'axios'
 
 // require("vue-simple-calendar/static/css/default.css")
 // require("vue-simple-calendar/static/css/holidays-us.css")
@@ -137,11 +138,11 @@ export default ({
         ...mapState(['showAddModal','date','item_id','showEditModal'])
     },
     mounted() {
-        // this.$store.dispatch('getAllEvents'
+        this.$store.dispatch('getAllEvents')
         this.getAllEvents()
     },
     methods: {
-        // ...mapActions(['getAllEvents']),
+        ...mapActions(['getAllEvents']),
 
         setShowDate(d) {
             this.showDate = d;
@@ -152,18 +153,18 @@ export default ({
             this.clickDate = new Date(d)
             this.$store.commit('setDate', this.clickDate)
         },
-        getAllEvents() {
-        //////get all events
-            let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/calendar/${userId}`)
-                .then(response=> {
-                    console.log('EVENTS', response.data)
-                    this.items = response.data
-                    // context.commit('setCalendarItems', response.data)
-                    // context.commit("SET_EVENTS", response.data)
-                })
-                .catch(error => console.log(error))     
-        }
+        // getAllEvents() {
+        // //////get all events
+        //     let userId = localStorage.getItem('userId')
+        //     axios.get(`http://localhost:3030/calendar/${userId}`)
+        //         .then(response=> {
+        //             console.log('EVENTS', response.data)
+        //             this.items = response.data
+        //             // context.commit('setCalendarItems', response.data)
+        //             // context.commit("SET_EVENTS", response.data)
+        //         })
+        //         .catch(error => console.log(error))     
+        // }
 
     }
 })

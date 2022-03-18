@@ -2,11 +2,13 @@
     <div>
         <b-modal id="task-details-modal" hide-footer centered hide-header-close hide-header @hide="hideModal">
             <!-- <p class="my-4 modal_item_title">{{this.taskForm.item_title}}</p> -->
+            <!-- <i class="fa-solid fa-circle"></i> -->
             <div>
                 <div class="col-5 float-right" style="margin-bottom:10px;">
                     <form v-if="progress === 'In Progress'" :class="orange" class="mt-2" style="border-radius:20px;">
                         <select  class="progress_select orange_border" v-model="progress">
                             <option v-for="(option,idx) in options" :key="idx" class="p_options">
+
                                 {{option.text}}
                             </option>                        
                         </select>
@@ -51,10 +53,13 @@
                         </div>
                         <div>
                             <form v-if="priority === 'Low Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
-                                <select class="priority_select" v-model="priority">
+                                  <!-- <label class="input-group-text" for=""><i class="fa-solid fa-circle"></i></label> -->
+
+                                <select class="priority_select" v-model="priority" data-show-content="true">
                                     <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
-                                            {{option.text}}
+                                           {{option.text}}
                                     </option>                        
+
                                 </select>
                             </form>  
 
@@ -161,7 +166,8 @@ export default ({
                 priorityLevel: '',
                 progress: '',
                 isComplete: '',
-                inCalendar: false
+                inCalendar: false,
+                classes: ''
 
             },
             userId: localStorage.getItem('userId'),
@@ -182,7 +188,7 @@ export default ({
                 {idx:3,value: 'Low Priority', text: 'Low Priority'}           
             ],
             dueDate: '',
-            noDate: false
+            noDate: false,
         }
     },
     computed: {
@@ -253,6 +259,7 @@ export default ({
             } else {
                 this.taskForm.isComplete = false
             }
+            this.taskForm.classes = 'eBlue'
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}`, this.taskForm)
             .then(response => {

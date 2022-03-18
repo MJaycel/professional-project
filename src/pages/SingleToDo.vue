@@ -229,7 +229,8 @@ export default ({
             },
             addDueDate:{
                 startDate: '',
-                inCalendar: false
+                inCalendar: false,
+                classes: ''
             },
             calForm: {
                 startDate: '',
@@ -333,6 +334,13 @@ export default ({
                 // create p5 instance -- components/CircularProgress.js
                 new P5(donutChart.main);
             }  
+        },
+        getData() {
+            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}`)
+            .then(response => {
+                console.log(response.data[0])
+            })
+            .catch(error => console.log(error))
         },
 
         ///////////// GET LIST DATA 
@@ -551,14 +559,16 @@ export default ({
             console.log('due date',this.addDueDate.startDate)
             let userId = localStorage.getItem('userId')
 
-            this.getItem(id)
+            // this.getItem(id)
             this.addDueDate.inCalendar = true
+            this.addDueDate.classes = 'eBlue'
 
             
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
                 this.getListData()
+                // this.getData()
                 this.addItemtoCal()
                 this.$refs.date_dropdown.hide()
                 console.log('item edited', response.data)
@@ -595,6 +605,8 @@ export default ({
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
+            this.calForm.classes = 'eBlue'
+
             axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
             .then(response => {
                 console.log("NEW EVENTS",response.data.events)

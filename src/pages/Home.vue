@@ -1,7 +1,8 @@
 <template>
     <div class="container pt-5">
         <h2>Welcome, You are logged in!</h2>
-        <!-- <b-button @click="logout()">Logout</b-button> -->
+                    
+ <!-- <b-button @click="logout()">Logout</b-button> -->
         <router-link :to="{name: 'profile',params: {id: this.userId} }">Profile</router-link> |
         <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
         <router-link :to="{name: 'oldCal',params: {id: this.userId} }">Old Calendar</router-link> |
@@ -20,6 +21,7 @@
         <Clock/>
     </div>
 </template>
+
 
 <script>
 import axios from 'axios'
@@ -40,6 +42,7 @@ export default {
     },
 
     mounted(){
+
         this.getQuotes();
         this.getDate();
 

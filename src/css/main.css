@@ -37,3 +37,47 @@ input:focus{
    text-decoration: underline !important;
 }
 
+
+/* color theme classes */
+.eGreen{
+   background: #5EBC62 !important;
+   color: white !important;
+}
+
+.eDarkGreen{
+   background: #278A2B !important;
+   color: white !important;
+}
+.ePurple{
+   background: #AA96DA !important;
+   color: white !important;
+}
+.eYellow{
+   background: #FFD74A !important;
+   color: white !important;
+}
+.eBlue{
+   background: #259EE2 !important;
+   color: white !important;
+}
+.eViolet{
+   background: #6F6EAD !important;
+   color: white !important;
+}
+.eRed{
+   background: #F11F1F !important;
+   color: white !important;
+}
+.ePink{
+   background: #F0A1A1 !important;
+   color: white !important;
+}
+.eOrange{
+   background: #F99500 !important;
+   color: white !important;
+}
+.eDarkBlue{
+   background: #0F5F8C !important;
+   color: white !important;
+}
+

@@ -9,6 +9,16 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap-vue/dist/bootstrap-vue-icons.min.css'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faCoffee)
+
+Vue.use('font-awesome-icon', FontAwesomeIcon)
+
 Vue.use(BootstrapVue )
 Vue.use(VueYouTubeEmbed)
 Vue.use(BootstrapVueIcons)
