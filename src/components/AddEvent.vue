@@ -67,10 +67,17 @@
             </div>
         </b-modal>
 
-        <!-- <b-modal id="weekly-settings">
+        <b-modal id="weekly-settings" hide-footer>
             <p>Occurs every week until: </p>
-            <b-form-input  style="width: 460px; border-radius: 4px;" v-model="newStartDate" type="date"></b-form-input>
-        </b-modal> -->
+            <b-form-input  style="width: 460px; border-radius: 4px;" v-model="weekly_until" type="date"></b-form-input>
+            <b-button @click="setUntil">save</b-button>
+        </b-modal>
+
+        <b-modal id="daily-settings" hide-footer>
+            <p>Occurs daily until: </p>
+            <b-form-input  style="width: 460px; border-radius: 4px;" v-model="daily_until" type="date"></b-form-input>
+            <b-button @click="setUntil">save</b-button>
+        </b-modal>
     </div>
 </template>
 
@@ -104,7 +111,9 @@ export default {
                 {value: "weekly", text: "Weekly"},
                 {value: "monthly", text: "Monthly"},
             ],
-            newStartDate: '',
+            weekly_until: '',
+            daily_until: '',
+            difference: '',
             // setColorTheme: {
             //     classes: ''
             // }
@@ -254,7 +263,7 @@ export default {
             ///// found a solution === turn date to UTC
 
             if(this.selected === 'weekly'){
-                for(let i = 0; i < 7; i++){
+                for(let i = 0; i < this.difference; i++){
 
                     ////setting start date
                     const start = new Date(this.form.startDate)
@@ -328,7 +337,7 @@ export default {
 
                 // }
                 ///////Saving in database /////
-                for(let i = 0; i < 7; i++){
+                for(let i = 0; i < this.difference; i++){
                     const start = new Date(this.form.startDate)
                     start.setDate(start.getDate() + 1)
                     this.form.startDate = start
@@ -363,7 +372,34 @@ export default {
             if(this.selected === 'weekly'){
                 this.$bvModal.show('weekly-settings')                
             }
+            if(this.selected === 'daily'){
+                this.$bvModal.show('daily-settings')                
+            }
         },
+        setUntil(){
+            console.log('until', this.weekly_until)
+            console.log('startDate', this.form.startDate)
+            this.getDiff()
+        },
+        getDiff() {
+            const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+            if(this.selected === 'weekly'){
+                const a = new Date(this.weekly_until)
+                const b = new Date(this.form.startDate)
+    
+                this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000) + 1)
+                console.log(this.difference)
+            }
+
+            if(this.selected === 'daily'){
+                const a = new Date(this.daily_until)
+                const b = new Date(this.form.startDate)
+    
+                this.difference = Math.floor((a - b) / _MS_PER_DAY)
+                console.log(this.difference)            
+                }
+        }
+
         // setColorTheme(){
         //     // this.colorClass = 
         // }
