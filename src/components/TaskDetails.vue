@@ -147,10 +147,6 @@ import {mapState,mapActions} from 'vuex'
 import axios from 'axios'
 export default ({
     name:'TaskDetails',
-    // props: [
-    //     'id',
-    //     'list_id'
-    // ],
     props: {
         id: String,
         list_id: String,

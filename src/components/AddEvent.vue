@@ -94,7 +94,7 @@ export default {
                 endDate: "",
                 startTime: "",
                 endTime: "",
-                classes: "eBlue"
+                classes: "ePurple"
             },
             isAllDay: false,
             selected: null,

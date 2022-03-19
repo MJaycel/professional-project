@@ -71,7 +71,7 @@
                             <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>                            
                         </div>
                     </template>
-                    <ul id="right-click-menu" tabindex="-1" ref="left" v-if="viewMenu" @blur="viewMenu=false" :style="{top:top,left:left}">
+                    <ul id="left-click-menu" tabindex="-1" ref="left" v-if="viewMenu" @blur="viewMenu=false" :style="{top:top,left:left}">
                         <!-- <li @click="editList">Edit</li> -->
                         <!-- <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li> -->
                         <li >Edit</li> 

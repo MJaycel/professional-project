@@ -25,7 +25,7 @@
             dismissible
             variant="success"
             @dismissed="dismissCountDown=0"
-            @dismiss-count-down="countDownChanged"
+            @dismiss-count-down="countDownChanged()"
             >
             Event deleted
             </b-alert>
@@ -97,8 +97,10 @@
 
         <b-modal id="read-event" hide-backdrop hide-header centered hide-footer  hide-header-close content-class="shadow" >
             <div class="d-flex justify-content-between">
-                <h4>{{this.event.title}}</h4> 
-                <div>
+                <div class='col'>
+                    <h4>{{this.event.title}}</h4> 
+                </div>
+                <div class="col-3 d-flex justify-content-end">
                 <b-icon  style="width: 20px;height: 20px; margin-right: 20px;" icon="pencil-square" @click="showEdit(event._id)"></b-icon>       
                 <b-icon style="width: 20px;height: 20px;"  @click="showDelete(event._id)" icon="trash-fill"></b-icon>                            
                 </div>
@@ -118,7 +120,7 @@
         </b-modal>
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
-        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData" :alert="showAlert"/>
+        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='item_list_id' :alert="showAlert"/>
 
 
 
@@ -178,7 +180,13 @@ export default ({
                 id: ''
             },
             event: {},
-            noEndDate: false
+            noEndDate: false,
+            lists: [],
+            eventEndDate: '',
+            eventStartDate: '',
+            item_list_id: '',
+            list_items: [],
+            taskId : ''
 
         }
     },
@@ -209,6 +217,8 @@ export default ({
             // }
             this.showEvent(this.item.id)
             this.$bvModal.show('read-event')
+        this.getLists()
+
         },
         showEvent(id) {
             axios.get(`http://localhost:3030/calendar/event/${id}`)
@@ -268,23 +278,45 @@ export default ({
             }) 
             .catch(error => console.log(error))
         },
-        ////// Dissmissable Alert //////
-        countDownChanged(dismissCountDown) {
-        this.dismissCountDown = dismissCountDown
-        },
-        showAlert() {
-        this.dismissCountDown = this.dismissSecs
-        },
         showTaskDetails(id){
             console.log('details id', id)
             console.log('show Task', this.$store.state.showTask)
 
             this.id = id
-            this.list_id = this.listId
+            this.list_id = this.item_list_id
             this.$store.commit('setShowTask', true)
             
         },
-    }
+        getLists(){
+            // let userId = localStorage.getItem('userID')
+            //// get all lists then loop through it and find list id with the item id 
+            axios.get(`http://localhost:3030/todo/${this.userId}`)
+                .then(response => {
+                    this.lists = response.data
+                    console.log('Lists', response.data) 
+                    // this.listForm.list_title = 
+                    // this.lists.filter(list => this.listForm.list_title = list.list_title)
+                    Array.from(this.lists).forEach((list)=> {
+                        this.list_items = list.items
+                        this.list_items.filter(item => {
+                            if(item._id === this.event.item_id){
+                                this.item_list_id = list._id
+                            }
+                        })
+                    })
+                            console.log('list id', this.item_list_id)
+
+                }) 
+                .catch(error => console.log(error))
+        },
+        ////// Dissmissable Alert //////
+        countDownChanged(dismissCountDown) {
+            this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+            this.dismissCountDown = this.dismissSecs
+        }
+    },
 })
 </script>
 
