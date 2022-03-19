@@ -2,6 +2,47 @@
     <div>
         <!-- EDIT ITEM MODAL -->
         <b-modal id="edit-item" hide-footer centered hide-header-close no-close-on-backdrop title="Edit Event">
+            <template #modal-header>
+                <h3>Edit Event</h3>
+                <b-dropdown id="dropdown-1"  v-b-tooltip.hover title="Select event color" class="color-dropdown">
+                    <template #button-content>
+                        <p v-if="form.classes==='ePurple'" style="margin: 0px !important;"><i style="color:#AA96DA;" class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eViolet'" style="margin: 0px !important;"><i style="color:#6F6EAD;"  class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eGreen'" style="margin: 0px !important;"><i style="color:#5EBC62;" class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eDarkGreen'" style="margin: 0px !important;"><i style="color:#278A2B;" class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eYellow'" style="margin: 0px !important;"><i style="color:#FFD74A;"  class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eOrange'" style="margin: 0px !important;"><i style="color:#F99500;"  class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eBlue'" style="margin: 0px !important;"><i style="color:#259EE2;"  class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eDarkBlue'" style="margin: 0px !important;"><i style="color:#0F5F8C;"  class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='ePink'" style="margin: 0px !important;"><i style="color:#F0A1A1;"  class="fa-solid fa-circle"></i></p>
+                        <p v-if="form.classes==='eRed'" style="margin: 0px !important;"><i style="color:#F11F1F;"  class="fa-solid fa-circle"></i></p>
+
+                        <!-- <p style="margin: 0px !important;"><i :class="form.classes" class="fa-solid fa-circle"></i></p> -->
+
+                    </template>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='eGreen'),(color = '#5EBC62')" id="color-dropdown-item" value="eGreen"><i class="fa-solid fa-circle" style="color:#5EBC62;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eDarkGreen'),(color = '#278A2B')" id="color-dropdown-item" value="eDarkGreen"><i class="fa-solid fa-circle" style="color:#278A2B;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='ePurple'),(color = '#AA96DA')" id="color-dropdown-item" value="ePurple"><i class="fa-solid fa-circle" style="color:#AA96DA;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eViolet'),(color = '#6F6EAD')" id="color-dropdown-item" value="eViolet"><i class="fa-solid fa-circle" style="color:#6F6EAD;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='eYellow'),(color = '#FFD74A')" id="color-dropdown-item" value="eYellow"><i class="fa-solid fa-circle" style="color:#FFD74A;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eOrange'),(color = '#F99500')" id="color-dropdown-item" value="eOrange"><i class="fa-solid fa-circle" style="color:#F99500;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='eBlue'),(color = '#259EE2')" id="color-dropdown-item" value="eBlue"><i class="fa-solid fa-circle" style="color:#259EE2;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eDarkBlue'),(color = '#0F5F8C')" id="color-dropdown-item" value="eDarkBlue"><i class="fa-solid fa-circle" style="color:#0F5F8C;"></i></b-dropdown-item>                        
+                    </div>
+                    <div class="d-flex flex-between" style="width: 40px;">
+                        <b-dropdown-item @click="(form.classes='ePink'),(color = '#F0A1A1')" id="color-dropdown-item" value="ePink"><i class="fa-solid fa-circle" style="color:#F0A1A1;"></i></b-dropdown-item>
+                        <b-dropdown-item @click="(form.classes='eRed'),(color = '#F11F1F')" id="color-dropdown-item" value="eRed"><i class="fa-solid fa-circle" style="color:#F11F1F;"></i></b-dropdown-item>                        
+                    </div>
+                    <!-- <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item> -->
+                </b-dropdown>
+            </template>
             <b-form-input v-model="form.title" placeholder="Add a title" class="title__input" ></b-form-input>
             <br>
             <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>
@@ -70,7 +111,8 @@ export default {
                 startDate: "",
                 endDate: "",
                 startTime: "",
-                endTime: ""
+                endTime: "",
+                classes: ""
             },
             isAllDay: false,
             selected: null,
@@ -82,7 +124,9 @@ export default {
             ],
             newStartDate: '',
             start: '',
-            end: ''
+            end: '',
+            color: ''
+
         }
     },
     computed: {
@@ -104,6 +148,9 @@ export default {
                 this.form.description = response.data.description
                 this.form.startTime = response.data.startTime
                 this.form.endTime = response.data.endTime
+                this.form.classes = response.data.classes
+
+                // console.log('color', this.form.classes)
 
                 const start = new Date(response.data.startDate)
                 
