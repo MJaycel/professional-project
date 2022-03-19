@@ -189,7 +189,18 @@ export default ({
             ],
             dueDate: '',
             noDate: false,
-            event_id: ''
+            event_id: '',
+
+            calForm: {
+                startDate: '',
+                endDate: '',
+                title: '',
+                description: '',
+                isComplete: false,
+                classes : '',
+                item_id: ''
+            },
+            itemInCalendar: false
         }
     },
     computed: {
@@ -222,10 +233,16 @@ export default ({
                 this.taskForm.startDate = this.item.startDate
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
+                this.taskForm.inCalendar = this.item.inCalendar
+
+                if(this.taskForm.inCalendar === true){
+                    this.itemInCalendar = true
+                }
 
                 this.progress = this.taskForm.progress
 
                 this.priority = this.taskForm.priorityLevel
+        
 
                 // if(this.taskForm.startDate != null){
                 //     const date = new Date(this.taskForm.startDate).toDateString().slice(3)
@@ -250,10 +267,6 @@ export default ({
             this.taskForm.progress = this.progress
             this.taskForm.priorityLevel = this.priority
 
-            if(this.taskForm.startDate != null){
-                this.taskForm.inCalendar = true
-            }
-
 
             this.taskForm.progress = this.progress
             if(this.taskForm.progress === 'Completed'){
@@ -263,6 +276,10 @@ export default ({
             }
             this.taskForm.classes = 'eBlue'
 
+            if(this.taskForm.startDate != null){
+                this.taskForm.inCalendar = true
+            }
+
             if(this.taskForm.startDate === null){
                 this.deleteEvent()
             }
@@ -271,6 +288,7 @@ export default ({
             .then(response => {
                 // this.getListData()
                 // this.$refs.date_dropdown.hide()
+                this.addItemtoCal()
                 console.log('item edited', response.data)
                 this.$bvModal.hide('task-details-modal')
                 this.$store.commit('setShowTask', false)
@@ -323,7 +341,38 @@ export default ({
                     this.event_id = item._id
                 }    
             })
-        }
+        },
+
+        addItemtoCal() {
+            // this.getItem()
+            this.findInEvents()
+            // let userId = localStorage.getItem('userId')
+            this.calForm.startDate = this.taskForm.startDate
+            this.calForm.title = this.taskForm.title
+            this.calForm.description = this.taskForm.description
+            this.calForm.isComplete = this.taskForm.isComplete
+            this.calForm.classes = 'eBlue'
+
+            this.calForm.item_id = this.id
+
+
+            if(this.itemInCalendar === true){
+                axios.post(`http://localhost:3030/calendar/edit/event/${this.event_id}` , this.calForm )
+                .then(response => {
+                    console.log("Edit item due date",response.data.events)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+            } else {
+                let userId = localStorage.getItem('userId')
+                axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
+                .then(response => {
+                    console.log("Task added to calendar",response.data)
+                })
+                .catch(error => console.log(error))     
+            }
+        },
     },
 })
 </script>
