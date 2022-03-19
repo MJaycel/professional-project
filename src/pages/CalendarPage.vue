@@ -20,6 +20,15 @@
                 </div>
             </div>
             <div class="col-11 mt-5" style="margin-left: 1.5em">
+            <b-alert class="m-1"
+            :show="dismissCountDown"
+            dismissible
+            variant="success"
+            @dismissed="dismissCountDown=0"
+            @dismiss-count-down="countDownChanged"
+            >
+            Event deleted
+            </b-alert>
             <!-- calendar div -->
             <div>
                 <calendar-view
@@ -29,6 +38,7 @@
                     @click-date="clickdate"
                     :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
                     :displayPeriodUom="period"
+                    @click-item='clickItem'
                     class="theme-default cal">
                     <template #header="{ headerProps }">
                         <div class="row justify-content-between">
@@ -84,7 +94,31 @@
             </div>
 
         </div>
+
+        <b-modal id="read-event" hide-backdrop hide-header centered hide-footer  hide-header-close content-class="shadow" >
+            <div class="d-flex justify-content-between">
+                <h4>{{this.event.title}}</h4> 
+                <div>
+                <b-icon  style="width: 20px;height: 20px; margin-right: 20px;" icon="pencil-square" @click="showEdit(event._id)"></b-icon>       
+                <b-icon style="width: 20px;height: 20px;"  @click="showDelete(event._id)" icon="trash-fill"></b-icon>                            
+                </div>
+            </div>
+
+            <p>{{this.event.description}}</p>
+            <p v-if="this.eventEndDate === this.eventStartDate">{{this.eventStartDate}}</p>
+            <p v-if="this.eventEndDate != this.eventStartDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
+            <p>{{this.event.startTime}}</p>
+            <p>{{this.event.endTime}}</p>
+        </b-modal>
+
+        <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
+            <p>Are you sure you want to delete this event?</p>
+            <b-button @click="hideDelete">Cancel</b-button>
+            <b-button @click="deleteEvent()">Delete</b-button>
+        </b-modal>
         <AddEvent v-if="showAddModal"/>
+        <EditEvent v-if="showEditModal" :id='id'/>
+
 
      
     </div>
@@ -94,8 +128,10 @@
 import { CalendarView} from "vue-simple-calendar"
 import { mapState } from "vuex"
 import AddEvent from '@/components/AddEvent.vue'
+import EditEvent from '@/components/EditEvent.vue'
+
 import {mapActions} from 'vuex'
-// import axios from 'axios'
+import axios from 'axios'
 
 // require("vue-simple-calendar/static/css/default.css")
 // require("vue-simple-calendar/static/css/holidays-us.css")
@@ -108,10 +144,13 @@ export default ({
     components: {
         CalendarView,
         // CalendarViewHeader,
-        AddEvent
+        AddEvent,
+        EditEvent
     },
     data() {
         return{
+            dismissSecs: 5,
+            dismissCountDown: 0,
             showDate: new Date(),
             userId: localStorage.getItem('userId'),
             period: 'month',
@@ -130,7 +169,11 @@ export default ({
                 'offset3',
                 'offset4',
                 'offset5',
-            ]
+            ],
+            item: {
+                id: ''
+            },
+            event: {}
 
         }
     },
@@ -153,19 +196,64 @@ export default ({
             this.clickDate = new Date(d)
             this.$store.commit('setDate', this.clickDate)
         },
-        // getAllEvents() {
-        // //////get all events
-        //     let userId = localStorage.getItem('userId')
-        //     axios.get(`http://localhost:3030/calendar/${userId}`)
-        //         .then(response=> {
-        //             console.log('EVENTS', response.data)
-        //             this.items = response.data
-        //             // context.commit('setCalendarItems', response.data)
-        //             // context.commit("SET_EVENTS", response.data)
-        //         })
-        //         .catch(error => console.log(error))     
-        // }
+        clickItem(originalItem){
+            this.item.id = originalItem.originalItem._id
+            this.showEvent(this.item.id)
+            this.$bvModal.show('read-event')
+        },
+        showEvent(id) {
+            axios.get(`http://localhost:3030/calendar/event/${id}`)
+            .then(response => {
+                console.log('Found Event', response.data)
+                this.event = response.data
 
+                const event_start_date = new Date(response.data.startDate)
+                this.eventStartDate = event_start_date.toDateString().slice(0,10)
+
+                const event_end_date = new Date(response.data.endDate)
+                this.eventEndDate = event_end_date.toDateString().slice(0,10)
+
+                // console.log(this.eventDate)
+
+            }) 
+            .catch(error => console.log(error))
+        },
+        showEdit(id) { 
+            this.$store.commit('setShowEditModal',true)
+            this.$bvModal.hide('read-event')
+            this.id = id
+            console.log(this.id)
+        },
+        showDelete(id) {
+            this.id = id
+            console.log(this.$route.params.id, this.id)
+            this.$bvModal.show('delete-event')
+
+            // console.log('delete')
+        },
+        hideDelete() {
+            this.$bvModal.hide('delete-event')
+        },
+        deleteEvent() {
+            axios.delete(`http://localhost:3030/calendar/delete/user/${this.$route.params.id}/event/${this.id}`)
+            .then(response => {
+                console.log('Deleted', response)
+
+                
+                this.$store.dispatch('getAllEvents')
+                this.$bvModal.hide('read-event')
+                this.hideDelete()
+                this.showAlert()
+            }) 
+            .catch(error => console.log(error))
+        },
+        ////// Dissmissable Alert //////
+        countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+        this.dismissCountDown = this.dismissSecs
+        },
     }
 })
 </script>

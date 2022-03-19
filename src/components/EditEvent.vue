@@ -54,9 +54,10 @@ import {mapState, mapActions} from 'vuex'
 
 export default {
     name: "AddEvent",  
-    props: [
-        'id'
-    ],
+    props: {
+        id: String
+        
+    },
     components:{
     },
     data() {
