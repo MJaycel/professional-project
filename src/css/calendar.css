@@ -81,6 +81,7 @@ having to override as much.
 	border-radius: 0.5em;
 	background-color: #e7e7ff;
 	text-overflow: ellipsis;
+	/* padding-left: 20px !important; */
 
 	/* max-width:500px; */
 }
@@ -99,6 +100,7 @@ having to override as much.
 .theme-default .cv-item.toBeContinued::after {
 	content: " \21e2 ";
 	color: white;
+
 }
 
 .theme-default .cv-item.toBeContinued {
@@ -133,7 +135,6 @@ having to override as much.
 	font-family: 'Poppins', sans-serif !important;
 	font-weight: 500 !important;
 	color: rgb(255, 255, 255) !important;
-
 }
 
 /* Drag and drop */

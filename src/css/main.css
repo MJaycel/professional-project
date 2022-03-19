@@ -84,7 +84,19 @@ input:focus{
 .item-event{
    background: #259EE2 !important;
    color: white !important;
-   background-image: url('../assets/task.png');
-   background-repeat: no-repeat;
+   /* background-image: url('../assets/task.png') !important;
+   background-repeat: no-repeat !important;
+   background-size: 20px 20px !important; */
+   /* background-origin: padding-box !important; */
+   /* text-align: center; */
+}
+
+.item-event-bg{
+   background-image: url('../assets/task.png') !important;
+   background-repeat: no-repeat !important;
+   background-size: 20px 20px !important;   
+   /* margin-left: 40px; */
+	padding-left: 22px !important;
+
 }
 

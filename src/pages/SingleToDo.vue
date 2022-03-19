@@ -527,7 +527,7 @@ export default ({
 
             this.getItem(id)
             this.addDueDate.inCalendar = true
-            this.addDueDate.classes = 'eBlue'   
+            this.addDueDate.classes = 'item-event item-event-bg'   
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
@@ -566,7 +566,7 @@ export default ({
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
-            this.calForm.classes = 'item-event'
+            this.calForm.classes = 'item-event item-event-bg'
 
             this.calForm.item_id = id 
 

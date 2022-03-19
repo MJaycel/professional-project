@@ -270,13 +270,14 @@ export default ({
             } else {
                 this.taskForm.isComplete = false
             }
-            this.taskForm.classes = 'eBlue'
+            this.taskForm.classes = 'item-event item-event-bg'
 
             if(this.taskForm.startDate != null){
                 this.taskForm.inCalendar = true
             }
 
             if(this.taskForm.startDate === null){
+                this.taskForm.inCalendar = false
                 this.deleteEvent()
             }
 
@@ -337,7 +338,7 @@ export default ({
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
-            this.calForm.classes = 'eBlue'
+            this.calForm.classes = 'item-event item-event-bg'
 
             this.calForm.item_id = this.id
 
