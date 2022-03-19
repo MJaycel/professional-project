@@ -108,7 +108,7 @@
 
             <p>{{this.event.description}}</p>
             <p v-if="noEndDate">{{this.eventStartDate}}</p>
-            <p v-if="!noEndDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
+            <p v-else>{{this.eventStartDate}} - {{this.eventEndDate}}</p>
             <p>{{this.event.startTime}}</p>
             <p>{{this.event.endTime}}</p>
         </b-modal>
