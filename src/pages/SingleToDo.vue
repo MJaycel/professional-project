@@ -121,16 +121,17 @@
                         <b-dropdown id="dropdown-3" no-caret ref="date_dropdown">
                             <template #button-content>
                                 <div>                          
-                                    <p style="padding-top:8px;margin-bottom:0px;font-size:14px;">{{data.item.startDate}}</p>
+                                    <p style="margin-bottom:0px;font-size:14px;" class="today-due" v-if="data.item.startDate === today">Today</p>
+                                    <p style="margin-bottom:0px;font-size:14px;" class="tomorrow-due" v-else-if="data.item.startDate === tomorrow">Tomorrow</p>
+
+                                    <p v-else style="padding-top:8px;margin-bottom:0px;font-size:14px;">{{data.item.startDate}}</p>
                                     <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
                                 </div>            
                             </template>
                             <div>
                                 <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
                                 <div class="d-flex justify-content-end"> 
-                                    <b-button v-if="taskForm.inCalendar === true" style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Edit</b-button>    
-                                    <b-button style="width:100px ; margin:10px;font-size:14px;" @click="dueDate(data.item._id)">Save</b-button>
-
+                                    <b-button style="width:100px ; margin:10px;font-size:14px;" class="addItem__btn" @click="dueDate(data.item._id)">Save</b-button>
                                 </div>
                             </div>
                         </b-dropdown>
@@ -293,7 +294,9 @@ export default ({
             data: {},
             itemInCalendar: false,
             events: [],
-            event_id: ''
+            event_id: '',
+            today: '',
+            tomorrow: ''
         }
     },
     mounted() {
@@ -304,6 +307,13 @@ export default ({
         /// When the page is reloaded while the modal is open the modal stays open (showTask is still true)
         /// To keep modal close after reloading ive set showTask as false
         this.$store.commit('setShowTask',false)
+        this.today = new Date().toDateString().slice(3)
+
+        this.tomorrow = new Date()
+        this.tomorrow.setDate(this.tomorrow.getDate() + 1)
+        this.tomorrow = this.tomorrow.toDateString().slice(3)
+
+        console.log('today is',this.tomorrow)
     },
     computed: {
         ...mapState(['listId', 'completed','priorityValue','showTask'])
@@ -623,7 +633,7 @@ export default ({
                     // console.log(this.$store.state.completed)
                 }
             }
-        },    
+        }
     }
 })
 </script>
@@ -885,6 +895,17 @@ export default ({
     display: block;
     /* position:relative;
     z-index: 9999; */
+}
+
+.today-due{
+    color: #F11F1F;
+    /* background: orange; */
+    padding-top:8px;
+}
+
+.tomorrow-due{
+    color: #259EE2;
+    padding-top: 8px;
 }
 
 </style>
