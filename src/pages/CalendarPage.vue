@@ -115,8 +115,10 @@
 
         <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
             <p>Are you sure you want to delete this event?</p>
-            <b-button @click="hideDelete">Cancel</b-button>
-            <b-button @click="deleteEvent()">Delete</b-button>
+            <div class="float-right">
+                <b-button class="cancel__btn" @click="hideDelete">Cancel</b-button>
+                <b-button class="addItem__btn" @click="deleteEvent()">Delete</b-button>
+            </div>
         </b-modal>
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
