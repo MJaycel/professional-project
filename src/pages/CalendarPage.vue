@@ -98,6 +98,7 @@
         <b-modal id="read-event" hide-backdrop hide-header centered hide-footer  hide-header-close content-class="shadow" >
             <div class="d-flex justify-content-between">
                 <div class='col'>
+                    <h4 v-if="this.event.title === ''">Untitled</h4>
                     <h4>{{this.event.title}}</h4> 
                 </div>
                 <div class="col-3 d-flex justify-content-end">
