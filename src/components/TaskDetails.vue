@@ -330,18 +330,6 @@ export default ({
             }) 
             .catch(error => console.log(error))
         },
-        findInEvents() {
-            this.$store.dispatch('getAllEvents')
-
-            console.log('EVENTS FROM CAL', this.$store.state.items)
-            /// looping through each events and find the item that has the id that is being passed 
-            // if found set event_id as the event that was found and use that id to edit the startDate on the task/event
-            Array.from(this.$store.state.items).forEach((item)=> {
-                if(item.item_id === this.id){
-                    this.event_id = item._id
-                }    
-            })
-        },
 
         addItemtoCal() {
             // this.getItem()
@@ -372,6 +360,18 @@ export default ({
                 })
                 .catch(error => console.log(error))     
             }
+        },
+        findInEvents() {
+            this.$store.dispatch('getAllEvents')
+
+            console.log('EVENTS FROM CAL', this.$store.state.items)
+            /// looping through each events and find the item that has the id that is being passed 
+            // if found set event_id as the event that was found and use that id to edit the startDate on the task/event
+            Array.from(this.$store.state.items).forEach((item)=> {
+                if(item.item_id === this.id){
+                    this.event_id = item._id
+                }    
+            })
         },
     },
 })
