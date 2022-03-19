@@ -131,11 +131,11 @@
         </b-modal>
 
         <b-modal id="delete-item" hide-header centered  hide-footer hide-header-close>
-            <p>Are you sure you want to delete this List?</p>
+            <p>Are you sure you want to delete this Task?</p>
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="$bvModal.hide('delete-item')"> Cancel</b-button>
 
-            <b-button class="delete__list_btn" @click="deleteTask">Delete</b-button>
+            <b-button class="addItem__btn" @click="deleteTask">Delete</b-button>
             </div>
         </b-modal>
     </div>
@@ -292,6 +292,8 @@ export default ({
                 console.log('item edited', response.data)
                 this.$bvModal.hide('task-details-modal')
                 this.$store.commit('setShowTask', false)
+
+                this.$store.dispatch('getAllEvents')
                 // this.$emit('getListData')
                 this.method()
 

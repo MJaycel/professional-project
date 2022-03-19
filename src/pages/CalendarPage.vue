@@ -105,8 +105,8 @@
             </div>
 
             <p>{{this.event.description}}</p>
-            <p v-if="this.eventEndDate === this.eventStartDate">{{this.eventStartDate}}</p>
-            <p v-if="this.eventEndDate != this.eventStartDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
+            <p v-if="noEndDate">{{this.eventStartDate}}</p>
+            <p v-if="!noEndDate">{{this.eventStartDate}} - {{this.eventEndDate}}</p>
             <p>{{this.event.startTime}}</p>
             <p>{{this.event.endTime}}</p>
         </b-modal>
@@ -118,6 +118,8 @@
         </b-modal>
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
+        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData" :alert="showAlert"/>
+
 
 
      
@@ -132,6 +134,7 @@ import EditEvent from '@/components/EditEvent.vue'
 
 import {mapActions} from 'vuex'
 import axios from 'axios'
+import TaskDetails from '@/components/TaskDetails.vue'
 
 // require("vue-simple-calendar/static/css/default.css")
 // require("vue-simple-calendar/static/css/holidays-us.css")
@@ -145,7 +148,8 @@ export default ({
         CalendarView,
         // CalendarViewHeader,
         AddEvent,
-        EditEvent
+        EditEvent,
+        TaskDetails
     },
     data() {
         return{
@@ -173,12 +177,13 @@ export default ({
             item: {
                 id: ''
             },
-            event: {}
+            event: {},
+            noEndDate: false
 
         }
     },
     computed: {
-        ...mapState(['showAddModal','date','item_id','showEditModal'])
+        ...mapState(['listId','showAddModal','date','item_id','showEditModal'])
     },
     mounted() {
         this.$store.dispatch('getAllEvents')
@@ -198,6 +203,10 @@ export default ({
         },
         clickItem(originalItem){
             this.item.id = originalItem.originalItem._id
+
+            // if(originalItem.originalItem.item_id != null){
+            //     this.showTaskDetails(originalItem.originalItem.item_id)
+            // }
             this.showEvent(this.item.id)
             this.$bvModal.show('read-event')
         },
@@ -210,8 +219,13 @@ export default ({
                 const event_start_date = new Date(response.data.startDate)
                 this.eventStartDate = event_start_date.toDateString().slice(0,10)
 
-                const event_end_date = new Date(response.data.endDate)
-                this.eventEndDate = event_end_date.toDateString().slice(0,10)
+                if(response.data.endDate != null){
+                    const event_end_date = new Date(response.data.endDate)
+                    this.eventEndDate = event_end_date.toDateString().slice(0,10)
+                    this.noEndDate = false
+                } else {
+                    this.noEndDate = true
+                }
 
                 // console.log(this.eventDate)
 
@@ -219,10 +233,17 @@ export default ({
             .catch(error => console.log(error))
         },
         showEdit(id) { 
-            this.$store.commit('setShowEditModal',true)
-            this.$bvModal.hide('read-event')
-            this.id = id
-            console.log(this.id)
+
+            if(this.event.item_id != null){
+                this.showTaskDetails(this.event.item_id)
+                this.$bvModal.hide('read-event')
+
+            } else {
+                this.$store.commit('setShowEditModal',true)
+                this.$bvModal.hide('read-event')
+                this.id = id
+                console.log(this.id)
+            }
         },
         showDelete(id) {
             this.id = id
@@ -253,6 +274,15 @@ export default ({
         },
         showAlert() {
         this.dismissCountDown = this.dismissSecs
+        },
+        showTaskDetails(id){
+            console.log('details id', id)
+            console.log('show Task', this.$store.state.showTask)
+
+            this.id = id
+            this.list_id = this.listId
+            this.$store.commit('setShowTask', true)
+            
         },
     }
 })
