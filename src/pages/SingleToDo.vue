@@ -566,7 +566,7 @@ export default ({
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
-            this.calForm.classes = 'eBlue'
+            this.calForm.classes = 'item-event'
 
             this.calForm.item_id = id 
 
