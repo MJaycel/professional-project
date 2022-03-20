@@ -121,6 +121,18 @@
                 <b-button class="addItem__btn" @click="deleteEvent()">Delete</b-button>
             </div>
         </b-modal>
+
+        <b-modal v-if="event.repeat === true" id="delete-repeat-event" hide-header centered  hide-footer hide-header-close>
+            <p>Delete Recurring Event</p>
+            <p>All</p>
+            <p>This Event</p>
+            <div class="float-right">
+                <b-button class="cancel__btn" @click="hideDelete">Cancel</b-button>
+                <b-button class="addItem__btn" @click="deleteEvent()">delete this event</b-button>
+                <b-button class="addItem__btn" @click="deleteAllEvent()">delete all event</b-button>
+
+            </div>
+        </b-modal>
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
         <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='item_list_id' :alert="showAlert"/>
@@ -189,7 +201,8 @@ export default ({
             eventStartDate: '',
             item_list_id: '',
             list_items: [],
-            taskId : ''
+            taskId : '',
+            rId : ''
 
         }
     },
@@ -261,7 +274,12 @@ export default ({
         showDelete(id) {
             this.id = id
             console.log(this.$route.params.id, this.id)
-            this.$bvModal.show('delete-event')
+            if(this.event.repeat === false){
+                this.$bvModal.show('delete-event')
+            } else if (this.event.repeat === true) {
+                this.rId = this.event.recurring_id
+                this.$bvModal.show('delete-repeat-event')
+            }
 
             // console.log('delete')
         },
@@ -311,6 +329,17 @@ export default ({
 
                 }) 
                 .catch(error => console.log(error))
+        },
+        deleteAllEvent(){
+
+            axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${this.rId}`)
+            .then(response => {
+                console.log('all recurring event deleted', response)
+                this.$store.dispatch('getAllEvents')
+                this.$bvModal.hide('delete-repeat-event')
+                this.hideDelete()
+                this.showAlert()
+            })
         },
         ////// Dissmissable Alert //////
         countDownChanged(dismissCountDown) {
