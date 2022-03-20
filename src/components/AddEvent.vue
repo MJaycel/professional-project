@@ -203,6 +203,7 @@ export default {
             }
             this.form.endDate = newEndDate.toUTCString()
             console.log(this.form.endDate)
+            this.form.repeat = true
             this.form.recurring_id = this.eId
             this.postItem()
             for(let i = 0; i < this.difference; i++){
@@ -290,6 +291,8 @@ export default {
             }
             this.form.endDate = newEndDate.toUTCString()
             console.log(this.form.endDate)
+            this.form.repeat = true
+
             this.form.recurring_id = this.eId
             this.postItem()
             for(let i = 0; i < this.difference; i++){
@@ -314,7 +317,9 @@ export default {
         },
         addMonthly() {
             let start_UTC;
-            let end_UTC
+            let end_UTC;
+            this.form.repeat = true
+
             for(let i = 0; i < 12; i++){
                 ////setting start date
                 const start = new Date(this.form.startDate)
