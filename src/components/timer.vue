@@ -2,111 +2,102 @@
   <div class="container center" id="app">
   <div class="center padding-4">
     <h2 class="title">{{message}}</h2>
-    
+   
     <!-- Timer gets displayed up here -->
     <div id="timer2" v-html="time"></div>
     <div class="buttons">
       <button @click="timerRun" v-if="!timerRunning">Start</button>
-      <button @click="timerRun, totalTime = (30 * 60)" v-if="!timerRunning">Total Time 30</button>
+      <button @click="timerRun, minutesSet = (1), totalTime = (1*60)" v-if="!timerRunning">Total Time 30</button>
       <button @click="timerRun, totalTime = (35 * 60)" v-if="!timerRunning">Total Time 35</button>
       <button @click="timerRun, totalTime = (40 * 60)" v-if="!timerRunning">Total Time 40</button>
       <button @click="timerRun, totalTime = (45 * 60)" v-if="!timerRunning">Total Time 45</button>
-
+ 
       <button @click="timerPause" v-if="timerRunning">Pause</button>
-
+ 
       <button @click="timerReset" v-if="timerRunning">Restart</button>
     </div>
   </div>
 </div>
 </template>
-
+ 
 <script>
 export default {
 name: 'Timer',
   data: function() {
       return{
         message: 'Let the countdown begin!!',
-
-        // this is where the user can chose the length of time 
+ 
+        // this is where the user can chose the length of time
         // default total time
         totalTime: (1 * 2),
-
+        minutesSet: 1,
         timerRunning: false,
         timerPaused: false,
-        interval: null
+        interval: null,
+        sessions: false,
+        shortBreakRemaining: 2
     }
   },
-  
-
-
+ 
+ 
+ 
   computed: {
-
+ 
     //function for the timer to display
     time: function() {
       return this.minutes + " : " + this.seconds;
     },
-
-
-
-
+ 
+ 
     // calculates the number of minutes
     minutes: function() {
-
+ 
         // divides the number by the total time by 60 to get the minutes
         var min = Math.floor(this.totalTime / 60);
-
+ 
         // ternary opeartor
         // min is greater or equal to 10 return "0" and the remaining minutes left
         return min >= 10 ? min : '0' + min;
     },
-
-
-
-
+ 
     // calculates the number of minutes
     seconds: function() {
       var sec = this.totalTime - (this.minutes * 60);
       return sec >= 10 ? sec : '0' + sec;
     }
   },
-
-
-
+ 
+ 
+ 
   methods: {
-
+ 
     // buttons for when the timer is running
-
+ 
     timerRun() {
       this.timerRunning = true;
       this.message = 'Greatness is within sight!!!';
-
-
+ 
       this.interval = setInterval( this.countdownTimer , 1000);
-
+ 
       console.log(this.totalTime);
       console.log(this.minutes);
     },
-
-
+ 
     timerPause() {
       this.message = 'Never quit, keep going!!';
       this.timerRunning = false;
       clearInterval(this.interval);
     },
-
-
-
+ 
     timerReset() {
       this.message = 'Let the countdown begin!!';
       this.timerRunning = false;
-
+ 
       clearInterval(this.interval)
-
+ 
       this.totalTime = (25 * 60);
     },
-
-
-    
+ 
     timerCountdown() {
       console.log('Working');
       this.timerRunning = true;
@@ -115,8 +106,8 @@ name: 'Timer',
       setInterval( () => {
         this.timerMinutes--
       }, 60 * 1000)
-      
-      
+     
+     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       // Check if seconds at double zero and then make it a 59 to countdown from.
       // need another method of checking the number while in the loop and then adding a zero on the number under 10
@@ -130,97 +121,96 @@ name: 'Timer',
       //     this.timerSeconds--
       //   }, 1000);
       // }
-
+ 
       if(this.timerSeconds === '00'){
-
+ 
         this.timerSeconds = 59;
-
+ 
         setInterval( () => {
-
+ 
           this.timerSeconds--
-
+ 
         }, 1000);
-
+ 
       } else {
-
+ 
         setInterval( () => {
-
+ 
           this.timerSeconds--
-
+ 
         }, 1000);
       }
-
-      
-
+ 
+     
+ 
 //////////////////////// THIS IS WHERE THE PROBLEM IS //////////////////////////////////////////////////////////////////////////////////////////////////////
     },
-
-
+ 
+ 
     countdownTimer() {
       if (this.timerRunning == true) {
           this.totalTime--;
       }
 
-      /* So the problem is, the code timer doesnt restart properly after taking a break. Once the timer hit's it's breaktime,
-         the timer will infinitely loop in the breaktime (5 seconds in this case), and will not return to the work time (2 seconds)
-         I'm currently using setTimeout() to delay the sessions variable being set to false for the break to 5 seconds but is never
-         set back to true*/
-
       if(this.minutes === '00' && this.seconds === '00'){      
-        
-        var sessions = true;
-
-        if(sessions == true){
+       
+        if(this.sessions === false){
           this.message = 'Goodjob!!! Now take a break!';
-          // need to create the 5 minute timer that auto resets during the break
 
-          console.log(sessions)
-          this.totalTime = ( 1 * 5 ) // this is where the time is changed and is currently set to 5 seconds
+          if(this.shortBreakRemaining === 0){
+            // this is the long break
+            this.message = 'Take a long break!';
+            this.totalTime = (30 * 60)
+            this.shortBreakRemaining = 2
+          }else{
 
-          
-          setTimeout(() => {
+            // this is the default breaktime
+            // this is where the time is changed and is currently set to 2 seconds
+            this.totalTime = ( 1 * 3 ) 
+            this.shortBreakRemaining--
+          }
 
-            // test function
-            this.test()
-          }, 5000);
-
-        } 
-        
-        // if(sessions == false){
-
-        //   this.message = 'Lets go again!';
-
-        //   this.totalTime = ( 1 * 5);
-
-        //   sessions = true;
-        // }
-
-        setInterval( () => {
-          this.timerSeconds--
-        }, 1000);
-      }
-    },
-
-    test(){
-      this.sessions = false;
-      console.log(this.sessions + " test sessions")
-      if(this.sessions == false){
-
-          this.message = 'Lets go again!';
-
-          this.totalTime = ( 1 * 5);
-
-          this.sessions = true;
+          setInterval( () => {
+            this.timerSeconds--
+          }, this.totalTime);
+          this.sessions = true
         }
-    }
 
-    
+        // this is to allow the user to work again
+        else if(this.sessions === true){
+          console.log("WORK AGAIN LOG")
+          this.message = 'Keep pushing forward!';
+ 
+          this.totalTime = (this.minutesSet * 60); //sets 5 second work again
+          console.log(this.minutesSet)
+          setInterval( () => {
+            this.timerSeconds--
+          }, this.totalTime);
+
+          this.sessions = false
+        }
+      }
+    }
+ 
+    // repeat(){
+    //   this.sessions = !this.sessions;
+    //   console.log(this.sessions + " test sessions")
+    //   if(this.sessions === false){
+ 
+    //       this.message = 'test!';
+ 
+ 
+    //       this.sessions = true;
+    //     }
+    // }
+ 
+   
   }
 }
-
-
+ 
+ 
 </script>
-
+ 
 <style scoped>
 .container {
     width: 100%;
@@ -228,7 +218,7 @@ name: 'Timer',
     min-height: 100vh;
     color: #ffffff;
 }
-
+ 
 .padding-4 {
   padding: 40px;
 }
@@ -247,7 +237,7 @@ name: 'Timer',
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
-
+ 
 #timer,
 #timer2{
     font-size: 200px;
@@ -261,7 +251,7 @@ name: 'Timer',
 .buttons {
     text-align: center;
 }
-
+ 
 .buttons button {
     background-color: #363636;
     color: #f5f5f5;

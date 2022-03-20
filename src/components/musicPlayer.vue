@@ -7,7 +7,8 @@
       </h1>
     </header>
     <main>
-      <section class="player">
+
+      <!-- <section class="player">
         <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
         <div class="control">
           <button class="prev" @click="prev">Prev</button>
@@ -20,7 +21,34 @@
         <h3>The Playlist</h3>
         <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
         
+      </section> -->
+
+      <section>
+        
+        <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
+        <div class="player" v-for="song in songs" :key="song._id" >
+          
+          <img :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" width="200" height="200" alt="">
+          <h2>{{song.title}} - {{song.artist}}</h2>
+          
+          <audio :src="song.html_link" controls/>
+
+        </div>
+
+        <img v-bind:src="src/assets/lofi-images/12" alt="">
+
+        <div class="control">
+          <button class="prev" @click="prev">Prev</button>
+          <button class="play" v-if="!isPlaying" @click="play(current)">Play</button>
+          <button class="pause" v-else @click="pause">Pause</button>
+          <button class="play"  @click="loop()">Loop</button>
+          <button class="next" @click="next">Next</button>
+        </div>
+        
+        
       </section>
+
+      <!-- YOUTUBE PLAYER -->
       <div>
         <section>
           <youtube
@@ -121,8 +149,8 @@ export default {
   name: 'MusicPlayer',
   data(){
     return{
+      //-----youtube video player-----//////////////////////////
       videoId,
-      
       videos: [],
       videoDetails:{
         youtube_link: "",
@@ -130,48 +158,77 @@ export default {
         user_id: localStorage.getItem('userId'),
       },
       youtube_link:"",
+      //-----music-----/////////////////////////////////////////
+      isLoop: false,
+      currentTime: 0,
       current:{},
       index: 0,
       isPlaying: false,
-      songs:[
-        {
-        title:'Biscuit',
-        artist: 'Lukrembo',
-        src: require('../assets/Lukrembo - Biscuit [FTUM Release].mp3')
-        },
-        {
-        title:'Serenity',
-        artist: 'Riddiman',
-        src: require('../assets/Serenity - Riddiman.mp3')
-        },
-        {
-        title:'Tranquillity',
-        artist: 'Riddiman',
-        src: require('../assets/Tranquillity - Riddiman.mp3')
-        }
-      
-      ],
-
+      // songs:[{
+      //   title:'Biscuit',
+      //   artist: 'Lukrembo',
+      //   src: require('../assets/Lukrembo - Biscuit [FTUM Release].mp3')
+      //   },
+      //   {
+      //   title:'Serenity',
+      //   artist: 'Riddiman',
+      //   src: require('../assets/Serenity - Riddiman.mp3')
+      //   },
+      //   {
+      //   title:'Tranquillity',
+      //   artist: 'Riddiman',
+      //   src: require('../assets/Tranquillity - Riddiman.mp3')
+      // }],
+      songs: [],
+      test: 'https://professional-project-storage.s3.eu-west-1.amazonaws.com/Lukrembo+-+Biscuit+%5BFTUM+Release%5D.mp3',
       isVisibility: false,
-
       player: new Audio()
+
     }
   },
 
   mounted(){
     this.getAllVideos()
     this.changeLink()
+    this.getAudio()
   },
 
   methods:{
-    play(song){
-      if(typeof song.src != "undefined"){
-        this.current = song;
-        this.player.src = this.current.src;
-      }
+    
+    // play(song){
 
-      this.player.play();
-      this.isPlaying = true;
+    //   if(typeof song === "undefined"){
+    //     this.next()
+    //   }
+
+    //   else if(typeof song.path != "undefined"){
+    //     this.current = song;
+    //     let src = require(`../assets/music/${this.current.path}`)
+    //     // let src = src(`${this.test}`)
+    //     console.log(src)
+    //     this.player.src = src;
+    //   }
+    //   this.player.play();
+    //   this.isPlaying = true;
+    //   console.log("Is playing: ",this.isPlaying)
+
+    //   // this.isPlaying = false;
+      
+    //   if(this.isPlaying == false){
+    //     this.next()
+    //   }
+    // },
+
+    getAudio(){
+      axios
+      .get(`http://localhost:3030/songs`)
+      .then(response => {
+        console.log("music is here", response.data)
+        this.songs = response.data
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
 
     pause(){
@@ -179,10 +236,15 @@ export default {
       this.isPlaying = false;
     },
 
+    loop(){
+     this.isLoop = !this.isLoop
+    },
+
+    
+
     next(){
       this.index++;
-
-      //if the song is less than the index total it brings it to the index 0
+      //if the index is greater than the songs length it brings it to the index 0
       if(this.index > this.songs.length - 1){
         this.index = 0;
       }
@@ -279,7 +341,8 @@ export default {
 
   shuffle(){
     
-  }
+  },
+  
 }
 
 

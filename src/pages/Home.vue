@@ -9,7 +9,7 @@
 
         <router-link :to="{name: 'todo',params: {id: this.userId} }">To Do</router-link> |
         <router-link :to="{name: 'todo_page',params: {id: this.userId} }">TO DO PAGE</router-link> |
-
+        <router-link :to="{name: 'MeditationPage'}">Meditation Page</router-link> |
         <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> | 
         <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link>
         <b-button variant="warning" @click="logout()">Logout</b-button>        

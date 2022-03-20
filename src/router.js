@@ -17,6 +17,7 @@ import ToDo from '@/pages/ToDo.vue'
 import ToDoPage from '@/pages/ToDoPage.vue'
 import SingleToDo from '@/pages/SingleToDo.vue'
 import Profile from '@/pages/user/Profile.vue'
+import Meditation from '@/pages/MeditationPage.vue'
 
 
 
@@ -130,6 +131,11 @@ export default new Router ({
             path:'/PomodoroTimer',
             name: 'PomodoroTimer',
             component: Timer
+        },
+        {
+            path:'/Meditation',
+            name: 'MeditationPage',
+            component: Meditation
         },
         {
             path:'/todo/:id',
