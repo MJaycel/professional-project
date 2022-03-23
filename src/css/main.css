@@ -3,7 +3,7 @@
 height: 100vh ;
 position: sticky;
 top: 0px;
-background: #7BC17E;
+background: #AED9AF;
 padding: 0px !important;
 }
 
@@ -42,48 +42,70 @@ input:focus{
 .eGreen{
    background: #5EBC62 !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 
 .eDarkGreen{
    background: #278A2B !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .ePurple{
    background: #AA96DA !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .eYellow{
    background: #FFD74A !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .eBlue{
    background: #259EE2 !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .eViolet{
    background: #6F6EAD !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .eRed{
    background: #F11F1F !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .ePink{
    background: #F0A1A1 !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .eOrange{
    background: #F99500 !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 .eDarkBlue{
    background: #0F5F8C !important;
    color: white !important;
+   font-size: 14px !important;
+
 }
 
 .item-event{
    background: #259EE2 !important;
    color: white !important;
+   font-size: 14px !important;
+
    /* background-image: url('../assets/task.png') !important;
    background-repeat: no-repeat !important;
    background-size: 20px 20px !important; */
@@ -94,9 +116,8 @@ input:focus{
 .item-event-bg{
    background-image: url('../assets/task.png') !important;
    background-repeat: no-repeat !important;
-   background-size: 20px 20px !important;   
+   background-size: 18px 18px !important;   
    /* margin-left: 40px; */
 	padding-left: 22px !important;
-
 }
 

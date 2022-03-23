@@ -1,10 +1,10 @@
 <template>
     <div>
         <!-- ADD ITEM MODAL -->
-        <b-modal id="add-item" hide-footer centered hide-header-close @hide="cancel" >
-            <template #modal-header>
-                <h3>Add Event</h3>
-                <b-dropdown id="dropdown-1"  v-b-tooltip.hover title="Select event color" class="color-dropdown">
+        <b-modal id="add-item" hide-footer hide-header centered hide-header-close @hide="cancel" >
+            <!-- <template #modal-header>
+                <div class="d-flex justify-content-end">
+                <b-dropdown id="dropdown-1" v-b-tooltip.hover title="Select event color" class="color-dropdown">
                     <template #button-content>
                         <p style="margin: 0px !important;"><i :style="`color:${color};`" class="fa-solid fa-circle"></i></p>
                     </template>
@@ -28,43 +28,173 @@
                         <b-dropdown-item @click="(form.classes='ePink'),(color = '#F0A1A1')" id="color-dropdown-item" value="ePink"><i class="fa-solid fa-circle" style="color:#F0A1A1;"></i></b-dropdown-item>
                         <b-dropdown-item @click="(form.classes='eRed'),(color = '#F11F1F')" id="color-dropdown-item" value="eRed"><i class="fa-solid fa-circle" style="color:#F11F1F;"></i></b-dropdown-item>                        
                     </div>
-                    <!-- <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item> -->
                 </b-dropdown>
-            </template>
-            <b-form-input v-model="form.title" placeholder="Add a title" class="title__input" ></b-form-input>
-            <br>
-            <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>
-            <br>
-            <div class="d-flex justiy-content-between">
-                <div v-if="!isAllDay" style="margin-top: 10px;">
-                    <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                    <b-form-input style="width: 320px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
                 </div>
+            </template> -->
+            <b-tabs pills card>
+                <b-tab title="Event" active style="padding:0px;">
+                    <div class="d-flex justify-content-start" style="margin-top: 20px;">
+                        <b-form-input v-model="form.title" placeholder="Add a title" class="title__input" ></b-form-input>
 
-                <div v-else style="margin-top: 10px;">
-                    <b-form-input style="width: 460px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                    <b-form-input style="width: 460px; margin-top: 16px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                </div>
+                        <b-dropdown id="dropdown-1" v-b-tooltip.hover title="Select event color" class="color-dropdown">
+                            <template #button-content>
+                                <p style="margin: 0px !important;"><i :style="`color:${color};`" class="fa-solid fa-circle"></i></p>
+                            </template>
+                            <div class="d-flex flex-between" style="width: 40px;">
+                                <b-dropdown-item @click="(form.classes='eGreen'),(color = '#5EBC62')" id="color-dropdown-item" value="eGreen"><i class="fa-solid fa-circle" style="color:#5EBC62;"></i></b-dropdown-item>
+                                <b-dropdown-item @click="(form.classes='eDarkGreen'),(color = '#278A2B')" id="color-dropdown-item" value="eDarkGreen"><i class="fa-solid fa-circle" style="color:#278A2B;"></i></b-dropdown-item>                        
+                            </div>
+                            <div class="d-flex flex-between" style="width: 40px;">
+                                <b-dropdown-item @click="(form.classes='ePurple'),(color = '#AA96DA')" id="color-dropdown-item" value="ePurple"><i class="fa-solid fa-circle" style="color:#AA96DA;"></i></b-dropdown-item>
+                                <b-dropdown-item @click="(form.classes='eViolet'),(color = '#6F6EAD')" id="color-dropdown-item" value="eViolet"><i class="fa-solid fa-circle" style="color:#6F6EAD;"></i></b-dropdown-item>                        
+                            </div>
+                            <div class="d-flex flex-between" style="width: 40px;">
+                                <b-dropdown-item @click="(form.classes='eYellow'),(color = '#FFD74A')" id="color-dropdown-item" value="eYellow"><i class="fa-solid fa-circle" style="color:#FFD74A;"></i></b-dropdown-item>
+                                <b-dropdown-item @click="(form.classes='eOrange'),(color = '#F99500')" id="color-dropdown-item" value="eOrange"><i class="fa-solid fa-circle" style="color:#F99500;"></i></b-dropdown-item>                        
+                            </div>
+                            <div class="d-flex flex-between" style="width: 40px;">
+                                <b-dropdown-item @click="(form.classes='eBlue'),(color = '#259EE2')" id="color-dropdown-item" value="eBlue"><i class="fa-solid fa-circle" style="color:#259EE2;"></i></b-dropdown-item>
+                                <b-dropdown-item @click="(form.classes='eDarkBlue'),(color = '#0F5F8C')" id="color-dropdown-item" value="eDarkBlue"><i class="fa-solid fa-circle" style="color:#0F5F8C;"></i></b-dropdown-item>                        
+                            </div>
+                            <div class="d-flex flex-between" style="width: 40px;">
+                                <b-dropdown-item @click="(form.classes='ePink'),(color = '#F0A1A1')" id="color-dropdown-item" value="ePink"><i class="fa-solid fa-circle" style="color:#F0A1A1;"></i></b-dropdown-item>
+                                <b-dropdown-item @click="(form.classes='eRed'),(color = '#F11F1F')" id="color-dropdown-item" value="eRed"><i class="fa-solid fa-circle" style="color:#F11F1F;"></i></b-dropdown-item>                        
+                            </div>
+                        </b-dropdown>
+                    </div>
+                    <br>
+                    <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>
+                    <br>
+                    <div class="d-flex justiy-content-between">
+                        <div v-if="!isAllDay" style="margin-top: 10px;">
+                            <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                            <b-form-input style="width: 320px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
+                        </div>
 
-                <div v-if="!isAllDay" style="margin-top: 10px;">
-                <b-form-input style="width: 130px; margin-left: 15px; border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
-                <b-form-input style="width: 130px; margin-left: 15px; margin-top: 16px; border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                      
-                </div>
+                        <div v-else style="margin-top: 10px;">
+                            <b-form-input style="width: 460px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                            <b-form-input style="width: 460px; margin-top: 16px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
+                        </div>
 
-            </div>
-            <div class="d-flex justify-content-start pt-3">
-                <p>All day</p>
-                <b-form-checkbox style="margin-left:10px;margin-right: 8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
-                </b-form-checkbox>
+                        <div v-if="!isAllDay" style="margin-top: 10px;">
+                        <b-form-input style="width: 130px; margin-left: 15px; border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
+                        <b-form-input style="width: 130px; margin-left: 15px; margin-top: 16px; border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                      
+                        </div>
 
-                <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select>
-            </div>
-            <br>
-            <div class="d-flex justify-content-end">
-                <b-button class="cancel__btn" @click="cancel"> Cancel</b-button>
+                    </div>
+                    <div class="d-flex justify-content-start pt-3">
+                        <p>All day</p>
+                        <b-form-checkbox style="margin-left:10px;margin-right: 8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
+                        </b-form-checkbox>
 
-                <b-button class="addItem__btn" @click="saveItem"> Save</b-button>                
-            </div>
+                        <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select>
+                    </div>
+                    <br>
+                    <div class="d-flex justify-content-end">
+                        <b-button class="cancel__btn" @click="cancel"> Cancel</b-button>
+
+                        <b-button class="addItem__btn" @click="saveItem"> Save</b-button>                
+                    </div>
+                </b-tab>
+
+                <!-- TASK TAB -->
+                <b-tab title="Task" style="padding:0px;">
+                    <div class="row mt-3 d-flex justify-content-start">
+
+                        <b-form-input v-model="taskForm.title" placeholder="Add a title" style="margin-left:25px;margin-bottom:16px" class="modal_item_title col-11" ></b-form-input>
+
+                        <div class="col-4">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Priority</p>
+                        </div>
+                        <div class="col-8">
+
+                            <div class="col d-flex justify-content-start priority_div" style="padding:0px;">
+                                <div>
+                                    <b-icon v-if="priority === 'Low Priority'" icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+                                    <b-icon v-if="priority === 'High Priority'" icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+                                    <b-icon v-if="priority === 'Medium Priority'" icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+
+                                </div>
+                                <div>
+                                    <form class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                        <!-- <label class="input-group-text" for=""><i class="fa-solid fa-circle"></i></label> -->
+
+                                        <select class="priority_select" v-model="priority" data-show-content="true">
+                                            <option v-for="(option,idx) in priorities" :key="idx" class="p_options">
+                                                {{option.text}}
+                                            </option>                        
+
+                                        </select>
+                                    </form>  
+                                </div>
+                            </div>
+                
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Due Date</p>
+                        </div>
+                        <div class="col-8 mt-1 ">
+                            <b-input-group class="date_picker_div">
+                            <b-form-datepicker
+                                class="date_picker"
+                                id="datepicker-buttons"
+                                locale="en"
+                                v-model="taskForm.startDate"
+                                :date-format-options="{ weekday: 'long', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                                </b-form-datepicker>                        
+                                <template v-slot:append>
+                                    <b-button style="background:transparent;border:none;" aria-label="Clear date" @click="taskForm.startDate = null">
+                                    <b-icon icon="x" style="color:black"></b-icon>
+                                    </b-button>
+                                </template>
+                            </b-input-group>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 mt-2">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
+                        </div>
+                        <div class="col-7 mt-2" style="padding: 0px;">
+                            <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
+                            <b-form-textarea v-else class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
+                        </div>                
+                    </div>
+
+                    <div class="row mt-3 d-flex justify-content-start">
+
+                        <div class="col-4">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">List</p>
+                        </div>
+                        <div class="col-8">
+                            <div class="col d-flex justify-content-start priority_div" style="padding:0px;">
+                                <div>
+                                    <form class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                        <select class="list_select" v-model="selectedList">
+                                            <option v-for="list in lists" :key="list._id" :value="list._id" >
+                                                {{list.list_title}}
+                                            </option>                          
+                                        </select>
+                                    </form>  
+                                </div>
+                            </div>
+                
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <b-button class="cancel__btn" style="margin-right: 10px;" @click="cancel"> Cancel</b-button>
+
+                        <b-button class="addItem__btn" @click="addTask"> Save</b-button>                
+                    </div>   
+                </b-tab>
+
+            </b-tabs>
         </b-modal>
 
         <b-modal id="weekly-settings" hide-footer>
@@ -122,11 +252,58 @@ export default {
             //     classes: ''
             // }
             colorClass: '',
-            color: '#AA96DA'
+            color: '#AA96DA',
+
+            // TASKS
+            /// color classes ////
+            orange: 'inProgress',
+            green: 'completed',
+            blue: 'toDo',
+            progress: '',
+            progressOptions: [
+                {idx:1,value: 'Not Started', text: 'Not Started'},
+                {idx:2,value: 'In Progress', text: 'In Progress'},
+                {idx:3,value: 'Completed', text: 'Completed'}
+            ],
+            priority: 'Medium Priority',
+            priorities: [
+                {idx:1,value: 'High Priority', text: 'High Priority'},
+                {idx:2,value: 'Medium Priority', text: 'Medium Priority'},
+                {idx:3,value: 'Low Priority', text: 'Low Priority'}           
+            ],
+            dueDate: '',
+            noDate: false,
+            event_id: '',
+
+            calForm: {
+                startDate: '',
+                endDate: '',
+                title: '',
+                description: '',
+                isComplete: false,
+                classes : '',
+                item_id: ''
+            },
+            itemInCalendar: false,
+            taskForm: {
+                title: '',
+                description: '',
+                startDate: '',
+                priorityLevel: '',
+                progress: '',
+                isComplete: false,
+                inCalendar: false,
+                classes: ''
+            },
+            selectedList: '',
+            lists: [],
+            lastItemId: '',
+            todoLists: []
         }
     },
     mounted() {
         this.$bvModal.show('add-item')
+        this.getAllLists()
         const year = this.$store.state.date.getFullYear()
         const month = this.$store.state.date.getMonth() + 1
         const date = this.$store.state.date.getDate()
@@ -145,7 +322,9 @@ export default {
         }
         this.form.startDate = this.defaultDate
         this.form.endDate = this.defaultDate
+        this.taskForm.startDate = this.defaultDate
         console.log('this is the start date', this.form.startDate)
+
     },
     computed: {
         ...mapState(['showAddModal','date'])
@@ -205,7 +384,7 @@ export default {
             console.log(this.form.endDate)
             this.form.repeat = true
             this.form.recurring_id = this.eId
-            this.postItem()
+            // this.postItem()
             for(let i = 0; i < this.difference; i++){
                 let start_UTC;
                 ////setting start date
@@ -433,7 +612,7 @@ export default {
                 const a = new Date(this.weekly_until)
                 const b = new Date(this.form.startDate)
     
-                this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000))
+                this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000) + 1)
                 console.log(this.difference)
             }
 
@@ -444,11 +623,90 @@ export default {
                 this.difference = Math.floor((a - b) / _MS_PER_DAY)
                 console.log(this.difference)            
                 }
-        }
+        },
 
-        // setColorTheme(){
-        //     // this.colorClass = 
-        // }
+
+        ////////// TASKS
+        //// get all users lists
+        getAllLists(){
+            axios.get(`http://localhost:3030/todo/${this.userId}`)
+            .then(response => {
+                this.lists = response.data
+                this.selectedList = response.data[0]._id
+                console.log('Lists', this.lists) 
+            }) 
+            .catch(error => console.log(error))
+        },
+        //// add as task first 
+        addTask() {
+            // console.log('add', this.listId)
+            let userId = localStorage.getItem('userId')
+
+            if(this.taskForm.title === ''){
+                this.taskForm.title = 'Untitled'
+            }
+
+            this.taskForm.progress = 'Not Started'
+            this.taskForm.priorityLevel = this.priority
+
+
+            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
+            .then(response => {
+                console.log('New task added', response.data)
+
+                axios.get(`http://localhost:3030/todo/${userId}`)
+                .then(response => {
+                    this.todoLists = response.data
+                    console.log('Lists', this.todoLists) 
+
+                    let lastItem;
+                    let items;
+                    Array.from(this.todoLists).forEach((list)=> {
+                        if(list._id === this.selectedList){
+                            items = list.items
+
+                            lastItem = items[items.length -1]  
+                            
+                            this.lastItemId = lastItem._id
+                            console.log('THIS IS THE LAST ITEM', this.lastItemId)
+                        }    
+                    }) 
+                    this.addItemtoCal()
+                    this.$store.dispatch('getAllEvents')
+                    this.$store.commit('setShowAddModal', false)
+                    this.$bvModal.hide('add-item')                   
+                }) 
+                .catch(error => console.log(error))
+
+
+
+            })
+            .catch(error => console.log(error))
+        },
+        ///// add the newly added task to calendar -- need this so i can get the task id and put it in item_id
+        addItemtoCal() {
+
+            // let userId = localStorage.getItem('userId')
+            this.calForm.startDate = this.taskForm.startDate
+            this.calForm.title = this.taskForm.title
+            this.calForm.description = this.taskForm.description
+            this.calForm.isComplete = this.taskForm.isComplete
+            this.calForm.classes = 'item-event item-event-bg'
+
+            this.calForm.item_id = this.lastItemId 
+
+            let userId = localStorage.getItem('userId')
+            axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
+            .then(response => {
+                console.log("Task added to calendar",response.data)
+                this.$store.dispatch('getAllEvents')
+                this.$store.commit('setShowAddModal', false)
+                this.$bvModal.hide('add-item')
+
+            })
+            .catch(error => console.log(error))     
+            
+        },
     }
 }
 </script>
@@ -499,6 +757,21 @@ export default {
 .color-dropdown:hover{
     background: #e7e7e7 !important;
     /* padding: 10px; */
+}
+
+.list_select{
+    outline:0px !important; 
+    box-shadow: none !important;
+    background: transparent;
+    width:170%;
+    padding-bottom:10px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0);
+
+    background-image: none !important;
+
+    font-family: 'Poppins',sans-serif;
+    font-size: 15px !important;
 }
 
 </style>

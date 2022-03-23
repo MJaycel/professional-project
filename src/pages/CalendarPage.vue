@@ -233,7 +233,7 @@ export default ({
             // }
             this.showEvent(this.item.id)
             this.$bvModal.show('read-event')
-        this.getLists()
+            this.getLists()
 
         },
         showEvent(id) {
