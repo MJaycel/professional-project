@@ -63,7 +63,7 @@
                     </b-input-group>
 
                     <div>
-                        <b-table responsive :items="table_items" :fields="headings" style="overflow: inherit">
+                        <b-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" responsive :items="table_items" :fields="headings" style="overflow: inherit">
                         <template #cell(title)="data" >
                             <div @click="viewDetails(data.item._id)"  id="task">
                                 <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.title}}</p>
@@ -154,32 +154,39 @@
 
             <div class="col" style="display:inline-block;padding:0px;">
             <!-- progress tracker -->
-                <div class="col-11 details mt-3 flex-start" style="background: white;border-radius: 20px;margin-bottom:10px;height:600px;padding:0px;color:black">
+                <div class="col-11 details mt-3 flex-start" style="background: white;border-radius: 20px;margin-bottom:10px;padding:0px;color:black">
                     <div class="d-flex justify-content-between">
                         <div style="padding: 20px;">
-                            <p class="progress_tracker">Progress Tracker</p>
-                            <div style="margin-top:30px;">
-                                <p class="progress__tracker__titles" style="font-weight:600">
-                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
-                                    Total : {{this.total}}
-                                </p>
-                                <p class="progress__tracker__titles">
-                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
-                                    In Progress : {{this.total_in_progress.length}}
-                                </p>
-                                <p class="progress__tracker__titles">
-                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
-                                    Completed: {{this.completedItems.length}}
-                                </p>                                  
-                            </div>
+                            <b-button v-b-toggle.collapse-progress class="progress_tracker collapse_btn">Progress Tracker</b-button>
+                            <b-collapse id="collapse-progress">
+                                <!-- <p class="progress_tracker">Progress Tracker</p> -->
+                                <div style="margin-top:30px;">
+                                    <p class="progress__tracker__titles" style="font-weight:600">
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
+                                        Total : {{this.total}}
+                                    </p>
+                                    <p class="progress__tracker__titles">
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
+                                        In Progress : {{this.total_in_progress.length}}
+                                    </p>
+                                    <p class="progress__tracker__titles">
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
+                                        Completed: {{this.completedItems.length}}
+                                    </p>                                  
+                                </div>
+
+                                <div class="mt-5 d-flex justify-content-center" id="p5Canvas"></div>
+                            </b-collapse> 
                         </div>
                     </div>
-                    <div class="mt-5 d-flex justify-content-center" id="p5Canvas"></div>
                 </div>
 
                 <!-- Archived Items -->
                 <div class="col-11 details mt-3" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;color:black">
-                    <b-button v-b-toggle.collapse-1>Archived Items</b-button>
+                    <div class="d-flex justify-content-between">
+                        <b-button class="collapse_btn" v-b-toggle.collapse-1>Archive</b-button>
+                        <p style="margin-bottom: 0px;margin-top:5px;">{{this.archivedItems.length}}</p>
+                    </div>
                     <b-collapse id="collapse-1" class="mt-2">
                         <!-- <b-card>
                         <p class="card-text">Collapse contents Here</p>
@@ -247,7 +254,8 @@ export default ({
             table_items: [],
             archivedItems: [],
             emptyArchive: false,
-
+            sortBy: 'progress',
+            sortDesc: true,
             item: {},
             total: '',
             total_in_progress: '',
@@ -337,7 +345,7 @@ export default ({
                 },
                 {
                     key: 'icon',
-                    label: 'icon'
+                    label: ''
                 }
             ],  
 
@@ -1060,5 +1068,21 @@ export default ({
 
     font-family: 'Poppins', sans-serif;
     font-size: 14px !important;
+}
+
+.collapse_btn{
+    background-color: transparent !important;
+    color: black !important;
+    border: none !important;
+    padding-left: 0px !important;
+
+    font-family: 'Poppins',sans-serif;
+    font-size: 16px;
+    font-weight: 500 !important;
+}
+
+.collapse_btn:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
 }
 </style>
