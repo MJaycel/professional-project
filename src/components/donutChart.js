@@ -25,7 +25,7 @@ let angles;
 export function main(_p5){
     p5 = _p5;
     p5.setup = () =>{
-        var canvas = p5.createCanvas(400,300);
+        var canvas = p5.createCanvas(360,280);
         canvas.parent("p5Canvas")
         p5.background(255);
        

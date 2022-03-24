@@ -18,163 +18,201 @@
                 </router-link>
             </div>
         </div>
-
-        <div class="col-7" style="color:black !important;margin-left: 5px;" :class="theme">
-            <!-- delete alert -->
-            <b-alert class="m-1"
-            :show="dismissCountDown"
-            dismissible
-            variant="success"
-            @dismissed="dismissCountDown=0"
-            @dismiss-count-down="countDownChanged"
-            >
-            Item deleted
-            </b-alert>
-            <!-- tasks lists  -->
-            <div class="tasks_list_block mt-3">
-                <!-- list title --> 
-                <div class="title__box">
-                    <!-- <p>{{this.form.list_title}}</p> -->
-                        <b-input-group class="edit__input_group">
-                            <b-form-input
-                                v-model="form.list_title"
-                                type="text"
-                                class="todo_title_input"
-                                v-on:keyup.enter='EditListName'
-                                >
-                            </b-form-input>                        
-                        </b-input-group>
-                </div>
-
-                <!-- add new task input -->
-                <b-input-group class="input__group">
-                    <template #append>
-                        <b-input-group-text style="height: 40px;border:none;background-color:transparent !important;">
-                        <b-icon @click="addTask" icon="plus" style="width: 20px; height: 20px;"></b-icon>
-                        </b-input-group-text>
-                    </template>
-                    <b-form-input
-                        v-model="taskForm.title"
-                        type="text"
-                        class="todo_item_input"
-                        v-on:keyup.enter='addTask'
-                        placeholder="Add new task"
-                        >
-                    </b-form-input>                              
-                </b-input-group>
-
-                <div>
-                    <b-table responsive :items="table_items" :fields="headings" style="overflow: inherit">
-                    <template #cell(title)="data" >
-                        <div @click="viewDetails(data.item._id)"  id="task">
-                            <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.title}}</p>
-                            <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>                            
-                        </div>
-                    </template>
-                    <template #cell(progress)="data">
-                        <b-dropdown id="dropdown-2" no-caret block>
-                            <template #button-content>
-                                <div v-if="data.item.progress==='In Progress'"  :class="orange" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
-                                    <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
-                                </div>
-                                <div v-if="data.item.progress==='Not Started'" :class="blue" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
-                                    <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
-                                </div>
-                                <div v-if="data.item.progress==='Completed'"  :class="green" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
-                                    <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
-                                </div>
-                            </template>        
-                            <b-dropdown-item class="dropdown_" @click="(progress = 'Not Started'),editProgress(data.item._id)" value="Not Started">Not Started</b-dropdown-item>
-                            <b-dropdown-item class="dropdown_" @click="(progress = 'In Progress'),editProgress(data.item._id)" value="In Progress">In Progress</b-dropdown-item>                    
-                            <b-dropdown-item class="dropdown_" @click="(progress = 'Completed'),editProgress(data.item._id)" value="Completed">Completed</b-dropdown-item>
-                        </b-dropdown>
-                    </template>
-
-                    <template #cell(priorityLevel)="data">
-                        <b-dropdown id="dropdown-1" no-caret>
-                            <template #button-content class="button_priority">
-                                <p v-if="data.item.priorityLevel === 'Low Priority'" class="priority__level" id="priority" >
-                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-right:10px;margin-bottom:4px;"></b-icon>
-                                    {{data.item.priorityLevel}}
-                                </p>        
-                                <p v-if="data.item.priorityLevel === 'High Priority'" class="priority__level" >
-                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-right:10px;margin-bottom:4px;"></b-icon>
-                                    {{data.item.priorityLevel}}
-                                </p>     
-                                <p v-if="data.item.priorityLevel === 'Medium Priority'" class="priority__level" >
-                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-right:10px;margin-bottom:4px;"></b-icon>
-                                    {{data.item.priorityLevel}}
-                                </p> 
-                            </template>
-                            <b-dropdown-item @click="(priority = 'High Priority'),editPriority(data.item._id)" value="High Priority">High Priority</b-dropdown-item>
-                            <b-dropdown-item @click="(priority = 'Medium Priority'),editPriority(data.item._id)" value="Medium Priority">Medium Priority</b-dropdown-item>
-                            <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item>
-                        </b-dropdown>
-                    </template>
-                    
-                    <template #cell(startDate)="data">
-                        <b-dropdown id="dropdown-3" no-caret ref="date_dropdown">
-                            <template #button-content>
-                                <div>                          
-                                    <p style="margin-bottom:0px;font-size:14px;" class="today-due" v-if="data.item.startDate === today">Today</p>
-                                    <p style="margin-bottom:0px;font-size:14px;" class="tomorrow-due" v-else-if="data.item.startDate === tomorrow">Tomorrow</p>
-
-                                    <p v-else style="padding-top:8px;margin-bottom:0px;font-size:14px;">{{data.item.startDate}}</p>
-                                    <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
-                                </div>            
-                            </template>
-                            <div>
-                                <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
-                                <div> 
-                                    <b-button class="m-1 add-time">Add Time</b-button>
-                                    <b-button style="width:100px ; margin:10px;font-size:14px;" class="addItem__btn" @click="dueDate(data.item._id)">Save</b-button>
-                                </div>
-                            </div>
-                        </b-dropdown>
-                    </template>
-
-                    <template #cell(icon)="data">
-                        <b-dropdown id="icon-dropdown" no-caret>
-                            <template #button-content>
-                                <b-icon icon="three-dots-vertical"></b-icon>
-                            </template>
-                            <b-dropdown-item @click="viewDetails(data.item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item>
-                            <b-dropdown-item @click="archiveItem(data.item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Archive</b-dropdown-item>
-                            <b-dropdown-item> <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
-
-                        </b-dropdown>
-                    </template>
-                    </b-table>
-                </div>
-
-            </div>
-
-
-
-        </div>
-                <!-- progress tracker -->
-        <div class="col-4 details mt-3 flex-start" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;height: 100%;padding-left:30px;color:black">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <p class="progress_tracker">Progress Tracker</p>
-                    <div style="margin-top:30px;">
-                        <p class="progress__tracker__titles" style="font-weight:600">
-                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
-                            Total : {{this.total}}
-                        </p>
-                        <p class="progress__tracker__titles">
-                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
-                            In Progress : {{this.total_in_progress.length}}
-                        </p>
-                        <p class="progress__tracker__titles">
-                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
-                            Completed: {{this.completedItems.length}}
-                        </p>                                  
+            <div class="col-8" style="color:black !important;padding-left:0px;padding-right:0px;" :class="theme">
+                <!-- delete alert -->
+                <b-alert class="m-1"
+                :show="dismissCountDown"
+                dismissible
+                variant="success"
+                @dismissed="dismissCountDown=0"
+                @dismiss-count-down="countDownChanged"
+                >
+                Item deleted
+                </b-alert>
+                <!-- tasks lists  -->
+                <div class="tasks_list_block mt-3">
+                    <!-- list title --> 
+                    <div class="title__box">
+                        <!-- <p>{{this.form.list_title}}</p> -->
+                            <b-input-group class="edit__input_group">
+                                <b-form-input
+                                    v-model="form.list_title"
+                                    type="text"
+                                    class="todo_title_input"
+                                    v-on:keyup.enter='EditListName'
+                                    >
+                                </b-form-input>                        
+                            </b-input-group>
                     </div>
+
+                    <!-- add new task input -->
+                    <b-input-group class="input__group">
+                        <template #append>
+                            <b-input-group-text style="height: 40px;border:none;background-color:transparent !important;">
+                            <b-icon @click="addTask" icon="plus" style="width: 20px; height: 20px;"></b-icon>
+                            </b-input-group-text>
+                        </template>
+                        <b-form-input
+                            v-model="taskForm.title"
+                            type="text"
+                            class="todo_item_input"
+                            v-on:keyup.enter='addTask'
+                            placeholder="Add new task"
+                            >
+                        </b-form-input>                              
+                    </b-input-group>
+
+                    <div>
+                        <b-table responsive :items="table_items" :fields="headings" style="overflow: inherit">
+                        <template #cell(title)="data" >
+                            <div @click="viewDetails(data.item._id)"  id="task">
+                                <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.title}}</p>
+                                <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>                            
+                            </div>
+                        </template>
+                        <template #cell(progress)="data">
+                            <b-dropdown id="dropdown-2" no-caret block>
+                                <template #button-content>
+                                    <div v-if="data.item.progress==='In Progress'"  :class="orange" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
+                                        <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
+                                    </div>
+                                    <div v-if="data.item.progress==='Not Started'" :class="blue" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
+                                        <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
+                                    </div>
+                                    <div v-if="data.item.progress==='Completed'"  :class="green" style="border: 1px solid;border-radius:20px; padding:0px 26px 16px 26px;height:30px;">
+                                        <p style="padding-top:2px;font-size:14px;">{{data.item.progress}}</p>
+                                    </div>
+                                </template>        
+                                <b-dropdown-item class="dropdown_" @click="(progress = 'Not Started'),editProgress(data.item._id)" value="Not Started">Not Started</b-dropdown-item>
+                                <b-dropdown-item class="dropdown_" @click="(progress = 'In Progress'),editProgress(data.item._id)" value="In Progress">In Progress</b-dropdown-item>                    
+                                <b-dropdown-item class="dropdown_" @click="(progress = 'Completed'),editProgress(data.item._id)" value="Completed">Completed</b-dropdown-item>
+                            </b-dropdown>
+                        </template>
+
+                        <template #cell(priorityLevel)="data">
+                            <b-dropdown id="dropdown-1" no-caret>
+                                <template #button-content class="button_priority">
+                                    <p v-if="data.item.priorityLevel === 'Low Priority'" class="priority__level" id="priority" >
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                        {{data.item.priorityLevel}}
+                                    </p>        
+                                    <p v-if="data.item.priorityLevel === 'High Priority'" class="priority__level" >
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                        {{data.item.priorityLevel}}
+                                    </p>     
+                                    <p v-if="data.item.priorityLevel === 'Medium Priority'" class="priority__level" >
+                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-right:10px;margin-bottom:4px;"></b-icon>
+                                        {{data.item.priorityLevel}}
+                                    </p> 
+                                </template>
+                                <b-dropdown-item @click="(priority = 'High Priority'),editPriority(data.item._id)" value="High Priority">High Priority</b-dropdown-item>
+                                <b-dropdown-item @click="(priority = 'Medium Priority'),editPriority(data.item._id)" value="Medium Priority">Medium Priority</b-dropdown-item>
+                                <b-dropdown-item @click="(priority = 'Low Priority'),editPriority(data.item._id)" value="Low Priority">Low Priority</b-dropdown-item>
+                            </b-dropdown>
+                        </template>
+                        
+                        <template #cell(startDate)="data">
+                            <b-dropdown id="dropdown-3" no-caret ref="date_dropdown">
+                                <template #button-content>
+                                    <div>                          
+                                        <p style="margin-bottom:0px;font-size:14px;" class="today-due" v-if="data.item.startDate === today">Today</p>
+                                        <p style="margin-bottom:0px;font-size:14px;" class="tomorrow-due" v-else-if="data.item.startDate === tomorrow">Tomorrow</p>
+
+                                        <p v-else style="padding-top:8px;margin-bottom:0px;font-size:14px;">{{data.item.startDate}}</p>
+                                        <p v-if="data.item.startDate === null" style="margin-bottom:0px;color:#858585;font-size:14px;">Add a Due Date</p>
+                                    </div>            
+                                </template>
+                                <div>
+                                    <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
+                                    <div> 
+                                        <b-button class="m-1 add-time">Add Time</b-button>
+                                        <b-button style="width:100px ; margin:10px;font-size:14px;" class="addItem__btn" @click="dueDate(data.item._id)">Save</b-button>
+                                    </div>
+                                </div>
+                            </b-dropdown>
+                        </template>
+
+                        <template #cell(icon)="data">
+                            <b-dropdown id="icon-dropdown" no-caret>
+                                <template #button-content>
+                                    <b-icon icon="three-dots-vertical"></b-icon>
+                                </template>
+                                <b-dropdown-item @click="viewDetails(data.item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item>
+                                <b-dropdown-item @click="archiveItem(data.item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Archive</b-dropdown-item>
+                                <b-dropdown-item @click="showDelete(data.item._id)"> <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
+
+                            </b-dropdown>
+                        </template>
+                        </b-table>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+            <div class="col" style="display:inline-block;padding:0px;">
+            <!-- progress tracker -->
+                <div class="col-11 details mt-3 flex-start" style="background: white;border-radius: 20px;margin-bottom:10px;height:600px;padding:0px;color:black">
+                    <div class="d-flex justify-content-between">
+                        <div style="padding: 20px;">
+                            <p class="progress_tracker">Progress Tracker</p>
+                            <div style="margin-top:30px;">
+                                <p class="progress__tracker__titles" style="font-weight:600">
+                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
+                                    Total : {{this.total}}
+                                </p>
+                                <p class="progress__tracker__titles">
+                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
+                                    In Progress : {{this.total_in_progress.length}}
+                                </p>
+                                <p class="progress__tracker__titles">
+                                    <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
+                                    Completed: {{this.completedItems.length}}
+                                </p>                                  
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 d-flex justify-content-center" id="p5Canvas"></div>
+                </div>
+
+                <!-- Archived Items -->
+                <div class="col-11 details mt-3" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;color:black">
+                    <b-button v-b-toggle.collapse-1>Archived Items</b-button>
+                    <b-collapse id="collapse-1" class="mt-2">
+                        <!-- <b-card>
+                        <p class="card-text">Collapse contents Here</p>
+                        </b-card> -->
+                        <b-list-group >
+                            <b-list-group-item v-for="item in archivedItems" :key="item._id">
+                                <div class="d-flex justify-content-between" >
+                                    <div @click="viewDetails(item._id)" style="cursor: pointer;">
+                                        {{item.title}}
+                                    </div>
+                                    <b-dropdown id="icon-dropdown" no-caret right>
+                                        <template #button-content>
+                                            <b-icon icon="three-dots-vertical"></b-icon>
+                                        </template>
+                                        <b-dropdown-item @click="viewDetails(item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item>
+                                        <b-dropdown-item @click="unArchiveItem(item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Un Archive</b-dropdown-item>
+                                        <b-dropdown-item @click="showDelete(item._id)"><b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
+                                    </b-dropdown>
+                                </div>
+                            </b-list-group-item>
+                            <!-- <b-list-group-item v-if="emptyArchive"> No Archived Tasks</b-list-group-item> -->
+                        </b-list-group>
+                    </b-collapse>
                 </div>
             </div>
-            <div class="mt-5" style="margin-left:10px;" id="p5Canvas"></div>
-        </div>
+        <b-modal id="delete-item" hide-header centered  hide-footer hide-header-close>
+            <p>Are you sure you want to delete this Task?</p>
+            <div class="d-flex justify-content-end">
+                <b-button class="cancel__btn" @click="$bvModal.hide('delete-item')"> Cancel</b-button>
+
+            <b-button class="addItem__btn" @click="deleteTask">Delete</b-button>
+            </div>
+        </b-modal>
         <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData" :alert="showAlert"/>
     </div>
 </template>
@@ -207,6 +245,8 @@ export default ({
 
             items: [],
             table_items: [],
+            archivedItems: [],
+            emptyArchive: false,
 
             item: {},
             total: '',
@@ -313,8 +353,8 @@ export default ({
 
             setArchive: {
                 archived: false
-            }
-
+            },
+            deleteId : ''
         }
     },
     mounted() {
@@ -387,6 +427,12 @@ export default ({
                 this.items = response.data[0].items
 
                 this.table_items = this.items.filter(item => item.archived === false)
+
+                this.archivedItems = this.items.filter(item => item.archived === true)
+
+                if(this.archivedItems.length === 0){
+                    this.emptyArchive = true
+                }
 
                 /// looping through each items and setting date format as Month, D, Yr
                 Array.from(this.items).forEach((item)=> {
@@ -632,7 +678,48 @@ export default ({
                 }) 
                 .catch(error => console.log(error))
 
-        }
+        },
+        unArchiveItem(id){
+            let userId = localStorage.getItem('userId')
+
+            this.setArchive.archived = false
+
+            axios.post(`http://localhost:3030/todo/archive/user/${userId}/list/${this.listId}/item/${id}`, this.setArchive)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.getListData()
+                }) 
+                .catch(error => console.log(error))
+        },
+        showDelete(id) {
+            this.$bvModal.show('delete-item')
+            this.deleteId = id
+        },
+        deleteTask() {
+            let userId = localStorage.getItem('userId')
+
+            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.listId}/item/${this.deleteId}`)
+            .then(response => {
+                console.log(response)
+                this.deleteEvent()
+                this.getListData()
+                this.$bvModal.hide('delete-item')
+                
+                // this.$emit('getListData')
+                this.method()   
+                this.alert()
+            })
+        },
+        deleteEvent() {
+            this.findInEvents(this.deleteId)
+            let userId = localStorage.getItem('userId')
+            axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
+            .then(response => {
+                console.log('Deleted', response)
+                // this.$store.dispatch('getAllEvents')
+            }) 
+            .catch(error => console.log(error))
+        },
 
 
     },
@@ -961,4 +1048,17 @@ export default ({
     text-decoration: underline;
 }
 
+.list-group-item{
+    /* border: none !important; */
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
+}
 </style>

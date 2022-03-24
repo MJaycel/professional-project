@@ -115,8 +115,9 @@
                     <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
                 </div>
                 <div class="col-8 mt-2" style="padding: 0px;">
+                    <!-- <p v-if="!showDesc" class="desc__task__input no__outline" @click="showDesc = !showDesc">{{this.taskForm.description}}</p> -->
                     <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
-                    <b-form-textarea v-else class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
+                    <b-form-textarea v-else no-auto-shrink rows="6" class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
                 </div>                
             </div>
 
@@ -153,6 +154,7 @@ export default ({
     },
     data() {
         return{
+            showDesc: false,
             taskForm: {
                 title: '',
                 description: '',
