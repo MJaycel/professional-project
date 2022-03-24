@@ -1,15 +1,29 @@
 <template>
-    <div id="app">
-        <header>
-            <router-link :to="{name: 'home', params: userId}">Home</router-link>
-            <h1>
-                Meditation
-            </h1>
-        </header>
-        <svg class="left-background" />
-        <svg class="right-background" />
-        <Meditation/>
+    <div class="container-fluid ">
+        <div class="background row" >
+            <div class="side__bar" style="height: 100vh;width: 65px !important;">
+                <div class="mt-5 links">
+                    <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
+                        <b-icon icon="house-door-fill"></b-icon>
+                    </router-link>
+                </div>
+                <div class="links">
+                    <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
+                        <b-icon icon="calendar-date-fill"></b-icon>
+                    </router-link>
+                </div>
+                <div class="links">
+                    <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
+                        <b-icon icon="card-checklist"></b-icon>
+                    </router-link>
+                </div>
+            </div>
 
+            <div class="col-11 my_container my_center align_center">
+                <Meditation/>
+            </div>
+
+        </div>
     </div>
 
 </template>
@@ -26,28 +40,27 @@ export default ({
 </script>
 
 <style scoped>
-.left-background{
-    position: absolute;
-    width: 288.5px;
-    height: 288.5px;
-    left: 0px;
-    top: 70vh;
 
-    background: #AED9AF;
-    box-shadow: 6px 6px 8px rgba(0, 0, 0, 0.25), inset -72px -12px 43px #F8F2D1;
-    border-radius:0% 100% 0% 100% / 100% 100% 0% 0% 
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.right-background{
-    position: absolute;
-    width: 364px;
-    height: 376px;
-    left: 81%;
-    top: .99px;
+.my_center{
+    justify-content: center;
+}
 
-    background: #A4D1A2;
-    box-shadow: inset 50px -75px 83px #F8F2D1;
-    border-radius: 100% 0% 0% 100% / 0% 100% 0% 100% ;
+.align_center{
+    align-items: center;
+}
+
+.my_container{
+    display:flex;
+}
+
+.background{
+    background-color: #D2EAD3; 
 }
 
 </style>

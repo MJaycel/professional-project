@@ -1,23 +1,30 @@
 <template>
     <div>
-        <div class="my_container my_center">
-            <div  v-for="meditation in meditations" :key="meditation._id">
+        <div class=" background_white">
+            <div class="my_container my_center">
+                <img src="../assets/meditation.svg" />
+
+            </div>
+            <div class="my_container my_center" >
                 
-                <br>
-                    <div >
-                        <div class="hero-image">
-                            <img class="cover" :src="require(`../assets/lofi-images/${meditation.cover_image}.jpg`)" width="80%" height="250" alt="">
-                            <p class="meditation-title hero-text">{{meditation.title}}</p>
-                            <audio :src="meditation.html_link" controls/>
+                <div v-for="meditation in meditations" :key="meditation._id">
+                    <br>
+                        <div class="">
+                            
+                            <div class="hero-image" @click=" test = (`${meditation.html_link}`)">
+                                <img  class="cover medi_image" :src="require(`../assets/lofi-images/${meditation.cover_image}.jpg`)"  alt="">
+                                <p class="meditation-title hero-text">{{meditation.title}}</p>
+                                <!-- <audio :src="test" controls/> -->
+                            </div>
+                            
+                            <br>
                         </div>
-                        
-                        <br>
-                    </div>
-                <br>
+                    <br>
+                </div>
+            </div>
+            <div class="my_container my_center">
+                <audio class="audio_width " :src="test" controls/>
 
-                
-
-                
             </div>
         </div>
         
@@ -31,7 +38,8 @@ export default ({
     name: "Meditation",
     data(){
         return{
-            meditations:[]
+            meditations:[],
+            test: "https://professional-project-storage.s3.eu-west-1.amazonaws.com/bedtime-meditation-for-sleep.mp3"
         }
     },
     mounted(){
@@ -50,6 +58,10 @@ export default ({
             .catch(error => {
                 console.log(error)
             })
+        },
+
+        testFunction(){
+            this.test = this.meditations.html_link
         }
     }
 })
@@ -57,9 +69,26 @@ export default ({
 
 <style scoped>
 
+
+.background_white{
+    background-color: white;
+    padding: 50px 40px 50px 40px;
+    margin-left: 100px;
+    margin-right: 100px;
+    border-radius: 25px;
+    height: 650px;
+}
+
+.medi_image{
+    width: 225px;
+    height: 162px;
+    border-radius: 15px
+}
+
 .my_container{
     display: flex;
     flex-direction: row;
+    column-gap: 20px;
 }
 
 .max-width{
@@ -69,27 +98,9 @@ export default ({
 .cover{
     object-fit: cover;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-
 }
-
-
-
-.meditation-title{
-    position: absolute;
-    width: 225px;
-    height: 162px;
-
-
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 21px;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    letter-spacing: 0.245em;
-
+.audio_width{
+    width: 800px;
 }
 
 .hero-image{
@@ -98,7 +109,7 @@ export default ({
     background-size: cover;
     position: relative;
     border-radius: 10px;
-    
+    background-image: url();
 }
 
 .hero-text{

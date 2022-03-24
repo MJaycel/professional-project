@@ -1,23 +1,30 @@
 <template>
-  <div class="container center" id="app">
-  <div class="center padding-4">
-    <h2 class="title">{{message}}</h2>
+  <div class="">
+    
    
     <!-- Timer gets displayed up here -->
-    <div id="timer2" v-html="time"></div>
-    <div class="buttons">
-      <button @click="timerRun" v-if="!timerRunning">Start</button>
-      <button @click="timerRun, minutesSet = (1), totalTime = (1*60)" v-if="!timerRunning">Total Time 30</button>
-      <button @click="timerRun, totalTime = (35 * 60)" v-if="!timerRunning">Total Time 35</button>
-      <button @click="timerRun, totalTime = (40 * 60)" v-if="!timerRunning">Total Time 40</button>
-      <button @click="timerRun, totalTime = (45 * 60)" v-if="!timerRunning">Total Time 45</button>
- 
-      <button @click="timerPause" v-if="timerRunning">Pause</button>
- 
-      <button @click="timerReset" v-if="timerRunning">Restart</button>
+
+    <div>
+      
+      <div class="text">
+        <h2 class="title">{{message}}</h2>
+        <div id="timer2" v-html="time"></div>
+        <div class="buttons">
+          
+          <button @click="timerRun" v-if="!timerRunning">Start</button>
+          <button @click="timerRun, minutesSet = (30), totalTime = (30*60)" v-if="!timerRunning">Total Time 30</button>
+          <button @click="timerRun, totalTime = (35 * 60)" v-if="!timerRunning">Total Time 35</button>
+          <button @click="timerRun, totalTime = (40 * 60)" v-if="!timerRunning">Total Time 40</button>
+          <button @click="timerRun, totalTime = (45 * 60)" v-if="!timerRunning">Total Time 45</button>
+    
+          <button @click="timerPause" v-if="timerRunning">Pause</button>
+    
+          <button @click="timerReset" v-if="timerRunning">Restart</button>
+        </div>
+      </div>
+      
     </div>
   </div>
-</div>
 </template>
  
 <script>
@@ -25,7 +32,7 @@ export default {
 name: 'Timer',
   data: function() {
       return{
-        message: 'Let the countdown begin!!',
+        message: 'Begin working',
  
         // this is where the user can chose the length of time
         // default total time
@@ -75,7 +82,7 @@ name: 'Timer',
  
     timerRun() {
       this.timerRunning = true;
-      this.message = 'Greatness is within sight!!!';
+      this.message = 'Focus..';
  
       this.interval = setInterval( this.countdownTimer , 1000);
  
@@ -84,7 +91,7 @@ name: 'Timer',
     },
  
     timerPause() {
-      this.message = 'Never quit, keep going!!';
+      this.message = 'Be determined..';
       this.timerRunning = false;
       clearInterval(this.interval);
     },
@@ -181,7 +188,7 @@ name: 'Timer',
           console.log("WORK AGAIN LOG")
           this.message = 'Keep pushing forward!';
  
-          this.totalTime = (this.minutesSet * 60); //sets 5 second work again
+          this.totalTime = (this.minutesSet * 60); //sets work again
           console.log(this.minutesSet)
           setInterval( () => {
             this.timerSeconds--
@@ -212,16 +219,17 @@ name: 'Timer',
 </script>
  
 <style scoped>
-.container {
-    width: 100%;
-    background-image: linear-gradient(141deg,#04a6d7 0,#209cee 71%,#3287f5 100%);
-    min-height: 100vh;
-    color: #ffffff;
+
+
+.text{
+  text-align: center;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
 }
- 
-.padding-4 {
-  padding: 40px;
-}
+
 .center {
     -webkit-box-align: center;
     -ms-flex-align: center;
@@ -242,7 +250,7 @@ name: 'Timer',
 #timer2{
     font-size: 200px;
     line-height: 1;
-    margin-bottom: 40px;
+    color: white;
 }
 .title {
     text-align: center;
@@ -253,7 +261,7 @@ name: 'Timer',
 }
  
 .buttons button {
-    background-color: #363636;
+    background-color: transparent;
     color: #f5f5f5;
     border: none;
     padding:12px;

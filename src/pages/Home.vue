@@ -17,7 +17,7 @@
         <p>{{quotes.content}}</p>
         <p>{{quotes.author}}</p>
         <p>{{this.$store.getters.name}}</p>
-        <p>You have {{printEvent}} events today</p>
+        <p>You have {{printEvent}} events due</p>
         <Clock/>
     </div>
 </template>
@@ -58,42 +58,49 @@ export default {
             this.$store.dispatch('logout')
             this.$router.push({name: 'landing_page'})
         },
+        
         getDate(){
             const CURRENT_DATE = new Date();
             // NOTE = had to manually add a "0" so once it gets to doube digits this will probs break
             // temporary fix btw
-            const date = CURRENT_DATE.getFullYear()+'-0'+(CURRENT_DATE.getMonth()+1)+'-0'+CURRENT_DATE.getDate();
+            const date = CURRENT_DATE.getFullYear()+'-0'+(CURRENT_DATE.getMonth()+1)+'-'+CURRENT_DATE.getDate();
 
             console.log("todays date is", date)
             var numEvents = this.$store.getters.events
             var numEventLength = numEvents.length
+            this.printEvent = numEventLength
+            var shortenLength = numEventLength - 1;
 
-            console.log("This is the number of events", numEvents.length)
+            console.log("This is the number of events", shortenLength)
             var counter = 0;
-            var printEvent = 0;
+            var eventPrint = 0
 
-            while( counter < numEventLength ){
+            while( counter < shortenLength ){
+                console.log(this.$store.getters.events)
                 
-                var stringDate = this.$store.getters.events[counter].startDate.toString()
+                var stringDate = this.$store.getters.events[shortenLength].startDate.toString()
                 var result = stringDate.slice(0, 10)
+
+                console.log(result)
 
                 console.log("THIS IS THE RESULT",result)
 
-                var test = date.toString()
-                var anotherTest = test.slice(0, 10)
+                var dateToString = date.toString()
+                var slicedDate = dateToString.slice(0, 10)
                 
-                console.log("THIS IS THE Anothertest",anotherTest)
+                console.log("THIS IS THE SLICED DATE",slicedDate)
 
-                if(result == anotherTest){
+                if(result == slicedDate){
                     console.log("ITS WORKING");
                     
-                    printEvent++
-                    console.log("printEvent is",printEvent)
+                    eventPrint++
+                    console.log("printEvent is", eventPrint)
                 }
 
                 counter++;
-                this.printEvent = printEvent
+                
             }
+            this.printEvent = eventPrint
 
             // while(numEvents != 0){
             //     var test = 0

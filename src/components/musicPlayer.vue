@@ -1,141 +1,136 @@
 <template>
   <div id="app">
-    <header>
-      <router-link :to="{name: 'home', params: userId}">Home</router-link>
-      <h1>
-        My Music
-      </h1>
-    </header>
-    <main>
+    <div class="background_white">
+      <header>
+        <img src="../assets/headphones.svg" />
 
-      <!-- <section class="player">
-        <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
-        <div class="control">
-          <button class="prev" @click="prev">Prev</button>
-          <button class="play" v-if="!isPlaying" @click="play">Play</button>
-          <button class="pause" v-else @click="pause">Pause</button>
-          <button class="next" @click="next">Next</button>
-        </div>
-      </section>
-      <section class="playlist">
-        <h3>The Playlist</h3>
-        <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
-        
-      </section> -->
+      </header>
+      <main>
 
-      <section>
-        
-        <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
-        <div class="player" v-for="song in songs" :key="song._id" >
-          
-          <img :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" width="200" height="200" alt="">
-          <h2>{{song.title}} - {{song.artist}}</h2>
-          
-          <audio :src="song.html_link" controls/>
-
-        </div>
-
-        <img v-bind:src="src/assets/lofi-images/12" alt="">
-
-        <div class="control">
-          <button class="prev" @click="prev">Prev</button>
-          <button class="play" v-if="!isPlaying" @click="play(current)">Play</button>
-          <button class="pause" v-else @click="pause">Pause</button>
-          <button class="play"  @click="loop()">Loop</button>
-          <button class="next" @click="next">Next</button>
-        </div>
-        
-        
-      </section>
-
-      <!-- YOUTUBE PLAYER -->
-      <div>
-        <section>
-          <youtube
-            :video-id="videoId"
-            :player-width="500"
-            :player-height="300"
-            @ready="ready"
-            @playing="playing"
-          ></youtube>
+        <!-- <section class="player">
+          <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
+          <div class="control">
+            <button class="prev" @click="prev">Prev</button>
+            <button class="play" v-if="!isPlaying" @click="play">Play</button>
+            <button class="pause" v-else @click="pause">Pause</button>
+            <button class="next" @click="next">Next</button>
+          </div>
         </section>
-        <button class="np-ib np-button" @click="playYTvideo">Play</button>
-        <button class="np-ib np-button" @click="pauseYTvideo">Pause</button>
-        <button class="np-ib np-button" @click="stopYTvideo">Stop</button>
-        <button class="np-ib np-button" @click="getAllVideos">Get All</button>
+        <section class="playlist">
+          <h3>The Playlist</h3>
+          <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
+          
+        </section> -->
 
-        
-        <div>
-          <input type="name" placeholder="Insert Link Here" v-model="videoDetails.youtube_link">
-          <input type="name" placeholder="Insert Video Title Here" v-model="videoDetails.video_title">
-          <button class="np-ib np-button" @click="insertVideo(videoDetails)">Insert Video</button>
-        </div>
-
-        <!-- <button
-          v-for="video in videos" :key="video._id"
-        >
-          <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
-        </button> -->
-
-          <select v-model="youtube_link" @change="changeLink()">
-            <option v-for="video in videos" :key="video._id" :value="video.youtube_link">
-              {{ video.video_title }} 
-            </option>
-          </select>
-      </div>
-      
-
-      <!-- WITHIN THE MODAL -->
-      <!-- <div>
-        <b-button v-b-modal.modal-1>Launch demo modal</b-button>
-        <b-modal id="modal-1" title="BootstrapVue">
-          <section class="player">
-            <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
-            <div class="control">
-              <button class="prev" @click="prev">Prev</button>
-              <button class="play" v-if="!isPlaying" @click="play">Play</button>
-              <button class="pause" v-else @click="pause">Pause</button>
-              <button class="next" @click="next">Next</button>
-            </div>
-          </section>
-          <section class="playlist">
-            <h3>The Playlist</h3>
-            <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
+        <section class="my_container my_center">
+          <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
+          <div class="player" v-for="song in songs" :key="song._id" >
             
+            <img @click="audio_controller = (`${song.html_link}`)" class="music-image" :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" alt="">
+            <h4>{{song.title}} -<br> {{song.artist}}</h4>
+            
+
+          </div>
+          <!-- <audio :src="audio_controller" controls/> -->
+
+
+          <!-- <div class="control">
+            <button class="prev" @click="prev">Prev</button>
+            <button class="play" v-if="!isPlaying" @click="play(current)">Play</button>
+            <button class="pause" v-else @click="pause">Pause</button>
+            <button class="play"  @click="loop()">Loop</button>
+            <button class="next" @click="next">Next</button>
+          </div> -->
+          
+        </section>
+        <audio class="audio_width" :src="audio_controller" controls/>
+
+        <!-- YOUTUBE PLAYER -->
+        <div>
+          <section>
+            <youtube
+              :video-id="videoId"
+              :player-width="500"
+              :player-height="300"
+              @ready="ready"
+              @playing="playing"
+            ></youtube>
           </section>
+          <button class="np-ib np-button custom_button" @click="playYTvideo">Play</button>
+          <button class="np-ib np-button custom_button" @click="pauseYTvideo">Pause</button>
+          <button class="np-ib np-button custom_button" @click="stopYTvideo">Stop</button>
+          <button class="np-ib np-button custom_button" @click="getAllVideos">Get All</button>
+
+          
           <div>
-            <section>
-              <youtube
-                :video-id="videoId"
-                :player-width="500"
-                :player-height="300"
-                @ready="ready"
-                @playing="playing"
-              ></youtube>
-            </section>
-            <button class="np-ib np-button" @click="playYTvideo">Play</button>
-            <button class="np-ib np-button" @click="pauseYTvideo">Pause</button>
-            <button class="np-ib np-button" @click="stopYTvideo">Stop</button>
-            <button class="np-ib np-button" @click="getAllVideos">Get All</button>
-            <div>
-              <input type="name" placeholder="Insert Link Here" v-model="videoDetails.youtube_link">
-              <input type="name" placeholder="Insert Video Title Here" v-model="videoDetails.video_title">
-              <button class="np-ib np-button" @click="insertVideo(videoDetails)">Insert Video</button>
-            </div>
+            <input type="name" placeholder="Insert Link Here" v-model="videoDetails.youtube_link">
+            <input type="name" placeholder="Insert Video Title Here" v-model="videoDetails.video_title">
+            <button class="np-ib np-button" @click="insertVideo(videoDetails)">Insert Video</button>
+          </div>
+
+          <!-- <button
+            v-for="video in videos" :key="video._id"
+          >
+            <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
+          </button> -->
+
             <select v-model="youtube_link" @change="changeLink()">
               <option v-for="video in videos" :key="video._id" :value="video.youtube_link">
                 {{ video.video_title }} 
               </option>
             </select>
-          </div>
-        </b-modal>
-      </div> -->
+        </div>
+        
 
+        <!-- WITHIN THE MODAL -->
+        <!-- <div>
+          <b-button v-b-modal.modal-1>Launch demo modal</b-button>
+          <b-modal id="modal-1" title="BootstrapVue">
+            <section class="player">
+              <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
+              <div class="control">
+                <button class="prev" @click="prev">Prev</button>
+                <button class="play" v-if="!isPlaying" @click="play">Play</button>
+                <button class="pause" v-else @click="pause">Pause</button>
+                <button class="next" @click="next">Next</button>
+              </div>
+            </section>
+            <section class="playlist">
+              <h3>The Playlist</h3>
+              <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
+              
+            </section>
+            <div>
+              <section>
+                <youtube
+                  :video-id="videoId"
+                  :player-width="500"
+                  :player-height="300"
+                  @ready="ready"
+                  @playing="playing"
+                ></youtube>
+              </section>
+              <button class="np-ib np-button" @click="playYTvideo">Play</button>
+              <button class="np-ib np-button" @click="pauseYTvideo">Pause</button>
+              <button class="np-ib np-button" @click="stopYTvideo">Stop</button>
+              <button class="np-ib np-button" @click="getAllVideos">Get All</button>
+              <div>
+                <input type="name" placeholder="Insert Link Here" v-model="videoDetails.youtube_link">
+                <input type="name" placeholder="Insert Video Title Here" v-model="videoDetails.video_title">
+                <button class="np-ib np-button" @click="insertVideo(videoDetails)">Insert Video</button>
+              </div>
+              <select v-model="youtube_link" @change="changeLink()">
+                <option v-for="video in videos" :key="video._id" :value="video.youtube_link">
+                  {{ video.video_title }} 
+                </option>
+              </select>
+            </div>
+          </b-modal>
+        </div> -->
 
-
-
-
-    </main>
+      </main>
+    </div>
+    
     
   </div>
 </template>
@@ -180,7 +175,7 @@ export default {
       //   src: require('../assets/Tranquillity - Riddiman.mp3')
       // }],
       songs: [],
-      test: 'https://professional-project-storage.s3.eu-west-1.amazonaws.com/Lukrembo+-+Biscuit+%5BFTUM+Release%5D.mp3',
+      audio_controller: 'https://professional-project-storage.s3.eu-west-1.amazonaws.com/Lukrembo+-+Biscuit+%5BFTUM+Release%5D.mp3',
       isVisibility: false,
       player: new Audio()
 
@@ -349,25 +344,55 @@ export default {
 </script>
 
 <style scoped>
-
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body{
-  font-family: sans-serif;
+.background_white{
+    background-color: white;
+    padding: 50px 40px 50px 40px;
+    margin-left: 100px;
+    margin-right: 100px;
+    border-radius: 25px;
+    height: 1050px;
 }
 
-header{
-  display: flex;
+.music-image{
+  width: 225px;
+  height: 162px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.my_container{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.my_center{
   justify-content: center;
-  align-items: center;
-  padding: 15px;
-  background-color: #212121;
-  color: #FFF;
 }
 
+.audio_width{
+  width: 800px;
+}
+
+button, input[type="submit"], input[type="reset"] {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.custom_button{
+  background-color: #ECCFCF;
+  padding: 10px;
+}
 
 </style>

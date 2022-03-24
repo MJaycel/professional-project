@@ -8,16 +8,22 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"> -->
     <!-- <script src="https://kit.fontawesome.com/91a51980b0.js" crossorigin="anonymous"></script> -->
     <router-view/>
+
+    <!-- <div v-if="$route.name !== 'MeditationPage'">
+      <MusicPlayer/>
+    </div> -->
+
   </div>
 </template>
 <script>
+// import MusicPlayer from '@/components/musicPlayer.vue'
 require("@/css/main.css")
 
 
 export default {
   name: 'App',
   components: {
-    
+    // MusicPlayer
   },
   mounted(){
         //// couldnt put script tag inside template 
