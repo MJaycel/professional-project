@@ -130,7 +130,8 @@
                             </template>
                             <div>
                                 <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
-                                <div class="d-flex justify-content-end"> 
+                                <div> 
+                                    <b-button class="m-1 add-time">Add Time</b-button>
                                     <b-button style="width:100px ; margin:10px;font-size:14px;" class="addItem__btn" @click="dueDate(data.item._id)">Save</b-button>
                                 </div>
                             </div>
@@ -296,7 +297,8 @@ export default ({
             events: [],
             event_id: '',
             today: '',
-            tomorrow: ''
+            tomorrow: '',
+
         }
     },
     mounted() {
@@ -906,6 +908,17 @@ export default ({
 .tomorrow-due{
     color: #259EE2;
     padding-top: 8px;
+}
+
+.add-time{
+    border: none !important;
+    background-color: transparent !important;
+    
+    font-family: 'Poppins',sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400;
+    color: black !important;
+    text-decoration: underline;
 }
 
 </style>

@@ -1,10 +1,8 @@
 <template>
     <div>
-        <b-modal id="task-details-modal" hide-footer centered hide-header-close hide-header @hide="hideModal">
-            <!-- <p class="my-4 modal_item_title">{{this.taskForm.item_title}}</p> -->
-            <!-- <i class="fa-solid fa-circle"></i> -->
-            <div>
-                <div class="col-5 float-right" style="margin-bottom:10px;">
+        <b-modal size="lg" id="task-details-modal" hide-footer centered hide-header-close @hide="hideModal">
+            <template #modal-header>
+                <div class="col-3 float-right" style="margin-bottom:10px;">
                     <form v-if="progress === 'In Progress'" :class="orange" class="mt-2" style="border-radius:20px;">
                         <select  class="progress_select orange_border" v-model="progress">
                             <option v-for="(option,idx) in options" :key="idx" class="p_options">
@@ -29,22 +27,24 @@
                             </option>                        
                         </select>
                     </form>
-
                 </div>
+                <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="showDelete"></b-icon>
+
+            </template>
+            <div>
                 <div class="col d-flex justify-content-between" style="padding:0px;margin:0px !important;">
                     <b-form-input v-model="taskForm.title" placeholder="Add a title" class="modal_item_title" ></b-form-input>
-                    <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="showDelete"></b-icon>
                 </div>
                 
             </div>
 
             <div class="row mt-3 d-flex justify-content-start">
-                <div class="col-4">
+                <div class="col-3">
                     <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Priority</p>
                 </div>
-                <div class="col-8">
+                <div class="col-4">
 
-                    <div class="col d-flex justify-content-start priority_div" style="padding:0px;">
+                    <div class="d-flex justify-content-start priority_div" style="padding:0px;">
                         <div>
                             <b-icon v-if="priority === 'Low Priority'" icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
                             <b-icon v-if="priority === 'High Priority'" icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
@@ -53,9 +53,7 @@
                         </div>
                         <div>
                             <form v-if="priority === 'Low Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
-                                  <!-- <label class="input-group-text" for=""><i class="fa-solid fa-circle"></i></label> -->
-
-                                <select class="priority_select" v-model="priority" data-show-content="true">
+                                <select class="priority_select" v-model="priority">
                                     <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
                                            {{option.text}}
                                     </option>                        
@@ -85,10 +83,10 @@
             </div>
 
             <div class="row mt-2">
-                <div class="col-4">
+                <div class="col-3">
                     <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Due Date</p>
                 </div>
-                <div class="col-8 mt-1 ">
+                <div class="col-4 mt-1 ">
                     <b-input-group class="date_picker_div">
                       <b-form-datepicker
                         class="date_picker"
@@ -112,11 +110,11 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-4 mt-2">
+            <div class="row mt-2">
+                <div class="col-3 mt-2">
                     <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
                 </div>
-                <div class="col-7 mt-2" style="padding: 0px;">
+                <div class="col-8 mt-2" style="padding: 0px;">
                     <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
                     <b-form-textarea v-else class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
                 </div>                
@@ -396,7 +394,7 @@ export default ({
 }
 
 .modal_item_title:hover{
-    background-color: #e6e6e6 !important;
+    background-color: #f7f7f7 !important;
     border-radius: 8px !important;
     color:rgb(88, 88, 88) !important;
 
@@ -542,7 +540,7 @@ export default ({
     outline:0px !important; 
     box-shadow: none !important;
     background: transparent;
-    width:190%;
+    /* width:190%; */
     padding-bottom:10px;
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0);
@@ -553,6 +551,16 @@ export default ({
     font-size: 15px !important;
 }
 
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+}
+
+.modal-header{
+    padding: 10px !important;
+}
 /* .priority_select:hover{
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0);
@@ -580,7 +588,7 @@ export default ({
     border-radius: 4px;
     /* border: 1px solid white; */
 
-    background: #e7e7e7 !important;
+    background: #f7f7f7 !important;
 }
 
 .orange_border{
@@ -626,7 +634,7 @@ select.custom-select.no-select-caret {
 }
 
 .date_:hover{
-    background: #e7e7e7 !important;
+    background: #f7f7f7 !important;
 }
 
 .date_picker{
@@ -640,12 +648,12 @@ select.custom-select.no-select-caret {
 }
 
 .date_picker:hover{
-    background: #e7e7e7 !important;
+    background: #f7f7f7 !important;
 
 }
 
 .date_picker_div:hover{
-    background: #e7e7e7 !important;
+    background: #f7f7f7 !important;
     border-radius: 4px !important;
 }
 
