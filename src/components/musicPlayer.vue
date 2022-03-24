@@ -364,6 +364,7 @@ export default {
   height: 162px;
   object-fit: cover;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 .my_container{
