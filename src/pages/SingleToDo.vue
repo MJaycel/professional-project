@@ -64,18 +64,13 @@
                 </b-input-group>
 
                 <div>
-                    <b-table responsive :items="items" :fields="headings" style="overflow: inherit">
+                    <b-table responsive :items="table_items" :fields="headings" style="overflow: inherit">
                     <template #cell(title)="data" >
-                        <div @click="viewDetails(data.item._id)" @contextmenu="handler($event,data.item._id)"  id="task">
+                        <div @click="viewDetails(data.item._id)"  id="task">
                             <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.title}}</p>
                             <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>                            
                         </div>
                     </template>
-                    <ul id="left-click-menu" tabindex="-1" ref="left" v-if="viewMenu" @blur="viewMenu=false" :style="{top:top,left:left}">
-                        <!-- <li @click="editList">Edit</li> -->
-                        <!-- <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li> -->
-                        <li >Edit</li> 
-                    </ul>
                     <template #cell(progress)="data">
                         <b-dropdown id="dropdown-2" no-caret block>
                             <template #button-content>
@@ -136,7 +131,18 @@
                                 </div>
                             </div>
                         </b-dropdown>
+                    </template>
 
+                    <template #cell(icon)="data">
+                        <b-dropdown id="icon-dropdown" no-caret>
+                            <template #button-content>
+                                <b-icon icon="three-dots-vertical"></b-icon>
+                            </template>
+                            <b-dropdown-item @click="viewDetails(data.item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item>
+                            <b-dropdown-item @click="archiveItem(data.item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Archive</b-dropdown-item>
+                            <b-dropdown-item> <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
+
+                        </b-dropdown>
                     </template>
                     </b-table>
                 </div>
@@ -198,7 +204,10 @@ export default ({
             hideHeader: false,
             showTask: false,
             userId: localStorage.getItem('userId'),
+
             items: [],
+            table_items: [],
+
             item: {},
             total: '',
             total_in_progress: '',
@@ -285,7 +294,10 @@ export default ({
                     label: 'Status',
                     tdClass: 'progress_table',
                     sortable: true
-
+                },
+                {
+                    key: 'icon',
+                    label: 'icon'
                 }
             ],  
 
@@ -298,6 +310,10 @@ export default ({
             event_id: '',
             today: '',
             tomorrow: '',
+
+            setArchive: {
+                archived: false
+            }
 
         }
     },
@@ -369,6 +385,8 @@ export default ({
                 this.form.list_title = response.data[0].list_title
                 this.theme = response.data[0].theme
                 this.items = response.data[0].items
+
+                this.table_items = this.items.filter(item => item.archived === false)
 
                 /// looping through each items and setting date format as Month, D, Yr
                 Array.from(this.items).forEach((item)=> {
@@ -601,6 +619,19 @@ export default ({
                     this.event_id = item._id
                 }    
             })
+        },
+        archiveItem(id) {
+            let userId = localStorage.getItem('userId')
+
+            this.setArchive.archived = true
+
+            axios.post(`http://localhost:3030/todo/archive/user/${userId}/list/${this.listId}/item/${id}`, this.setArchive)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.getListData()
+                }) 
+                .catch(error => console.log(error))
+
         }
 
 
@@ -847,6 +878,15 @@ export default ({
 
 .tr{
     padding:20px;
+}
+
+#icon-dropdown__BV_toggle_{
+    background-color: transparent !important;
+    color:black;
+    border:none;
+    padding: 0px;
+    display: flex;
+    justify-content: start;
 }
 
 #dropdown-1__BV_toggle_{
