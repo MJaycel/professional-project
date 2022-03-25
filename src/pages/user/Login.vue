@@ -1,33 +1,42 @@
 <template>
-    <div class="container">
-        <!-- <router-link :to="{path: '/register'}"></router-link> -->
-        <h2>LOGIN</h2>
-        <br>
-        <div class="col-">
-            <div class="row">
-                <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
+    <body class="background_green">
+        <div class="container">
+            <!-- <router-link :to="{path: '/register'}"></router-link> -->
+            <br>
+            <div class=" background_white ">
 
-                <p>Email</p>
-                <input type="email" v-model="form.email">
+                <h1>FOCUS</h1>
 
-                <br>
+                <div class="">
+                    <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
 
-                <p>Password</p>
-                <input type="password" v-model="form.password">
+                    <p>Email</p>
+                    <input class="col-8" type="email" v-model="form.email">
 
-                <br>
+                    <br>
 
-                <div class="col d-flex justify-content-end">
-                <router-link :to="{path: '/'}">cancel</router-link>
+                    <p>Password</p>
+                    <input class="col-8" type="password" v-model="form.password">
 
-                <b-button class="col-4" @click="login(form)">Submit</b-button>
+
                 </div>
 
+                <br>
+                <b-row class="row d-flex justify-content-end">
+                    <b-col>
+                        <router-link class="col-4" :to="{path: '/'}">cancel</router-link>
 
+                    </b-col>
+                    <b-col>
+                        <b-button class="col-4" @click="login(form)">Submit</b-button>
+
+                    </b-col>
+                </b-row>
             </div>
-        </div>
 
-    </div>
+        </div>
+    </body>
+
 </template>
 
 <script>
@@ -59,5 +68,22 @@ export default {
 </script>
 
 <style>
+
+
+.background_green{
+    background-color: #A4D1A2;
+    padding-bottom: 200px;
+}
+
+.background_white{
+    background-color: white;
+    padding: 100px;
+    border-radius: 23px;
+}
+
+.center{
+    justify-content: center;
+}
+
 
 </style>

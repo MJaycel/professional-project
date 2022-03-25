@@ -82,7 +82,8 @@ export default ({
 .medi_image{
     width: 225px;
     height: 162px;
-    border-radius: 15px
+    border-radius: 15px;
+    cursor: pointer;
 }
 
 .my_container{
@@ -119,6 +120,7 @@ export default ({
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
+    cursor: pointer;
 }
 
 .my_center{

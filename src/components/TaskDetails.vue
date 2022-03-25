@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal size="lg" id="task-details-modal" hide-footer centered hide-header-close @hide="hideModal">
+        <b-modal size="xl" id="task-details-modal" hide-footer centered hide-header-close @hide="hideModal">
             <template #modal-header>
                 <div class="col-3 float-right" style="margin-bottom:10px;">
                     <form v-if="progress === 'In Progress'" :class="orange" class="mt-2" style="border-radius:20px;">
@@ -38,89 +38,129 @@
                 
             </div>
 
-            <div class="row mt-3 d-flex justify-content-start">
-                <div class="col-3">
-                    <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Priority</p>
-                </div>
-                <div class="col-4">
-
-                    <div class="d-flex justify-content-start priority_div" style="padding:0px;">
-                        <div>
-                            <b-icon v-if="priority === 'Low Priority'" icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
-                            <b-icon v-if="priority === 'High Priority'" icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
-                            <b-icon v-if="priority === 'Medium Priority'" icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
-
+            <div class="row d-flex justify-content-start">
+                <div class="col-6">
+                    <div class="row mt-3 d-flex justify-content-start">
+                        <div class="col-3">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Priority</p>
                         </div>
-                        <div>
-                            <form v-if="priority === 'Low Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
-                                <select class="priority_select" v-model="priority">
-                                    <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
-                                           {{option.text}}
-                                    </option>                        
+                        <div class="col">
 
-                                </select>
-                            </form>  
+                            <div class="d-flex justify-content-start priority_div" style="padding:0px;">
+                                <div>
+                                    <b-icon v-if="priority === 'Low Priority'" icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+                                    <b-icon v-if="priority === 'High Priority'" icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
+                                    <b-icon v-if="priority === 'Medium Priority'" icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
 
-                            <form v-if="priority === 'Medium Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
-                                <select  class="priority_select" v-model="priority">
-                                    <option v-for="(option,idx) in pOptions" :key="idx" class="p_options" >
-                                        {{option.text}}
-                                    </option>                        
-                                </select>
-                            </form>          
+                                </div>
+                                <div>
+                                    <form v-if="priority === 'Low Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                        <select class="priority_select" v-model="priority">
+                                            <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
+                                                {{option.text}}
+                                            </option>                        
 
-                            <form v-if="priority === 'High Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
-                                <select  class="priority_select" v-model="priority">
-                                    <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
-                                        {{option.text}}
-                                    </option>                        
-                                </select>
-                            </form>                               
+                                        </select>
+                                    </form>  
+
+                                    <form v-if="priority === 'Medium Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                        <select  class="priority_select" v-model="priority">
+                                            <option v-for="(option,idx) in pOptions" :key="idx" class="p_options" >
+                                                {{option.text}}
+                                            </option>                        
+                                        </select>
+                                    </form>          
+
+                                    <form v-if="priority === 'High Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
+                                        <select  class="priority_select" v-model="priority">
+                                            <option v-for="(option,idx) in pOptions" :key="idx" class="p_options">
+                                                {{option.text}}
+                                            </option>                        
+                                        </select>
+                                    </form>                               
+                                </div>
+                            </div>
+                
                         </div>
                     </div>
-        
+
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Due Date</p>
+                        </div>
+                        <div class="col mt-1 ">
+                            <b-input-group class="date_picker_div">
+                            <b-form-datepicker
+                                class="date_picker"
+                                id="datepicker-buttons"
+                                locale="en"
+                                v-model="taskForm.startDate"
+                                :date-format-options="{ weekday: 'long', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                                </b-form-datepicker>                        
+                                <template v-slot:append>
+                                    <b-button style="background:transparent;border:none;" aria-label="Clear date" @click="taskForm.startDate = null">
+                                    <b-icon icon="x" style="color:black"></b-icon>
+                                    </b-button>
+                                </template>
+                            </b-input-group>
+
+
+                            <!-- <div style="padding:20px 10px 10px 10px;">
+                                <b-icon icon="x" style="width: 20px; height: 20px;" @click="onChange()"></b-icon>
+                            </div> -->
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-3 mt-2">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
+                        </div>
+                        <div class="col-8 mt-2" style="padding: 0px;">
+                            <!-- <p v-if="!showDesc" class="desc__task__input no__outline" @click="showDesc = !showDesc">{{this.taskForm.description}}</p> -->
+                            <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
+                            <b-form-textarea v-else no-auto-shrink class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
+                        </div>                
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="mt-3">
+                        <b-button @click="showAddSubTask = !showAddSubTask">Add subTask + </b-button>
+                        <div v-if="showAddSubTask" class="d-flex justify-content-between">
+                            <b-form-input  v-model="subTaskForm.title" placeholder="Add a title"></b-form-input>
+                            <b-icon @click="addSubTask" icon="plus" style="width:26px;height:26px;margin-top:6px;"></b-icon>
+                        </div>
+                        <b-list-group >
+                            <b-list-group-item v-for="task in subTasks" :key="task._id" class="subTask_list">
+                                <div class="d-flex justify-content-between" >
+
+                                    <!-- <p @click="showEditSub(task._id)" v-if="!showEditSubTask && index === indexOf(task._id)" style="margin-bottom:0px;">{{task.title}}</p> -->
+
+                                    <!-- <b-form-input  @click="showEditSub(task._id)" v-if="subTaskId === task._id" :id="`edit-subtask-${subTaskId}`" v-model="subTaskForm.title"></b-form-input> -->
+                                    <b-input-group class="edit__input_group">
+                                        <b-form-input
+                                            v-model="task.title"
+                                            type="text"
+                                            v-on:keyup.enter='editSubTask(task,task._id)'
+                                            >
+                                            <b-icon icom="plus"></b-icon>
+                                        </b-form-input>                        
+                                    </b-input-group>
+                                    <b-dropdown id="icon-dropdown" no-caret right>
+                                        <template #button-content>
+                                            <b-icon icon="three-dots-vertical"></b-icon>
+                                        </template>
+                                        <!-- <b-dropdown-item @click="viewDetails(item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item> -->
+                                        <!-- <b-dropdown-item @click="unArchiveItem(item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Un Archive</b-dropdown-item> -->
+                                        <!-- <b-dropdown-item @click="showDelete(item._id)"><b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item> -->
+                                    </b-dropdown>
+                                </div>
+                            </b-list-group-item>
+                        </b-list-group>
+                    </div>
                 </div>
             </div>
-
-            <div class="row mt-2">
-                <div class="col-3">
-                    <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Due Date</p>
-                </div>
-                <div class="col-4 mt-1 ">
-                    <b-input-group class="date_picker_div">
-                      <b-form-datepicker
-                        class="date_picker"
-                        id="datepicker-buttons"
-                        locale="en"
-                        v-model="taskForm.startDate"
-                        :date-format-options="{ weekday: 'long', month: 'short', day: 'numeric', year: undefined }"
-                        >
-                        </b-form-datepicker>                        
-                        <template v-slot:append>
-                            <b-button style="background:transparent;border:none;" aria-label="Clear date" @click="taskForm.startDate = null">
-                            <b-icon icon="x" style="color:black"></b-icon>
-                            </b-button>
-                        </template>
-                    </b-input-group>
-
-
-                    <!-- <div style="padding:20px 10px 10px 10px;">
-                        <b-icon icon="x" style="width: 20px; height: 20px;" @click="onChange()"></b-icon>
-                    </div> -->
-                </div>
-            </div>
-
-            <div class="row mt-2">
-                <div class="col-3 mt-2">
-                    <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
-                </div>
-                <div class="col-8 mt-2" style="padding: 0px;">
-                    <!-- <p v-if="!showDesc" class="desc__task__input no__outline" @click="showDesc = !showDesc">{{this.taskForm.description}}</p> -->
-                    <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
-                    <b-form-textarea v-else no-auto-shrink rows="6" class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
-                </div>                
-            </div>
-
 
            <div class="d-flex justify-content-end mt-4">
                 <b-button class="cancel__btn" style="margin-right: 10px;" @click="hideModal"> Cancel</b-button>
@@ -154,6 +194,7 @@ export default ({
     },
     data() {
         return{
+
             showDesc: false,
             taskForm: {
                 title: '',
@@ -196,7 +237,23 @@ export default ({
                 classes : '',
                 item_id: ''
             },
-            itemInCalendar: false
+            itemInCalendar: false,
+
+            ////// SUB TASKS DATAS
+            subTasks: [
+                {showEditSubTask : false}
+            ],
+            subTaskForm: {
+                startDate: '',
+                title: '',
+                isComplete: false,
+                classes : '',
+                inCalendar: false
+            },
+            subTaskId: '',
+            showAddSubTask: false,
+            showEditSubTask: false,
+            editInputID : ''
         }
     },
     computed: {
@@ -221,8 +278,10 @@ export default ({
 
             axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.list_id}/item/${this.id}`)
             .then(response => {
-                console.log('EDIT',response.data[0].todoLists.items)
+                console.log('ITEMS',response.data[0].todoLists.items)
                 this.item = response.data[0].todoLists.items
+
+                this.subTasks = this.item.subTask
 
                 this.taskForm.title= this.item.title
                 this.taskForm.description = this.item.description
@@ -372,6 +431,45 @@ export default ({
                 }    
             })
         },
+
+        /////ADDING SUBTASKS
+        addSubTask() {
+            let userId = localStorage.getItem('userId')
+
+            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.list_id}/item/${this.id}`, this.subTaskForm) 
+            .then(response => {
+                console.log("Sub Task Added", response.data)
+                this.getItem()
+                this.subTaskForm.title = ''
+            })   
+            .catch(error => console.log(error))
+        },
+        showEditSub(id){
+            this.subTaskId = id
+
+            if(this.subTaskId === id){
+                this.showEditSubTask = true
+            } else {
+                this.showEditSubTask = false
+            }
+            // this.editInputID = `edit-subtask-${id}`
+            // if(this.editInputID === `edit-subtask-${id}`){
+            //     this.showEditSubTask = true
+            // }
+        },
+        editSubTask(task,subTaskID){
+            let userId = localStorage.getItem('userId')
+
+            this.subTaskForm.title = task.title
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${subTaskID}`, this.subTaskForm) 
+            .then(response => {
+                console.log("Sub Task Added", response.data)
+                this.getItem()
+                this.subTaskForm.title = ''
+            })   
+            .catch(error => console.log(error))
+        }
     },
 })
 </script>
@@ -661,6 +759,19 @@ select.custom-select.no-select-caret {
 
 #datepicker-buttons{
     padding-left: 5px !important;
+}
+
+.subTask_list{
+    padding:8px !important;
+    margin-bottom: 0px !important;
+
+    font-family: 'Poppins' sans-serif !important;
+    font-size: 14px !important;
+    cursor: pointer;
+}
+
+.subTask_list:hover{
+    background-color: #f7f7f7 !important;
 }
 
 </style>
