@@ -106,6 +106,15 @@
                             </b-input-group>
                         </div>
                     </div>
+                    
+                    <div class="row mt-2">
+                        <div class="col-3">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Add Time</p>
+                        </div>
+                        <div class="col mt-1 ">
+                            <b-form-input style="border-radius: 4px;"  :id="`startTime`" v-model="taskForm.startTime" type="time"></b-form-input>
+                        </div>
+                    </div>
 
                     <!-- <div class="row mt-2"> -->
                         <div class="col-3 mt-2" style="padding-left:13px;">
@@ -117,6 +126,7 @@
                             <b-form-textarea v-else no-auto-shrink rows="6" class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
                         </div>                
                     <!-- </div> -->
+                    
                 </div>
 
                 <div class="col">
@@ -192,7 +202,8 @@ export default ({
                 progress: '',
                 isComplete: '',
                 inCalendar: false,
-                classes: ''
+                classes: '',
+                startTime: ''
 
             },
             userId: localStorage.getItem('userId'),
@@ -278,6 +289,7 @@ export default ({
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
                 this.taskForm.inCalendar = this.item.inCalendar
+                this.taskForm.startTime = this.item.startTime
 
                 if(this.taskForm.inCalendar === true){
                     this.itemInCalendar = true

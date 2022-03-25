@@ -117,7 +117,6 @@ input:focus{
    background-image: url('../assets/task.png') !important;
    background-repeat: no-repeat !important;
    background-size: 18px 18px !important;   
-   /* margin-left: 40px; */
 	padding-left: 22px !important;
 }
 

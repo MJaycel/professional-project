@@ -154,8 +154,16 @@
                             </b-input-group>
                         </div>
                     </div>
+                    <div class="row mt-2">
+                        <div class="col-4">
+                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Add Time</p>
+                        </div>
+                        <div class="col-8 mt-1 ">
+                            <b-form-input style="border-radius: 4px;"  :id="`startTime`" v-model="taskForm.startTime" type="time"></b-form-input>
+                        </div>
+                    </div>
 
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-4 mt-2">
                             <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
                         </div>
@@ -282,13 +290,15 @@ export default {
                 description: '',
                 isComplete: false,
                 classes : '',
-                item_id: ''
+                item_id: '',
+                startTime: ''
             },
             itemInCalendar: false,
             taskForm: {
                 title: '',
                 description: '',
                 startDate: '',
+                startTime: '',
                 priorityLevel: '',
                 progress: '',
                 isComplete: false,
@@ -687,11 +697,23 @@ export default {
         addItemtoCal() {
 
             // let userId = localStorage.getItem('userId')
-            this.calForm.startDate = this.taskForm.startDate
+            // this.calForm.startDate = this.taskForm.startDate
+
+            let newStartDate;
+            const userInputStart = this.taskForm.startTime
+            //setting start time
+            const hours_start = userInputStart.slice(0,2)
+            const minutes_start = userInputStart.slice(3)
+
+            const date_start = new Date(this.taskForm.startDate)
+            newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+
+            this.calForm.startDate = newStartDate.toUTCString()
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
             this.calForm.classes = 'item-event item-event-bg'
+            this.calForm.startTime = this.taskForm.startTime
 
             this.calForm.item_id = this.lastItemId 
 
