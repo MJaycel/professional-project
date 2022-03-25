@@ -1,11 +1,11 @@
 <template>
     <body class="background_green">
-        <div class="container">
-            <!-- <router-link :to="{path: '/register'}"></router-link> -->
+        <div class="container ">
             <br>
             <div class=" background_white ">
 
                 <h1>FOCUS</h1>
+                <router-link :to="{path: '/register'}">Create an account</router-link>
 
                 <div class="">
                     <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
@@ -20,18 +20,15 @@
 
 
                 </div>
-
                 <br>
-                <b-row class="row d-flex justify-content-end">
-                    <b-col>
-                        <router-link class="col-4" :to="{path: '/'}">cancel</router-link>
+                <div class="col-8 row">
+                    <div class="col d-flex justify-content-end">
+                        <router-link :to="{path: '/'}">cancel</router-link>
 
-                    </b-col>
-                    <b-col>
-                        <b-button class="col-4" @click="login(form)">Submit</b-button>
-
-                    </b-col>
-                </b-row>
+                        <button class="col-4 custom_button" @click="register(form)">Submit</button>
+                    </div>
+                </div>
+                
             </div>
 
         </div>
@@ -83,6 +80,17 @@ export default {
 
 .center{
     justify-content: center;
+}
+
+.custom_button{
+    background: #AA96DA;
+    border-radius: 54px;    
+	color: #FFFFFF;
+	border: none;
+	padding: 20;
+	font: inherit;
+    width: 179px;
+    height: 52px;
 }
 
 
