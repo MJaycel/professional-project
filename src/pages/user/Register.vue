@@ -1,40 +1,47 @@
 
 <template>
-    <div class="container">
-        <!-- <router-link :to="{path: '/register'}"></router-link> -->
-        <h2>LOGIN</h2>
-        <br>
-        <div class="col-">
-            <div class="row">
+    <body class="background_green">
+        <div class="container">
+            <!-- <router-link :to="{path: '/register'}"></router-link> -->
 
-                <p>Name</p>
-                <input type="email" v-model="form.name">
-                <span class="error text-danger" v-if="errorsStatus">{{errors.name ? errors.name.message : ''}}</span>
+            <br>
 
-
-                <p>Email</p>
-                <input type="email" v-model="form.email">
-                <span class="error text-danger" v-if="errorsStatus">{{errors.email ? errors.email.message : ''}}</span>
-
+            <div class=" background_white ">
+                <h2>REGISTER AN ACCOUNT</h2>
                 <br>
+                <div class="">
+                    <div class="row col-8" >
 
-                <p>Password</p>
-                <input type="password" v-model="form.password">
-                <span class="error text-danger" v-if="errorsStatus">{{errors.password ? errors.password.message : ''}}</span>
+                        <p>Name</p>
+                        <input type="email" v-model="form.name">
+                        <span class="error text-danger" v-if="errorsStatus">{{errors.name ? errors.name.message : ''}}</span>
 
-                <br>
 
-                <div class="col d-flex justify-content-end">
-                <router-link :to="{path: '/'}">cancel</router-link>
+                        <p>Email</p>
+                        <input type="email" v-model="form.email">
+                        <span class="error text-danger" v-if="errorsStatus">{{errors.email ? errors.email.message : ''}}</span>
 
-                <b-button class="col-4" @click="register(form)">Submit</b-button>
+                        <br>
+
+                        <p>Password</p>
+                        <input type="password" v-model="form.password">
+                        <span class="error text-danger" v-if="errorsStatus">{{errors.password ? errors.password.message : ''}}</span>
+
+                        <br>
+
+                        <div class="col d-flex justify-content-end">
+                        <router-link :to="{path: '/'}">cancel</router-link>
+
+                        <button class="col-4 custom_button" @click="register(form)">Submit</button>
+                        </div>
+
+
+                    </div>
                 </div>
-
-
             </div>
-        </div>
 
-    </div>
+        </div>
+    </body>
 </template>
 
 <script>
@@ -67,5 +74,32 @@ export default {
 </script>
 
 <style>
+
+.background_green{
+    background-color: #A4D1A2;
+    padding-bottom: 200px;
+}
+
+.background_white{
+    background-color: white;
+    padding: 100px;
+    border-radius: 23px;
+}
+
+.center{
+    justify-content: center;
+}
+
+.custom_button{
+    background: #AA96DA;
+    border-radius: 54px;    
+	color: #FFFFFF;
+	border: none;
+	padding: 20;
+	font: inherit;
+    width: 179px;
+    height: 52px;
+}
+
 
 </style>
