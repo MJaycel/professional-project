@@ -418,6 +418,8 @@ export default ({
                 axios.post(`http://localhost:3030/calendar/edit/event/${this.event_id}` , this.calForm )
                 .then(response => {
                     console.log("Edit item due date",response.data.events)
+                    this.$store.dispatch('getAllEvents')
+
                 })
                 .catch(error => {
                     console.log(error)
@@ -427,6 +429,8 @@ export default ({
                 axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
                 .then(response => {
                     console.log("Task added to calendar",response.data)
+                    this.$store.dispatch('getAllEvents')
+
                 })
                 .catch(error => console.log(error))     
             }
