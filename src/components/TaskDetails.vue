@@ -393,8 +393,19 @@ export default ({
         addItemtoCal() {
             // this.getItem()
             this.findInEvents()
-            // let userId = localStorage.getItem('userId')
-            this.calForm.startDate = this.taskForm.startDate
+            // let userId = localStorage.getItem('userId')            
+            let newStartDate;
+            const userInputStart = this.taskForm.startTime
+            //setting start time
+            const hours_start = userInputStart.slice(0,2)
+            const minutes_start = userInputStart.slice(3)
+
+            const date_start = new Date(this.taskForm.startDate)
+            newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+
+            this.calForm.startDate = newStartDate.toUTCString()
+            this.calForm.startTime = this.taskForm.startTime
+
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete

@@ -709,11 +709,12 @@ export default {
             newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
 
             this.calForm.startDate = newStartDate.toUTCString()
+            this.calForm.startTime = this.taskForm.startTime
+            
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
             this.calForm.classes = 'item-event item-event-bg'
-            this.calForm.startTime = this.taskForm.startTime
 
             this.calForm.item_id = this.lastItemId 
 
