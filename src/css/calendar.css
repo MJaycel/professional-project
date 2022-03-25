@@ -81,7 +81,10 @@ having to override as much.
 	border-radius: 0.5em;
 	background-color: #e7e7ff;
 	text-overflow: ellipsis;
-	/* padding-left: 20px !important; */
+	padding-top:6px !important;
+	padding-bottom:6px !important;
+
+	/* padding: 6px !important; */
 
 	/* max-width:500px; */
 }

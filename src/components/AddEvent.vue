@@ -62,34 +62,120 @@
                             </div>
                         </b-dropdown>
                     </div>
+                    <!-- <br> -->
+                    <div class="d-flex justify-content-end mt-2" style="margin-bottom:10px;">
+                        <p class="font__fam" style="margin-bottom:0px;" >All day</p>
+                        <b-form-checkbox style="margin-left:10px;margin-right:8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
+                        </b-form-checkbox>
+
+                        <!-- <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select> -->
+                    </div>
+                    <div v-if="!isAllDay">
+                        <b-input-group>
+                            <b-form-datepicker
+                                class="date_picker"
+                                style="width:100px;"
+                                id="startDate-datepicker"
+                                locale="en"
+                                v-model="form.startDate"
+                                :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                            </b-form-datepicker>     
+                            <b-form-input style="margin-left: 15px; border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
+                            <p class="font__fam" style="margin-bottom:0px;margin-top:10px;margin-left:10px;">to</p>
+                            <b-form-input style="margin-left: 15px;border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                       
+                        </b-input-group>
+                    </div>
+                    <div v-if="isAllDay">
+                        <b-input-group>
+                            <b-form-datepicker
+                                class="date_picker font__fam"
+                                id="startDate-datepicker"
+                                locale="en"
+                                v-model="form.startDate"
+                                :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                            </b-form-datepicker>     
+                            
+                            <p class="font__fam" style="margin-bottom:0px;margin-top:10px;margin-left:20px;margin-right:20px;">to</p>
+
+                            <b-form-datepicker
+                                class="date_picker font__fam"
+                                id="endDate-datepicker"
+                                locale="en"
+                                v-model="form.endDate"
+                                :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                            </b-form-datepicker>     
+                   
+                        </b-input-group>
+                    </div>
+                    <!-- <br> -->
+                    <div class="d-flex justify-content-start pt-3">
+                        <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 160px;font-size:14px;" class="no__outline"></b-form-select>
+                    </div>
+
+                    <div v-if="showEndsOnDaily">
+                        <p class="font__fam" style="margin-left:4px;margin-top:10px;margin-bottom:10px;">Ends:</p>
+                        <b-form-group v-slot="{ ariaDescribedby }">
+                            <b-form-radio v-model="endsOn" :aria-describedby="ariaDescribedby" value="never" class="font__fam" style="margin-left:10px;">Never</b-form-radio>
+                            <div class="d-flex justify-content-start">
+
+                                <b-form-radio v-model="endsOn" :aria-describedby="ariaDescribedby" value="endsOn" class="font__fam" style="margin-left:10px;margin-right:20px;margin-top:12px;">On</b-form-radio>
+                                <b-form-datepicker
+                                    style="width:200px;"
+                                    class="date_picker font__fam"
+                                    id="daily_until-datepicker"
+                                    locale="en"
+                                    v-model="daily_until"
+                                        :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                    >
+                                </b-form-datepicker>     
+                            </div>
+                        </b-form-group>
+
+                        <b-button @click="setUntil">Done</b-button>
+                    </div>
+                    <div v-if="showEndsOnWeekly">
+                        <p class="font__fam" style="margin-left:4px;margin-top:10px;margin-bottom:10px;">Ends:</p>
+                        <b-form-group v-slot="{ ariaDescribedby }">
+                            <b-form-radio v-model="endsOn" :aria-describedby="ariaDescribedby" value="never" class="font__fam" style="margin-left:10px;">Never</b-form-radio>
+                            <div class="d-flex justify-content-start">
+                                <b-form-radio v-model="endsOn" :aria-describedby="ariaDescribedby" value="endsOn" class="font__fam" style="margin-left:10px;margin-right:20px;margin-top:12px;">On</b-form-radio>
+                                <b-form-datepicker
+                                    class="date_picker font__fam"
+                                    id="daily_until-datepicker"
+                                    locale="en"
+                                    v-model="weekly_until"
+                                        :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                    >
+                                </b-form-datepicker>     
+                            </div>
+                        </b-form-group>
+                        <b-button @click="setUntil">Done</b-button>
+                    </div>
+                    <!-- <div v-if="showEndsOnMonthly">
+                        <p class="font__fam" style="margin-left:4px;margin-top:10px;margin-bottom:10px;">Ends:</p>
+                        <b-form-group v-slot="{ ariaDescribedby }">
+                            <b-form-radio v-model="endsOn" :aria-describedby="ariaDescribedby" value="never" class="font__fam" style="margin-left:10px;">Never</b-form-radio>
+                            <div class="d-flex justify-content-start">
+                                <b-form-radio v-model="endsOn" :aria-describedby="ariaDescribedby" value="endsOn" class="font__fam" style="margin-left:10px;margin-right:20px;margin-top:12px;">On</b-form-radio>
+                                <b-form-datepicker
+                                    class="date_picker font__fam"
+                                    id="daily_until-datepicker"
+                                    locale="en"
+                                    v-model="monthly_until"
+                                        :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                    >
+                                </b-form-datepicker>     
+                            </div>
+                        </b-form-group>
+                        <b-button @click="setUntil">Done</b-button>
+                    </div> -->
                     <br>
                     <b-form-textarea class="desc__input no__outline" v-model="form.description" placeholder="Add a description"></b-form-textarea>
                     <br>
-                    <div class="d-flex justiy-content-between">
-                        <div v-if="!isAllDay" style="margin-top: 10px;">
-                            <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                            <b-form-input style="width: 320px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
-                        </div>
-
-                        <div v-else style="margin-top: 10px;">
-                            <b-form-input style="width: 460px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                            <b-form-input style="width: 460px; margin-top: 16px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                        </div>
-
-                        <div v-if="!isAllDay" style="margin-top: 10px;">
-                        <b-form-input style="width: 130px; margin-left: 15px; border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
-                        <b-form-input style="width: 130px; margin-left: 15px; margin-top: 16px; border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                      
-                        </div>
-
-                    </div>
-                    <div class="d-flex justify-content-start pt-3">
-                        <p>All day</p>
-                        <b-form-checkbox style="margin-left:10px;margin-right: 8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
-                        </b-form-checkbox>
-
-                        <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select>
-                    </div>
-                    <br>
+                    
                     <div class="d-flex justify-content-end">
                         <b-button class="cancel__btn" @click="cancel"> Cancel</b-button>
 
@@ -254,6 +340,7 @@ export default {
             ],
             weekly_until: '',
             daily_until: '',
+            monthly_until: '',
             difference: '',
             eId : '',
             // setColorTheme: {
@@ -308,7 +395,13 @@ export default {
             selectedList: '',
             lists: [],
             lastItemId: '',
-            todoLists: []
+            todoLists: [],
+            showEndsOnDaily: false,
+            showEndsOnWeekly: false,
+            showEndsOnMonthly: false,
+
+            endsOn: ''
+
         }
     },
     mounted() {
@@ -484,30 +577,58 @@ export default {
 
             this.form.recurring_id = this.eId
             this.postItem()
-            for(let i = 0; i < this.difference; i++){
-                const start = new Date(this.form.startDate)
-                start.setDate(start.getDate() + 1)
-                this.form.startDate = start
 
-                const end = new Date(this.form.endDate)
-                end.setDate(end.getDate() + 1)
-                this.form.endDate = end
-                this.form.repeat = true
-                this.form.recurrence_pattern = this.selected
-                this.form.recurring_id = this.eId
-                this.postItem()
-                // this.form.recurring_id = this.eId
+            if(this.endsOn === 'endsOn'){
+                for(let i = 0; i < this.difference; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 1)
+                    this.form.startDate = start
 
-                // this.form.startDate = start
-                // this.form.endDate = end
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 1)
+                    this.form.endDate = end
+                    this.form.repeat = true
+                    this.form.recurrence_pattern = this.selected
+                    this.form.recurring_id = this.eId
+                    this.postItem()
+                    // this.form.recurring_id = this.eId
 
-                console.log(this.form.recurring_id)
+                    // this.form.startDate = start
+                    // this.form.endDate = end
+
+                    console.log(this.form.recurring_id)
+                }
+            } else if(this.endsOn === 'never'){
+                for(let i = 0; i < 365; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 1)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 1)
+                    this.form.endDate = end
+                    this.form.repeat = true
+                    this.form.recurrence_pattern = this.selected
+                    this.form.recurring_id = this.eId
+                    this.postItem()
+                    // this.form.recurring_id = this.eId
+
+                    // this.form.startDate = start
+                    // this.form.endDate = end
+
+                    console.log(this.form.recurring_id)
+                }
             }
         },
         addMonthly() {
+            this.eId = "e" + Math.random().toString(36).substr(2, 10)
+
             let start_UTC;
             let end_UTC;
             this.form.repeat = true
+
+            const diff = this.difference + 1
+            console.log('diff', diff)
 
             for(let i = 0; i < 12; i++){
                 ////setting start date
@@ -545,6 +666,7 @@ export default {
                 this.form.endDate = end_UTC.toUTCString()
                 this.form.repeat = true
                 this.form.recurrence_pattern = this.selected
+                this.form.recurring_id = this.eId
 
                 this.postItem()
 
@@ -605,16 +727,28 @@ export default {
         },
         onOptionChanged(){
             if(this.selected === 'weekly'){
-                this.$bvModal.show('weekly-settings')                
-            }
-            if(this.selected === 'daily'){
-                this.$bvModal.show('daily-settings')                
+                // this.$bvModal.show('weekly-settings')    
+                this.showEndsOnWeekly = true    
+                this.showEndsOnDaily = false
+            } else if(this.selected === 'daily'){
+                // this.$bvModal.show('daily-settings') 
+                this.showEndsOnDaily = true       
+                this.showEndsOnWeekly = false   
+
+            } else if(this.selected === 'monthly'){
+                this.showEndsOnMonthly = true
+                this.showEndsOnDaily = false  
+                this.showEndsOnWeekly = false    
             }
         },
         setUntil(){
-            console.log('until', this.weekly_until)
+            console.log('until', this.monthly_until)
             console.log('startDate', this.form.startDate)
             this.getDiff()
+            this.showEndsOnWeekly = false    
+            this.showEndsOnDaily = false
+            this.showEndsOnMonthly = false
+
         },
         getDiff() {
             const _MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -632,7 +766,16 @@ export default {
     
                 this.difference = Math.floor((a - b) / _MS_PER_DAY)
                 console.log(this.difference)            
-                }
+            }
+            if(this.selected === 'monthly'){
+                const a = new Date(this.monthly_until)
+                const b = new Date(this.form.startDate)
+
+                this.difference = Math.floor(a.getMonth() - b.getMonth() + (12 * (a.getFullYear() - b.getFullYear())))
+
+                console.log('diff',this.difference)
+            }
+
         },
 
 
@@ -710,7 +853,7 @@ export default {
 
             this.calForm.startDate = newStartDate.toUTCString()
             this.calForm.startTime = this.taskForm.startTime
-            
+
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete

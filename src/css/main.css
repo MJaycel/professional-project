@@ -1,3 +1,9 @@
+/* FONTS */
+.font__fam{
+   font-family: 'Poppins',sans-serif !important;
+   font-size: 14px !important;
+}
+
 .side__bar{
     /* height: 100vh !important; */
 height: 100vh ;
@@ -118,5 +124,21 @@ input:focus{
    background-repeat: no-repeat !important;
    background-size: 18px 18px !important;   
 	padding-left: 22px !important;
+   background-position-y: center !important;
+}
+
+#startDate-datepicker__value_{
+   font-family: 'Poppins',sans-serif !important;
+   font-size: 14px !important;
+}
+
+#endDate-datepicker__value_{
+   font-family: 'Poppins',sans-serif !important;
+   font-size: 14px !important;
+}
+
+#daily_until-datepicker__value_{
+   font-family: 'Poppins',sans-serif !important;
+   font-size: 14px !important;
 }
 

@@ -126,8 +126,7 @@
                                 </template>
                                 <div>
                                     <b-calendar :hide-header='true' v-model="addDueDate.startDate"></b-calendar>
-                                    <div> 
-                                        <b-button class="m-1 add-time">Add Time</b-button>
+                                    <div class="flex-start"> 
                                         <b-button style="width:100px ; margin:10px;font-size:14px;" class="addItem__btn" @click="dueDate(data.item._id)">Save</b-button>
                                     </div>
                                 </div>
@@ -317,10 +316,6 @@ export default ({
 
             ///// TABLE //////
             headings: [
-                // {
-                //     key: 'isComplete',
-                //     label: ''
-                // },
                 {
                     key: 'title',
                     label: 'Task',
@@ -718,7 +713,7 @@ export default ({
                 this.deleteEvent()
                 this.getListData()
                 this.$bvModal.hide('delete-item')
-                
+
                 this.$bvModal.hide('task-details-modal')
                 this.$store.commit('setShowTask', false)
                 
@@ -736,9 +731,7 @@ export default ({
                 // this.$store.dispatch('getAllEvents')
             }) 
             .catch(error => console.log(error))
-        },
-
-
+        }
     },
     watch: {
         percNum: {
