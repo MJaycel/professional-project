@@ -28,7 +28,20 @@
                         </select>
                     </form>
                 </div>
-                <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="showDelete"></b-icon>
+                <!-- <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="showDelete"></b-icon> -->
+                <b-dropdown id="icon-dropdown" no-caret right>
+                    <template #button-content>
+                        <b-icon icon="three-dots-vertical" style="margin-top:10px;"></b-icon>
+                    </template>
+
+                    <div v-if="$route.name != 'calendar'">
+                        <b-dropdown-item v-if="archived === false" @click="archiveItem"><b-icon icon="archive" style="margin-right: 15px;width:15px;height:15px;" ></b-icon>Archive</b-dropdown-item>
+
+                        <b-dropdown-item v-if="archived === true" @click="unArchiveItem"><b-icon icon="archive" style="margin-right: 15px;width:15px;height:15px;" ></b-icon>Un Archive</b-dropdown-item>
+                    </div>
+
+                    <b-dropdown-item @click="showDelete"><b-icon icon="trash" style="margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
+                </b-dropdown>
 
             </template>
             <div>
@@ -188,7 +201,7 @@ export default ({
         id: String,
         list_id: String,
         method: { type: Function },
-        alert: {type: Function}
+        alert: {type: Function},
     },
     data() {
         return{
@@ -253,7 +266,11 @@ export default ({
             showAddSubTask: false,
             showEditSubTask: false,
             editInputID : '',
-            subTask_title: ''
+            subTask_title: '',
+            setArchive: {
+                archived: false
+            },
+            archived: false
         }
     },
     computed: {
@@ -282,6 +299,8 @@ export default ({
                 this.item = response.data[0].todoLists.items
 
                 this.subTasks = this.item.subTask
+
+                this.archived = this.item.archived
 
                 this.taskForm.title= this.item.title
                 this.taskForm.description = this.item.description
@@ -393,18 +412,22 @@ export default ({
         addItemtoCal() {
             // this.getItem()
             this.findInEvents()
-            // let userId = localStorage.getItem('userId')            
-            let newStartDate;
-            const userInputStart = this.taskForm.startTime
-            //setting start time
-            const hours_start = userInputStart.slice(0,2)
-            const minutes_start = userInputStart.slice(3)
 
-            const date_start = new Date(this.taskForm.startDate)
-            newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
-
-            this.calForm.startDate = newStartDate.toUTCString()
-            this.calForm.startTime = this.taskForm.startTime
+            if(this.taskForm.startTime != null){
+                let newStartDate;
+                const userInputStart = this.taskForm.startTime
+                const hours_start = userInputStart.slice(0,2)
+                const minutes_start = userInputStart.slice(3)
+    
+                const date_start = new Date(this.taskForm.startDate)
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+    
+                
+                this.calForm.startDate = newStartDate.toUTCString()
+                this.calForm.startTime = this.taskForm.startTime
+            } else {
+                this.calForm.startDate = this.taskForm.startDate
+            }
 
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
@@ -514,6 +537,36 @@ export default ({
                 this.method()   
                 this.alert()
             })
+        },
+       archiveItem() {
+            let userId = localStorage.getItem('userId')
+
+            this.setArchive.archived = true
+
+            axios.post(`http://localhost:3030/todo/archive/user/${userId}/list/${this.list_id}/item/${this.id}`, this.setArchive)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.getItem()
+                    this.hideModal()
+                    this.method()
+
+                }) 
+                .catch(error => console.log(error))
+        },
+        unArchiveItem(){
+            let userId = localStorage.getItem('userId')
+
+            this.setArchive.archived = false
+
+            axios.post(`http://localhost:3030/todo/archive/user/${userId}/list/${this.list_id}/item/${this.id}`, this.setArchive)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.hideModal()
+                    this.method()
+
+                    this.getItem()
+                }) 
+                .catch(error => console.log(error))
         },
     },
 })
@@ -685,7 +738,7 @@ export default ({
     outline:0px !important; 
     box-shadow: none !important;
     background: transparent;
-    /* width:190%; */
+    width:300%;
     padding-bottom:10px;
     border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0);

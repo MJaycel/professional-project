@@ -719,6 +719,9 @@ export default ({
                 this.getListData()
                 this.$bvModal.hide('delete-item')
                 
+                this.$bvModal.hide('task-details-modal')
+                this.$store.commit('setShowTask', false)
+                
                 // this.$emit('getListData')
                 this.method()   
                 this.alert()
