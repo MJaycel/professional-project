@@ -112,16 +112,16 @@
                         </div>
                     </div>
 
-                    <div class="row mt-2">
-                        <div class="col-3 mt-2">
-                            <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Description</p>
+                    <!-- <div class="row mt-2"> -->
+                        <div class="col-3 mt-2" style="padding-left:13px;">
+                            <p class="modal_forms" style="padding-top:10px;">Description</p>
                         </div>
-                        <div class="col-8 mt-2" style="padding: 0px;">
+                        <div class="mt-2" style="padding: 0px;">
                             <!-- <p v-if="!showDesc" class="desc__task__input no__outline" @click="showDesc = !showDesc">{{this.taskForm.description}}</p> -->
-                            <b-form-textarea v-if="taskForm.description === ''" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
-                            <b-form-textarea v-else no-auto-shrink class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
+                            <b-form-textarea v-if="taskForm.description === ''" rows="6" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
+                            <b-form-textarea v-else no-auto-shrink rows="6" class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
                         </div>                
-                    </div>
+                    <!-- </div> -->
                 </div>
 
                 <div class="col">
@@ -593,8 +593,8 @@ export default ({
     color: #535353;
 
     padding:10px 0px 10px 5px !important;
-    margin: 0px 20px 0px 20px;
-    width:100%;
+    margin-left:12px;
+    width:150%;
 }
 
 

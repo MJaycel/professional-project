@@ -155,7 +155,7 @@
             <div class="col" style="display:inline-block;padding:0px;">
             <!-- progress tracker -->
                 <div class="col-11 details mt-3 flex-start" style="background: white;border-radius: 20px;margin-bottom:10px;padding:0px;color:black">
-                    <div class="d-flex justify-content-between">
+                    <!-- <div class="d-flex justify-content-between"> -->
                         <div style="padding: 20px;">
                             <b-button v-b-toggle.collapse-progress class="progress_tracker collapse_btn">Progress Tracker</b-button>
                             <b-collapse id="collapse-progress">
@@ -178,7 +178,7 @@
                                 <div class="mt-5 d-flex justify-content-center" id="p5Canvas"></div>
                             </b-collapse> 
                         </div>
-                    </div>
+                    <!-- </div> -->
                 </div>
 
                 <!-- Archived Items -->
