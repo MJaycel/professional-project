@@ -65,9 +65,11 @@
                     <div>
                         <b-table :sort-by.sync="sortBy" :sort-desc.sync="sortDesc" responsive :items="table_items" :fields="headings" style="overflow: inherit">
                         <template #cell(title)="data" >
-                            <div @click="viewDetails(data.item._id)"  id="task">
+                            <div @click="viewDetails(data.item._id)"  id="task" class="d-flex justify-content-start">
                                 <p v-if="data.item.isComplete" style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;text-decoration: line-through;">{{data.item.title}}</p>
-                                <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>                            
+                                <p v-else style="font-family:'Poppins', 'sans-serif';font-size:14px;margin:0px;padding-top:10px;">{{data.item.title}}</p>    
+                                <!-- <p>{{data.item.subtask.length}}</p>     -->
+                                <!-- <b-icon icon="list-nested" style="margin-top: 13px;margin-left:10px;"> </b-icon>                         -->
                             </div>
                         </template>
                         <template #cell(progress)="data">
@@ -362,7 +364,9 @@ export default ({
             setArchive: {
                 archived: false
             },
-            deleteId : ''
+            deleteId : '',
+
+            subTasks: []
         }
     },
     mounted() {
@@ -437,6 +441,8 @@ export default ({
                 this.table_items = this.items.filter(item => item.archived === false)
 
                 this.archivedItems = this.items.filter(item => item.archived === true)
+
+                console.log('subtasks', this.subTasks)
 
                 if(this.archivedItems.length === 0){
                     this.emptyArchive = true

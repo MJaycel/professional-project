@@ -104,11 +104,6 @@
                                     </b-button>
                                 </template>
                             </b-input-group>
-
-
-                            <!-- <div style="padding:20px 10px 10px 10px;">
-                                <b-icon icon="x" style="width: 20px; height: 20px;" @click="onChange()"></b-icon>
-                            </div> -->
                         </div>
                     </div>
 
@@ -126,35 +121,28 @@
 
                 <div class="col">
                     <div class="mt-3">
-                        <b-button @click="showAddSubTask = !showAddSubTask">Add subTask + </b-button>
-                        <div v-if="showAddSubTask" class="d-flex justify-content-between">
-                            <b-form-input  v-model="subTaskForm.title" placeholder="Add a title"></b-form-input>
+                        <b-button class="addSubTask_btn" @click="showAddSubTask = !showAddSubTask">Add Subtask </b-button>
+                        <div v-if="showAddSubTask" class="d-flex justify-content-between mt-3">
+                            <b-form-input  v-model="subTask_title" placeholder="Add a title" class="addSubTask_input" v-on:keyup.enter='addSubTask'></b-form-input>
                             <b-icon @click="addSubTask" icon="plus" style="width:26px;height:26px;margin-top:6px;"></b-icon>
                         </div>
-                        <b-list-group >
+                        <b-list-group class="mt-4">
                             <b-list-group-item v-for="task in subTasks" :key="task._id" class="subTask_list">
                                 <div class="d-flex justify-content-between" >
+                                    <b-input-group>
+                                    <b-icon icon="check-circle" v-if="!task.isComplete" style="margin-right: 10px;margin-top: 8px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
+                                    <b-icon icon="check-circle-fill" v-else style="margin-right: 10px;margin-top: 8px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
 
-                                    <!-- <p @click="showEditSub(task._id)" v-if="!showEditSubTask && index === indexOf(task._id)" style="margin-bottom:0px;">{{task.title}}</p> -->
-
-                                    <!-- <b-form-input  @click="showEditSub(task._id)" v-if="subTaskId === task._id" :id="`edit-subtask-${subTaskId}`" v-model="subTaskForm.title"></b-form-input> -->
-                                    <b-input-group class="edit__input_group">
                                         <b-form-input
+                                            class="subTask_edit_input"
                                             v-model="task.title"
                                             type="text"
                                             v-on:keyup.enter='editSubTask(task,task._id)'
+                                            @blur="editSubTask(task,task._id)"
                                             >
-                                            <b-icon icom="plus"></b-icon>
-                                        </b-form-input>                        
+                                        </b-form-input> 
                                     </b-input-group>
-                                    <b-dropdown id="icon-dropdown" no-caret right>
-                                        <template #button-content>
-                                            <b-icon icon="three-dots-vertical"></b-icon>
-                                        </template>
-                                        <!-- <b-dropdown-item @click="viewDetails(item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item> -->
-                                        <!-- <b-dropdown-item @click="unArchiveItem(item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Un Archive</b-dropdown-item> -->
-                                        <!-- <b-dropdown-item @click="showDelete(item._id)"><b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item> -->
-                                    </b-dropdown>
+                                    <b-icon icon="trash" style="margin-top:12px;margin-right:15px;cursor: pointer;width:16px;height:16px;" @click="deleteSubTask(task._id)"></b-icon>
                                 </div>
                             </b-list-group-item>
                         </b-list-group>
@@ -253,7 +241,8 @@ export default ({
             subTaskId: '',
             showAddSubTask: false,
             showEditSubTask: false,
-            editInputID : ''
+            editInputID : '',
+            subTask_title: ''
         }
     },
     computed: {
@@ -436,11 +425,13 @@ export default ({
         addSubTask() {
             let userId = localStorage.getItem('userId')
 
+            this.subTaskForm.title = this.subTask_title
+
             axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.list_id}/item/${this.id}`, this.subTaskForm) 
             .then(response => {
                 console.log("Sub Task Added", response.data)
                 this.getItem()
-                this.subTaskForm.title = ''
+                this.subTask_title = ''
             })   
             .catch(error => console.log(error))
         },
@@ -466,10 +457,37 @@ export default ({
             .then(response => {
                 console.log("Sub Task Added", response.data)
                 this.getItem()
-                this.subTaskForm.title = ''
+                // this.subTaskForm.title = ''
             })   
             .catch(error => console.log(error))
-        }
+        },
+        setComplete(task,id){
+            let userId = localStorage.getItem('userId')
+
+            this.subTaskForm.title = task.title
+            this.subTaskForm.isComplete = !this.subTaskForm.isComplete
+
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${id}`, this.subTaskForm) 
+            .then(response => {
+                console.log("Sub Task Added", response.data)
+                // this.subTaskForm.title = ''
+                this.getItem()
+            })   
+            .catch(error => console.log(error))
+        },
+        deleteSubTask(id){
+            let userId = localStorage.getItem('userId')
+
+            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${id}`)
+            .then(response => {
+                console.log('DELETED' ,response)
+                this.getItem()
+                
+                // this.$emit('getListData')
+                this.method()   
+                this.alert()
+            })
+        },
     },
 })
 </script>
@@ -762,16 +780,63 @@ select.custom-select.no-select-caret {
 }
 
 .subTask_list{
-    padding:8px !important;
+    padding:0px !important;
     margin-bottom: 0px !important;
-
-    font-family: 'Poppins' sans-serif !important;
-    font-size: 14px !important;
-    cursor: pointer;
+    /* border: none !important; */
 }
 
 .subTask_list:hover{
     background-color: #f7f7f7 !important;
+}
+
+.subTask_list:focus{
+    background-color: #e6e6e6 !important;
+}
+
+.subTask_edit_input{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
+
+    padding-left: 10px !important;
+    /* border-left: none !important;
+    border-right: none !important;
+    border-top : none !important;
+    border-radius: 0px !important; */
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer;
+}
+
+/* .subTask_edit_input:hover{
+    background-color: #f7f7f7;
+} */
+
+.subTask_edit_input:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+    border-color: #ced4da !important;
+
+    /* background-color: #e6e6e6 !important; */
+}
+
+.addSubTask_btn{
+    border-color: #AA96DA !important;
+    background-color: transparent !important;
+    color: #AA96DA !important;
+
+    font-family: 'Poppins',sans-serif;
+    font-size: 14px !important;
+
+}
+
+.addSubTask_btn:focus{
+    outline:0px !important; 
+    box-shadow: none !important;
+}
+
+.addSubTask_input{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px !important;
 }
 
 </style>
