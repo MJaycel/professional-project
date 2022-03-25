@@ -25,7 +25,7 @@
                     <div class="col d-flex justify-content-end">
                         <router-link :to="{path: '/'}">cancel</router-link>
 
-                        <button class="col-4 custom_button" @click="register(form)">Submit</button>
+                        <button class="col-4 custom_button" @click="login(form)">Submit</button>
                     </div>
                 </div>
                 

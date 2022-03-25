@@ -1,24 +1,85 @@
 <template>
-    <div class="container pt-5">
-        <h2>Welcome, You are logged in!</h2>
-                    
- <!-- <b-button @click="logout()">Logout</b-button> -->
-        <router-link :to="{name: 'profile',params: {id: this.userId} }">Profile</router-link> |
-        <router-link :to="{name: 'calendar',params: {id: this.userId} }">Calendar</router-link> |
-        <router-link :to="{name: 'oldCal',params: {id: this.userId} }">Old Calendar</router-link> |
+    <div>
+        <div class="container-fluid" >
+            <div class="row ">
+                <div class="side__bar" style="height: 100vh;width: 65px !important;">
+                    <div class="mt-5 links">
+                        <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
+                            <b-icon icon="house-door-fill"></b-icon>
+                        </router-link>
+                    </div>
+                    <div class="links">
+                        <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
+                            <b-icon icon="calendar-date-fill"></b-icon>
+                        </router-link>
+                    </div>
+                    <div class="links">
+                        <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
+                            <b-icon icon="card-checklist"></b-icon>
+                        </router-link>
+                    </div>
 
-        <router-link :to="{name: 'todo',params: {id: this.userId} }">To Do</router-link> |
-        <router-link :to="{name: 'todo_page',params: {id: this.userId} }">TO DO PAGE</router-link> |
-        <router-link :to="{name: 'MeditationPage'}">Meditation Page</router-link> |
-        <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link> | 
-        <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link>
+                    <div class="links">
+                        <router-link :to="{name: 'profile',params: {id: this.userId} }">
+                            Profile
+                        </router-link>
+                    </div>
+
+                    <div class="links">
+                        <router-link :to="{name: 'calendar',params: {id: this.userId} }">
+                            Calendar
+                        </router-link>
+                    </div>
+
+                    <div class="links">
+                        <router-link :to="{name: 'oldCal',params: {id: this.userId} }">
+                            Old Calendar
+                        </router-link>
+                    </div>
+
+                    <div class="links">
+                        <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link>
+                    </div>
+
+                    <div class="links">
+                        <router-link :to="{name: 'todo',params: {id: this.userId} }">To Do</router-link>
+                    </div>
+                    <div class="links">
+                        <router-link :to="{name: 'todo_page',params: {id: this.userId} }">TO DO PAGE</router-link>
+                    </div>
+
+                    <div class="links">
+                        <router-link :to="{name: 'MeditationPage'}">Meditation Page</router-link>
+                    </div>
+                    <div class="links">
+                        <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link>
+                    </div>
+
+                </div>
+                <div class="col-5">
+                    <h1>Good day, {{this.$store.getters.name}}</h1>
+                    <Clock/>
+                    <p>You have {{printEvent}} events due</p>
+
+                </div>
+
+                <div class="col-6">
+                    <p>"{{quotes.content}}"</p>
+                    <p>-{{quotes.author}}</p>
+                </div>
+                
+
+
+
+
+            </div>
+        </div>
+    
+        <!-- <b-button @click="logout()">Logout</b-button> -->
+
         <b-button variant="warning" @click="logout()">Logout</b-button>        
     
-        <p>{{quotes.content}}</p>
-        <p>{{quotes.author}}</p>
-        <p>{{this.$store.getters.name}}</p>
-        <p>You have {{printEvent}} events due</p>
-        <Clock/>
+
     </div>
 </template>
 
