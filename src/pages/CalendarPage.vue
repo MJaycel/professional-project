@@ -287,10 +287,11 @@ export default ({
             this.$bvModal.hide('delete-event')
         },
         deleteEvent() {
+            this.deleteTask()
             axios.delete(`http://localhost:3030/calendar/delete/user/${this.$route.params.id}/event/${this.id}`)
             .then(response => {
                 console.log('Deleted', response)
-
+                
                 
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('read-event')
@@ -337,6 +338,19 @@ export default ({
                 console.log('all recurring event deleted', response)
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('delete-repeat-event')
+                this.hideDelete()
+                this.showAlert()
+            })
+        },
+        deleteTask(){
+            // console.log('fck', this.event.item_id)
+            let userId = localStorage.getItem('userId')
+
+            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.item_list_id}/item/${this.event.item_id}`)
+            .then(response => {
+                console.log('Deleted', response)
+                this.$store.dispatch('getAllEvents')
+                this.$bvModal.hide('read-event')
                 this.hideDelete()
                 this.showAlert()
             })
