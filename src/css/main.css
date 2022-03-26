@@ -142,3 +142,11 @@ input:focus{
    font-size: 14px !important;
 }
 
+
+.home__link{
+   font-family: 'Poppins', sans-serif;
+   font-size: 18px !important;
+   color: #1D6420 !important;
+}
+
+

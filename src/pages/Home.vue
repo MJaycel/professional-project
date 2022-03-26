@@ -4,6 +4,11 @@
             <div class="row ">
                 <div class="side__bar" style="height: 100vh;width: 65px !important;">
                     <div class="mt-5 links">
+                        <router-link class="home__link" :to="{name: 'profile', params: {id: this.userId}}">
+                            <b-icon icon="person-fill"></b-icon>
+                        </router-link>
+                    </div>
+                    <div class="links">
                         <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
                             <b-icon icon="house-door-fill"></b-icon>
                         </router-link>
@@ -18,41 +23,21 @@
                             <b-icon icon="card-checklist"></b-icon>
                         </router-link>
                     </div>
-
                     <div class="links">
-                        <router-link :to="{name: 'profile',params: {id: this.userId} }">
-                            Profile
+                        <router-link class="home__link" :to="{name: 'PomodoroTimer'}">
+                            <b-icon icon="hourglass-bottom"></b-icon>
                         </router-link>
                     </div>
 
                     <div class="links">
-                        <router-link :to="{name: 'calendar',params: {id: this.userId} }">
-                            Calendar
+                        <router-link class="home__link" :to="{name: 'MeditationPage'}">
+                            <img src="../assets/meditation-icon.svg" style="width:25px;height:25px;"/>
                         </router-link>
                     </div>
-
                     <div class="links">
-                        <router-link :to="{name: 'oldCal',params: {id: this.userId} }">
-                            Old Calendar
+                        <router-link class="home__link" :to="{name: 'MusicPlayer'}">
+                            <b-icon icon="headphones"></b-icon>
                         </router-link>
-                    </div>
-
-                    <div class="links">
-                        <router-link :to="{name: 'PomodoroTimer'}">Pomodoro Timer</router-link>
-                    </div>
-
-                    <div class="links">
-                        <router-link :to="{name: 'todo',params: {id: this.userId} }">To Do</router-link>
-                    </div>
-                    <div class="links">
-                        <router-link :to="{name: 'todo_page',params: {id: this.userId} }">TO DO PAGE</router-link>
-                    </div>
-
-                    <div class="links">
-                        <router-link :to="{name: 'MeditationPage'}">Meditation Page</router-link>
-                    </div>
-                    <div class="links">
-                        <router-link :to="{name: 'MusicPlayer'}">MusicPlayer</router-link>
                     </div>
 
                 </div>

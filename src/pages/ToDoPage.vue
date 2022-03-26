@@ -363,12 +363,6 @@ export default({
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
 
 
-.home__link{
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px !important;
-    color: #1D6420 !important;
-}
-
 .links{
     padding: 20px !important;
     /* text-align: center !important; */
