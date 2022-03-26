@@ -30,7 +30,7 @@
 
 <script>
 // import axios from 'axios'
-import Meditation from '@/components/Meditation.vue'
+import Meditation from '../components/Meditation.vue'
 
 export default ({
     name: 'MeditationPage',
