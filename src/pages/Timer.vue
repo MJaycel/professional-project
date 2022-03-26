@@ -20,13 +20,13 @@
           </div>
         </div>
         <div class="col">
-          <timer/>
+          <Timer/>
           <img class="background-image" src="../assets/lofi-images/timer-background.jpg" alt="">
         </div>
         
         <a class="music-link">music</a>
         <div class="background_red">
-          <music-player/>
+          <MusicPlayer/>
         </div>
         
       </div>
@@ -41,10 +41,11 @@
 </template>
 
 <script>
-import Timer from "@/components/timer.vue"
+import Timer from "../components/timer.vue"
 import MusicPlayer from '../components/musicPlayer.vue'
 
 export default {
+  name: 'PomodoroTimer',
   components: {
     Timer,
     MusicPlayer

@@ -33,6 +33,7 @@
 import Meditation from '@/components/Meditation.vue'
 
 export default ({
+    name: 'MeditationPage',
     components:{
         Meditation
     }
