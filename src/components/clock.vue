@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
-  <div class="">
-    <div class="clock-inner" :class="color">
+  <div>
+  <div>
+    <div class="clock-inner">
       <div class="hour">{{hours}}</div>
       <div class="dots">:</div>
       <div class="min">{{minutes}}</div>
@@ -63,24 +63,16 @@ export default {
 }
 </script>
 
-<style scoped>
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: auto;
-    flex-direction: column;
-  }
-  .hour, .min, .secs {
-    font-size: 8em;
+<style>
+  .hour, .min, .secs{
+    font-size: 7em;
+    font-family: 'Poppins',sans-serif;
+    /* font-size: 20px !important; */
   }
   strong {
     color: blue;
   }
-  p {
-    font-family: 'Lucida Sans', sans-serif;
-    font-size: 20px;
-  }
+
   .clock-border {
     display: flex;
     justify-content: center;
@@ -90,14 +82,16 @@ export default {
     background: linear-gradient(to right, grey, rgb(82, 76, 76));
   }
   .clock-inner {
+
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
-    width: 600px;
-    height: 150px;
-    background: black;
-    border-radius: 20px;
+    /* width: 600px; */
+    height: 100px; 
+    /* background: orange; */
+    /* border-radius: 20px; */
     color: white;
+    color: black !important; 
   }
   .dots {
     font-size: 70px;

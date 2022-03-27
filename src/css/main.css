@@ -4,6 +4,22 @@
    font-size: 14px !important;
 }
 
+.heading_font{
+   font-family: 'Poppins',sans-serif !important;
+   font-size: 18px !important;
+   font-weight: 500;
+}
+
+.logo__font{
+   font-family: 'Croissant One', cursive;
+   font-size: 36px !important;
+
+   color: #1D6420 !important; 
+   padding-left: 20px !important;
+   letter-spacing: -0.08em;
+
+}
+
 .side__bar{
     /* height: 100vh !important; */
 height: 100vh ;
@@ -47,70 +63,76 @@ input:focus{
 /* color theme classes */
 .eGreen{
    background: #5EBC62 !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #5EBC62 !important;
 
 }
 
 .eDarkGreen{
    background: #278A2B !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #278A2B !important;
 
 }
 .ePurple{
    background: #AA96DA !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #AA96DA !important;
+   /* border-left: 2px solid !important; */
+
+   /* border-left: 2px !important; */
+
+   /* border-left-color: #AA96DA !important; */
 
 }
 .eYellow{
    background: #FFD74A !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #FFD74A !important;
 
 }
 .eBlue{
    background: #259EE2 !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #259EE2 !important;
 
 }
 .eViolet{
    background: #6F6EAD !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #6F6EAD !important;
 
 }
 .eRed{
    background: #F11F1F !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #F11F1F !important;
 
 }
 .ePink{
    background: #F0A1A1 !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #F0A1A1 !important;
 
 }
 .eOrange{
    background: #F99500 !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #F99500 !important;
 
 }
 .eDarkBlue{
    background: #0F5F8C !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #0F5F8C !important;
+
 
 }
 
 .item-event{
    background: #259EE2 !important;
-   color: white !important;
    font-size: 14px !important;
+   border-color: #259EE2 !important;
 
    /* background-image: url('../assets/task.png') !important;
    background-repeat: no-repeat !important;
@@ -145,8 +167,33 @@ input:focus{
 
 .home__link{
    font-family: 'Poppins', sans-serif;
-   font-size: 18px !important;
+   font-size: 16px !important;
    color: #1D6420 !important;
+
+   font-weight: 400 !important;
 }
+
+.home__link{
+   text-decoration: none !important;
+}
+
+.onHover_links{
+   padding: 8px 8px 8px 20px !important;
+   /* margin-top: 0px !important; */
+}
+
+.onHover_links:hover{
+   background-color: #B6E9B3;
+}
+
+.icon-links{
+   font-size:20px !important;
+   color: #1D6420 !important;
+   margin-right:10px;
+}
+
+/* .links:hover{
+   background: #beffc1;
+} */
 
 

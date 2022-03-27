@@ -193,7 +193,7 @@
                         <p class="card-text">Collapse contents Here</p>
                         </b-card> -->
                         <b-list-group >
-                            <b-list-group-item v-for="item in archivedItems" :key="item._id">
+                            <b-list-group-item class="list__group" v-for="item in archivedItems" :key="item._id">
                                 <div class="d-flex justify-content-between" >
                                     <div @click="viewDetails(item._id)" style="cursor: pointer;">
                                         {{item.title}}
@@ -1058,7 +1058,7 @@ export default ({
     text-decoration: underline;
 }
 
-.list-group-item{
+.list__group{
     /* border: none !important; */
     border-top: none !important;
     border-left: none !important;

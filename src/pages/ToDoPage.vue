@@ -37,12 +37,13 @@
                     <div @contextmenu="handler($event,list._id)" v-for="list in lists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;" @click="goToList(list._id)">
                         <p class="list__title">{{list.list_title}}</p>
                         <!-- <router-link class="list__title" :to="{name: 'single_todo', params: {id: userId}}">{{list.list_title}}</router-link> -->
-                    </div>
 
+                    </div>
                     <ul id="right-click-menu" tabindex="-1" ref="right" v-if="viewMenu" @focus="viewMenu = true" @blur="viewMenu=false" :style="{top:top,left:left}">
                         <li @click="editList">Edit</li>
                         <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li>
                     </ul>
+
                     <!-- Edit list form -->
                     <b-sidebar v-if="edit" id="sidebar-edit" right visible no-header>
                         <template #default="{hide}">
@@ -343,8 +344,11 @@ export default({
                 .then(response => {
                     console.log('edited', response.data)
                     this.edit = false
-                    this.getListData()
                     this.getAllLists()
+            // this.$router.push({name: 'todo_page', params: {
+            //     id: userId
+            // }})                    
+            // this.getListData()
                     // this.getData()
                     // this.getListItems(response.data._id)
                     // this.toDoTitle = response.data.list_title
@@ -363,14 +367,7 @@ export default({
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
 
 
-.links{
-    padding: 20px !important;
-    /* text-align: center !important; */
-}
 
-.links:hover{
-    background: #beffc1;
-}
 
 .add_list_card{
     height: 140px;

@@ -26,6 +26,7 @@ export default new Vuex.Store({
         events: [],
 
         lists: [],
+        firstList: {},
 
         showAddModal: false,
         showEditModal: false,
@@ -44,6 +45,10 @@ export default new Vuex.Store({
 
         events: state =>{
             return state.events
+        },
+
+        firstList: state => {
+            return state.firstList
         }
     },
     mutations: {
@@ -103,6 +108,10 @@ export default new Vuex.Store({
         ////////// to do lists 
         setListId(state, listId){
             state.listId = listId
+        },
+
+        setFirstList(state, list){
+            state.firstList = list
         }
     },
     actions: {
@@ -121,13 +130,27 @@ export default new Vuex.Store({
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('userId', response.data.user._id)
                 console.log("Login Succesful", response.data.user)
-                context.commit("SET_NAME", response.data.user.name)
+
+                const name = response.data.user.name
+                let arr = []
+                arr = name.split(" ", 2);
+                const firstName = arr[0]
+
+                context.commit("SET_NAME", firstName)
+
+                const list = response.data.user.todoLists[0]
+
+                context.commit('setFirstList', list)
+                console.log('to do', list)
+
+                
+                console.log(response)
             })
             .catch(error => {
                 if(error){
                     context.commit('setLoginError', true)
                 }
-                console.log(error.response.data)
+                console.log(error)
             })
         },
         logout(context) {

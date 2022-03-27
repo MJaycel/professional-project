@@ -863,6 +863,10 @@ select.custom-select.no-select-caret {
     padding:0px !important;
     margin-bottom: 0px !important;
     /* border: none !important; */
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px;
 }
 
 .subTask_list:hover{
