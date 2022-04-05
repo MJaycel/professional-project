@@ -36,7 +36,10 @@ export default new Vuex.Store({
         listId: '',
 
         completed: '',
-        priority: ''
+        priority: '',
+
+        background: 'timer-background',
+        songClicked: false
     },
     getters:{
         name: state => {
@@ -49,9 +52,19 @@ export default new Vuex.Store({
 
         firstList: state => {
             return state.firstList
-        }
+        },
+
+        // changeBackground: state => {
+        //     console.log(state.changeBackground)
+        //     return state.background
+        // }
     },
     mutations: {
+        setBackground(state, background){
+            state.background = background
+            state.songClicked = true
+        },
+
         setLoggedInStatus(state, status){
             state.isLoggedIn = status
         },
@@ -209,5 +222,12 @@ export default new Vuex.Store({
 
         //         .catch(error => console.log(error))
         // }
+        
+        changeBackground(context, background){
+            console.log(background);
+            context.commit("setBackground", background)
+        }
+
+
     }
 })

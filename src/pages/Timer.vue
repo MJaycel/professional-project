@@ -19,9 +19,12 @@
               </router-link>
           </div>
         </div>
+
+        
         <div class="col">
+          <!-- {{ $store.state.songClicked ? $store.state.background : background }} -->
           <Timer/>
-          <img class="background-image" src="../assets/lofi-images/timer-background.jpg" alt="">
+          <img class="background-image" :src="require(`../assets/lofi-images/${$store.state.songClicked ? $store.state.background : background}.jpg`)" alt="">
         </div>
         
         <a class="music-link">music</a>
@@ -32,11 +35,6 @@
       </div>
 
     </div>
-    
-    
-    
-   
-    
   </div>
 </template>
 
@@ -49,6 +47,20 @@ export default {
   components: {
     Timer,
     MusicPlayer
+  },
+  data(){
+    return{
+      background: "timer-background",
+    }
+  },
+  mounted(){
+      console.log(this.$store.state.background)
+  },
+  methods:{
+    changeBackground(){
+      console.log(this.$store.state.background)
+
+    }
   }
 }
 </script>
@@ -62,7 +74,7 @@ export default {
 
 .background-image{
   width: 102%;
-  height: 100%;
+  height: 1000px;
   object-fit: cover;
   margin-left: -15px;
 

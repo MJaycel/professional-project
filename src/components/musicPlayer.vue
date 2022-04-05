@@ -26,7 +26,8 @@
           <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
           <div class="player" v-for="song in songs" :key="song._id" >
             
-            <img @click="audio_controller = (`${song.html_link}`)" class="music-image" :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" alt="">
+            <img @click="songClicked(song.html_link, song.cover_image)" class="music-image" 
+            :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" alt="">
             <h4>{{song.title}} -<br> {{song.artist}}</h4>
             
 
@@ -138,6 +139,7 @@
 <script>
 import axios from 'axios';
 import { getIdFromURL } from "vue-youtube-embed";
+// import {mapActions} from 'vuex'
 let videoId = getIdFromURL("https://www.youtube.com/watch?v=lTRiuFIWV54&ab_channel=LofiGirl");
 
 export default {
@@ -156,6 +158,7 @@ export default {
       //-----music-----/////////////////////////////////////////
       isLoop: false,
       currentTime: 0,
+
       current:{},
       index: 0,
       isPlaying: false,
@@ -177,8 +180,8 @@ export default {
       songs: [],
       audio_controller: 'https://professional-project-storage.s3.eu-west-1.amazonaws.com/Lukrembo+-+Biscuit+%5BFTUM+Release%5D.mp3',
       isVisibility: false,
-      player: new Audio()
-
+      player: new Audio(),
+      background: ''
     }
   },
 
@@ -189,6 +192,12 @@ export default {
   },
 
   methods:{
+
+    songClicked(link, cover){
+
+    this.audio_controller = link;
+    this.$store.dispatch('changeBackground', cover)
+  },
     
     // play(song){
 
@@ -225,18 +234,13 @@ export default {
         console.log(error)
       })
     },
-
     pause(){
       this.player.pause();
       this.isPlaying = false;
     },
-
     loop(){
      this.isLoop = !this.isLoop
     },
-
-    
-
     next(){
       this.index++;
       //if the index is greater than the songs length it brings it to the index 0
@@ -247,7 +251,6 @@ export default {
       this.current = this.songs[this.index];
       this.play(this.current);
     },
-
     prev(){
       this.index--;
 
@@ -263,7 +266,7 @@ export default {
 // yt videos
 
     ready(event) {
-      this.test = event.target;
+      this.YTPlayer = event.target;
     },
     playing() {
       console.log("playing");
@@ -272,17 +275,16 @@ export default {
       //this.videoId = "use another video id";
     },
     stopYTvideo() {
-      this.test.stopVideo();
+      this.YTPlayer.stopVideo();
     },
     pauseYTvideo() {
-      this.test.pauseVideo();
+      this.YTPlayer.pauseVideo();
       console.log("paused");
     },
     playYTvideo() {
-      this.test.playVideo();
+      this.YTPlayer.playVideo();
       console.log("paused");
     },
-
     insertVideo(videoDetails){
 
       // let userId = localStorage.getItem('userId')
@@ -299,7 +301,6 @@ export default {
         console.log(error)
       })
     },
-
     getAllVideos(){
       let userId = localStorage.getItem('userId')
       axios.get(`http://localhost:3030/youtube/${userId}`)
@@ -311,7 +312,6 @@ export default {
         console.log(error)
       })
     },
-
     getID(link){
       let mySubString = link.substring(
           link.indexOf("v") + 1, 
@@ -328,18 +328,18 @@ export default {
       console.log(this.videoId)
     }
   },
-
   created(){
     this.current = this.songs[this.index];
     this.player.src = this.current.src;
   },
+  // shuffle(){
+  // },
 
-  shuffle(){
-    
-  },
+  // ...mapActions(['changeBackground']),
+
+  
   
 }
-
 
 </script>
 

@@ -11,10 +11,10 @@
                     <br>
                         <div class="">
                             
-                            <div class="hero-image" @click=" test = (`${meditation.html_link}`)">
+                            <div class="hero-image" @click=" changeAudio = (`${meditation.html_link}`)">
                                 <img  class="cover medi_image" :src="require(`../assets/lofi-images/${meditation.cover_image}.jpg`)"  alt="">
                                 <p class="meditation-title hero-text">{{meditation.title}}</p>
-                                <!-- <audio :src="test" controls/> -->
+                                <!-- <audio :src="changeAudio" controls/> -->
                             </div>
                             
                             <br>
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="my_container my_center">
-                <audio class="audio_width " :src="test" controls/>
+                <audio class="audio_width " :src="changeAudio" controls/>
 
             </div>
         </div>
@@ -39,7 +39,7 @@ export default ({
     data(){
         return{
             meditations:[],
-            test: "https://professional-project-storage.s3.eu-west-1.amazonaws.com/bedtime-meditation-for-sleep.mp3"
+            changeAudio: "https://professional-project-storage.s3.eu-west-1.amazonaws.com/bedtime-meditation-for-sleep.mp3"
         }
     },
     mounted(){
@@ -60,9 +60,11 @@ export default ({
             })
         },
 
-        testFunction(){
-            this.test = this.meditations.html_link
-        }
+        changeAudioFunction(){
+            this.changeAudio = this.meditations.html_link
+        },
+
+
     }
 })
 </script>
