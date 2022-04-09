@@ -40,6 +40,10 @@ export default {
         this.minutes = DATE.getMinutes()
         this.seconds = DATE.getSeconds()
 
+        if(this.minutes < 10){
+          this.minutes = this.minutes + "0"
+        }
+
         // this.minutes = this.checkForSingleDigit(DATE.getMinutes())
         // this.seconds = this.checkForSingleDigit(DATE.getSeconds())
 
