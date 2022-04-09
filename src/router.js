@@ -118,7 +118,7 @@ export default new Router ({
             component: Calendar,
         },
         {
-            path: '/calendar/:id',
+            path: '/oldCal/:id',
             name: 'oldCal',
             component: oldCal,
         },

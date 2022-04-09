@@ -61,65 +61,41 @@
         <!-- <b-button @click="logout()">Logout</b-button> -->
     <div class="container-fluid">
         <div class="row">
-            <div v-if="hideSideBar" style="font-size:26px;padding-top:10px;margin-left:8px;width:65px;">
-                <b-icon @click="hideBar" icon="list" style="cursor: pointer;" v-b-tooltip.hover title="Expand Sidebar"></b-icon>
+            <div v-if="hideSideBar" class="col-2" style="padding:0px;">
+                <SideBar :hideSideBar='hideSideBar'/>
             </div>
-            <div class="col-2" style="background:#A4D1A2;height:100vh;padding:0px;" :class="hideDisplay">
-                <div class="d-flex justify-content-between" style="font-size:20px;margin-top:20px;">
-                    <p class="logo__font">Focus</p>
-                    <b-icon @click="hideBar" style="color: #1D6420;margin-top:16px;margin-right:10px;font-weight:500;cursor:pointer;" icon="chevron-double-left"></b-icon>
-                </div>
-                <div>
-                    <!-- <div >
-                        <router-link class='icon-links' :to="{name: 'profile', params: {id: this.userId}}">
-                            <b-icon icon="person-fill"></b-icon>
-                        </router-link>
-                    </div> -->
-                    <div class="onHover_links">
-                        <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                            <b-icon class="icon-links" icon="house-door-fill"></b-icon>
-                            Home
-                        </router-link>
-                    </div>
-                    <div class="onHover_links">
-                        <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                            <b-icon class='icon-links' icon="calendar-date-fill"></b-icon>
-                            My Calendar
-                        </router-link>
-                    </div>
-                    <div class="onHover_links">
-                        <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
-                            <b-icon class='icon-links' icon="card-checklist"></b-icon>
-                            My Tasks
-                        </router-link>
-                    </div>
-                    <div class="onHover_links">
-                        <router-link class="home__link" :to="{name: 'PomodoroTimer'}">
-                            <b-icon class='icon-links'  icon="hourglass-bottom"></b-icon>
-                            Study
-                        </router-link>
-                    </div>
-
-                    <div class="onHover_links">
-                        <router-link class="home__link" :to="{name: 'MeditationPage'}">
-                            <img class='icon-links' src="../assets/meditation-icon.svg" style="width:25px;height:25px;"/>
-                            Relax
-                        </router-link>
-                    </div>
-                    <b-button variant="warning" @click="logout()">Logout</b-button>        
-                </div>
+            <div style="font-size:26px;padding-top:10px;margin-left:8px;width:65px;">
+                <b-icon @click="hideBar" icon="list" style="cursor: pointer;"></b-icon>
             </div>
 
             <!-- greeting and clock -->
             <div class="col pt-4" style="margin-left:20px;">
-                <div class="greeting">Good {{this.day}}, <p class="userName"> {{this.$store.getters.name}}</p> </div>
-                <Clock/>
+                <div class="row">
+                    <div class="col">
+                        <div class="greeting">Good {{this.day}}, <p class="userName"> {{this.$store.getters.name}}</p> </div>
+                        <Clock/>
+                    </div>
+                    <div class="col-6 mt-3" style="margin-right:20px;">
+                        <p class="text-right quotes" style="margin-bottom:0px;">"{{quotes.content}}"</p>
+                        <p class="text-right quotes-author" style="margin-bottom:0px;">-{{quotes.author}}</p>
+                    </div>
+
+                </div>
+                
                 <!-- <p>You have {{printEvent}} events due</p> -->
 
-                <div class="row mt-5"> 
-                    <div class="col-5 todo_calEvents" style="margin-right:36px;">
+                <div class="row mt-5 d-flex justify-content-start" style="margin-bottom:20px;"> 
+                    <div class="col-6 todo_calEvents" style="margin-right:50px;">
                         <div class="d-flex justify-content-between pt-1">
-                            <p class="heading_font">{{this.list.list_title}}</p>
+
+                            <!-- list form options  -->
+                            <form class="mt-2" style="padding:0px 5px 0px 5px;" v-b-tooltip.hover title="Change List">
+                                <select class="heading_font no__outline" style="border: none;cursor:pointer;" v-model="selectedList" @change="getListData">
+                                    <option v-for="list in lists" :key="list._id" :value="list._id" >
+                                        {{list.list_title}}
+                                    </option>                          
+                                </select>
+                            </form>
                             <b-dropdown id="icon-dropdown" no-caret right>
                                 <template #button-content>
                                     <b-icon icon="three-dots-vertical" style="margin-top:10px;"></b-icon>
@@ -129,7 +105,7 @@
                             </b-dropdown>
                         </div>
                         <!-- add new task input -->
-                        <b-input-group class="input__group">
+                        <b-input-group class="input__group mt-1">
                             <template #append>
                                 <b-input-group-text style="height: 40px;border:none;background-color:transparent !important;">
                                 <b-icon @click="addTask" icon="plus" style="width: 20px; height: 20px;"></b-icon>
@@ -146,7 +122,7 @@
                         </b-input-group>
 
                         <b-list-group >
-                            <b-list-group-item v-for="task in tasks" :key="task._id" class="subTask_list" style="padding-top:8px !important;padding-left:8px !important;padding-bottom:10px !important;">
+                            <b-list-group-item v-for="task in inComplete" :key="task._id" class="subTask_list" style="padding-top:8px !important;padding-left:8px !important;padding-bottom:10px !important;">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex justify-content-start">
                                         <b-icon icon="check-circle" v-if="!task.isComplete" style="margin-right: 10px;margin-top: 2px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
@@ -159,26 +135,10 @@
 
                                     <b-icon icon="trash" style="margin-top:4px;margin-right:15px;cursor: pointer;width:16px;height:16px;" @click="deleteTask(task._id)"></b-icon>
                                 </div>
-                                <!-- <div class="d-flex justify-content-between">
-                                    <b-input-group>
-                                    <b-icon icon="check-circle" v-if="!task.isComplete" style="margin-right: 10px;margin-top: 8px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
-                                    <b-icon icon="check-circle-fill" v-else style="margin-right: 10px;margin-top: 8px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
-
-                                        <b-form-input
-                                            class="subTask_edit_input"
-                                            v-model="task.title"
-                                            type="text"
-                                            v-on:keyup.enter='editTask(task,task._id)'
-                                            @blur="editTask(task,task._id)"
-                                            >
-                                        </b-form-input> 
-                                    </b-input-group>
-                                    <b-icon icon="trash" style="margin-top:12px;margin-right:15px;cursor: pointer;width:16px;height:16px;" @click="deleteTask(task._id)"></b-icon>
-                                </div> -->
                             </b-list-group-item>
                         </b-list-group>
                     </div>
-                    <div class="col-5 todo_calEvents">
+                    <div class="col-5 todo_calEvents" >
                         <div class="d-flex justify-content-between pt-1">
                             <p class="heading_font">Upcoming Events</p>
                             <b-dropdown id="icon-dropdown" no-caret right>
@@ -191,28 +151,31 @@
                         </div>
 
                         <div>
-                            <p class="heading_font" style="font-weight:400;">Today</p>
-                            
-                            <b-list-group >
+                            <p class="heading_font" style="font-weight:400;font-size:16px">Today</p>
+
+                            <p class="font__fam" style="font-weight:400;color:#707070;" v-if="emptyToday">You have nothing for today</p> 
+                            <b-list-group v-if="!emptyToday">
                                 <b-list-group-item v-for="event in itemsFound" :key="event._id" :class="event.classes" class="event_list_home" style="background:transparent !important;border-left:3px;border-style:solid;">
                                     <!-- <p>{{event.title}}</p> -->
+                                    
                                     {{event.title}}
                                     <p style="margin-bottom:0px;">{{event.startTime}}</p>
                                     <p style="margin-bottom:0px;" v-if="event.isAllDay">All Day</p>
                                     <!-- {{event.classes}} -->
                                 </b-list-group-item>
                             </b-list-group>
+                           
                         </div>
                         <div>
-                            <p class="heading_font" style="font-weight:400;">Tomorrow</p>
-                            
+                            <p class="heading_font" style="font-weight:400;font-size:16px">Tomorrow</p>
+                            <p class="font__fam" v-if="emptyTomorrow" style="font-weight:400;color:#707070 ">You have nothing for Tomorrow</p>   
                             <b-list-group >
                                 <b-list-group-item v-for="event in tomorrowEvents" :key="event._id" :class="event.classes" class="event_list_home" style="background:transparent !important;border-left:3px;border-style:solid;">
                                    {{event.title}}
                                     <p style="margin-bottom:0px;">{{event.startTime}}</p>
                                     <p style="margin-bottom:0px;" v-if="event.isAllDay">All Day</p>
                                 </b-list-group-item>
-                                <b-icon icon="trash" style="margin-top:12px;margin-right:15px;cursor: pointer;width:16px;height:16px;" @click="deleteEvent(task._id)"></b-icon>
+                                <!-- <b-icon icon="trash" style="margin-top:12px;margin-right:15px;cursor: pointer;width:16px;height:16px;" @click="deleteEvent(task._id)"></b-icon> -->
 
                             </b-list-group>
                         </div>
@@ -235,12 +198,15 @@ import axios from 'axios'
 import Clock from '@/components/clock.vue'
 import {mapState} from 'vuex'
 import TaskDetails from '@/components/TaskDetails.vue'
+import SideBar from '@/components/SideBar.vue'
+
 
 export default {
     name: "Home",
     components:{
          Clock,
-         TaskDetails
+         TaskDetails,
+         SideBar
     },
     data() {
         return{
@@ -268,15 +234,20 @@ export default {
             tasks: [],
             listId: '',
             list:{},
+            lists: [],
             dateItems: [],
             itemsFound: [],
-            noItemsFound: false,
+            emptyToday: false,
+            emptyTomorrow: false,
 
             tomorrowEvents: [],
             today: new Date(),
             tomorrow: new Date(),
 
-            showInput: false
+            showInput: false,
+            inCompleteTasks: [],
+            overDue: [],
+            selectedList: ''
 
 
         }
@@ -300,7 +271,7 @@ export default {
         this.tomorrow = this.tomorrow.toDateString().slice(0,-4).trim();
         this.getQuotes();
         // this.getDate();
-        this.getAllLists();
+        // this.getAllLists();
         this.todaysEvents();
         this.firstItem = this.$store.state.firstList
 
@@ -311,14 +282,37 @@ export default {
         // console.log('first to do ',this.$store.getters.firstList.items)
     },
     computed: {
-        ...mapState(['loggedIn','firstList','showTask'])
+        ...mapState(['loggedIn','firstList','showTask']),
+        inComplete: function() {
+            return this.tasks.filter(task => task.isComplete === false)
+            // return this.inCompleteTasks
+        }
+
+    },
+    created(){
+        axios.get(`http://localhost:3030/todo/${this.userId}`)
+            .then(response => {
+                this.list = response.data[0]
+                this.lists = response.data
+                this.selectedList = response.data[0]._id
+                console.log('Lists', response.data[0]) 
+                this.listId = response.data[0]._id
+
+                this.tasks = response.data[0].items
+                this.inCompleteTasks = this.tasks.filter(task => task.isComplete === false)
+                console.log('taskss', this.inCompleteTasks)
+                // this.getListData()
+                // this.itemsFound = this.dateItems.filter(events => events.startDate === this.today)
+
+            }) 
+            .catch(error => console.log(error))
     },
 
     methods: {
-        logout() {
-            this.$store.dispatch('logout')
-            this.$router.push({name: 'landing_page'})
-        },
+        // logout() {
+        //     this.$store.dispatch('logout')
+        //     this.$router.push({name: 'landing_page'})
+        // },
         
         getDate(){
             const CURRENT_DATE = new Date();
@@ -431,16 +425,19 @@ export default {
             })
             .catch(error => console.log(error))
         },
-        //// get all users lists
-        getAllLists(){
-            axios.get(`http://localhost:3030/todo/${this.userId}`)
-                .then(response => {
-                    this.list = response.data[0]
-                    console.log('Lists', response.data[0]) 
-                    this.listId = response.data[0]._id
+        ///////////// GET LIST DATA 
+        getListData(){
+            /////getting from users collection
+            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.selectedList}`)
+            .then(response => {
+                console.log(response.data[0])
+                // this.editForm.list_title = response.data[0].list_title
+
                     this.tasks = response.data[0].items
-                }) 
-                .catch(error => console.log(error))
+                    this.inCompleteTasks = this.tasks.filter(task => task.isComplete === false)
+                    console.log('taskss', this.inCompleteTasks)
+            })
+            .catch(error => console.log(error))
         },
         // Get Item
         getItem(id) {
@@ -493,7 +490,7 @@ export default {
             .then(response => {
                 console.log('DELETED' ,response)
                 // this.getItem()
-                this.getAllLists()
+                // this.getAllLists()
                 this.deleteEvent()
                 // this.$emit('getListData')
                 this.method()   
@@ -543,7 +540,8 @@ export default {
         ////CALENDAR
         todaysEvents() {
             //get all events first
-            axios.get(`http://localhost:3030/calendar/${this.$route.params.id}`)
+            let userId = localStorage.getItem('userId')
+            axios.get(`http://localhost:3030/calendar/${userId}`)
             .then(response=> {
                 this.dateItems = response.data
                     this.dateItems.forEach(events => {
@@ -552,10 +550,17 @@ export default {
 
                         this.itemsFound = this.dateItems.filter(events => events.startDate === this.today)
                         if(this.itemsFound.length < 1) {
-                            this.noItemsFound = true
+                            this.emptyToday = true
+                        } else {
+                            this.emptyToday = false
                         }
 
                         this.tomorrowEvents = this.dateItems.filter(events => events.startDate === this.tomorrow)
+                        if(this.tomorrowEvents < 1){
+                            this.emptyTomorrow = true
+                        } else {
+                            this.emptyTomorrow = false
+                        }
                     });
                     
 
@@ -563,29 +568,6 @@ export default {
             })
             .catch(error => console.log(error))   
         },
-        // getTomorrowEvents() {
-        //     this.tomorrow = new Date()
-        //     this.tomorrow.setDate(this.tomorrow.getDate() + 1)
-        //     this.tomorrow = this.tomorrow.toDateString().slice(3)
-
-        //     console.log('tomorrow is',this.tomorrow)
-
-        //     let userId = localStorage.getItem('userId')
-        //     axios.get(`http://localhost:3030/calendar/${userId}`)
-        //     .then(response=> {
-        //         this.dateItems = response.data
-        //             this.dateItems.forEach(events => {
-        //                 const dates = new Date(events.startDate)
-        //                 events.startDate = dates.toDateString().slice(0,-4).trim()
-
-        //                 this.tomorrowEvents = this.dateItems.filter(events => events.startDate === this.tomorrow)
-        //                 if(this.tomorrowEvents.length < 1) {
-        //                     this.noItemsFound = true
-        //                 }
-        //             });
-        //     })
-        //     .catch(error => console.log(error))    
-        // },
         goToCalendar(){
             let userId = localStorage.getItem('userId')
 
@@ -598,10 +580,16 @@ export default {
         tasks: {
             handler(){
                 console.log('CHANGEES')
-                this.getAllLists()
+                // this.getAllLists()
+                this.getListData()
                 this.todaysEvents()
             }
         },    
+        itemsFound: {
+            handler() {
+                this.todaysEvents()
+            }
+        }
     } 
     
 }
@@ -611,14 +599,6 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Croissant+One&display=swap');
 
-.hide_sideBar{
-    display: none;
-}
-
-.display_sideBar{
-    display: block;
-    visibility: visible;
-}
 
 .greeting{
    font-family: 'Poppins',sans-serif;

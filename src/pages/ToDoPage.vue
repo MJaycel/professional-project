@@ -1,22 +1,15 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <!-- sidebar  -->
-            <div class="side__bar" style="height: 100vh;width: 65px !important;">
-                <div class="mt-5 links">
-                    <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                        <b-icon icon="house-door-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                        <b-icon icon="calendar-date-fill"></b-icon>
-                    </router-link>
-                </div>
+            <div v-if="hideSideBar" class="col-2" style="padding:0px;">
+                <SideBar :hideSideBar='hideSideBar'/>
+            </div>
+            <div style="font-size:26px;padding-top:10px;margin-left:8px;width:65px;">
+                <b-icon @click="hideBar" icon="list" style="cursor: pointer;"></b-icon>
             </div>
 
             <!-- all to do list -->
-            <div class="col-10">
+            <div class="col-9">
                 <b-alert class="m-1"
                     :show="dismissCountDown"
                     dismissible
@@ -167,10 +160,17 @@
 <script>
 import axios from 'axios'
 import {mapState} from 'vuex'
+import SideBar from '@/components/SideBar.vue'
+
 export default({
     name: 'ToDoPage',
+    components: {
+        SideBar
+    },
     data() {
         return{
+            hideSideBar: false,
+            hideDisplay: '',
             dismissSecs: 5,
             dismissCountDown: 0,
             userId: localStorage.getItem('userId'),
@@ -210,6 +210,15 @@ export default({
         ...mapState(['listId'])
     },
     methods: {
+        hideBar() {
+            this.hideSideBar = !this.hideSideBar
+
+            if(this.hideSideBar){
+                this.hideDisplay = 'hide_sideBar'
+            } else if(this.hideSideBar === false) {
+                this.hideDisplay = 'display_sideBar'
+            }
+        },
         ////// Dissmissable Alert //////
         countDownChanged(dismissCountDown) {
         this.dismissCountDown = dismissCountDown

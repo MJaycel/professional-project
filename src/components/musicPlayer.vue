@@ -230,13 +230,6 @@ export default {
       this.player.pause();
       this.isPlaying = false;
     },
-
-    loop(){
-     this.isLoop = !this.isLoop
-    },
-
-    
-
     next(){
       this.index++;
       //if the index is greater than the songs length it brings it to the index 0

@@ -207,11 +207,10 @@ export default ({
         }
     },
     computed: {
-        ...mapState(['listId','showAddModal','date','item_id','showEditModal'])
+        ...mapState(['listId','showAddModal','date','item_id','showEditModal']),
     },
     mounted() {
         this.$store.dispatch('getAllEvents')
-        this.getAllEvents()
     },
     methods: {
         ...mapActions(['getAllEvents']),
@@ -237,16 +236,18 @@ export default ({
 
         },
         showEvent(id) {
-            axios.get(`http://localhost:3030/calendar/event/${id}`)
+            let userId = localStorage.getItem('userId')
+            // axios.get(`http://localhost:3030/calendar/event/${id}`)
+            axios.get(`http://localhost:3030/calendar/user/${userId}/event/${id}`)
             .then(response => {
-                console.log('Found Event', response.data)
-                this.event = response.data
+                console.log('Found Event', response.data[0].events)
+                this.event = response.data[0].events
 
-                const event_start_date = new Date(response.data.startDate)
+                const event_start_date = new Date(response.data[0].events.startDate)
                 this.eventStartDate = event_start_date.toDateString().slice(0,10)
 
-                if(response.data.endDate != null){
-                    const event_end_date = new Date(response.data.endDate)
+                if(response.data[0].events.endDate != null){
+                    const event_end_date = new Date(response.data[0].events.endDate)
                     this.eventEndDate = event_end_date.toDateString().slice(0,10)
                     this.noEndDate = false
                 } else {
@@ -363,6 +364,13 @@ export default ({
             this.dismissCountDown = this.dismissSecs
         }
     },
+    watch: {
+        items : {
+            handler() {
+                this.$store.dispatch('getAllEvents')
+            }
+        }
+    }
 })
 </script>
 

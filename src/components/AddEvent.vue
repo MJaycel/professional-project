@@ -2,35 +2,6 @@
     <div>
         <!-- ADD ITEM MODAL -->
         <b-modal id="add-item" hide-footer hide-header centered hide-header-close @hide="cancel" >
-            <!-- <template #modal-header>
-                <div class="d-flex justify-content-end">
-                <b-dropdown id="dropdown-1" v-b-tooltip.hover title="Select event color" class="color-dropdown">
-                    <template #button-content>
-                        <p style="margin: 0px !important;"><i :style="`color:${color};`" class="fa-solid fa-circle"></i></p>
-                    </template>
-                    <div class="d-flex flex-between" style="width: 40px;">
-                        <b-dropdown-item @click="(form.classes='eGreen'),(color = '#5EBC62')" id="color-dropdown-item" value="eGreen"><i class="fa-solid fa-circle" style="color:#5EBC62;"></i></b-dropdown-item>
-                        <b-dropdown-item @click="(form.classes='eDarkGreen'),(color = '#278A2B')" id="color-dropdown-item" value="eDarkGreen"><i class="fa-solid fa-circle" style="color:#278A2B;"></i></b-dropdown-item>                        
-                    </div>
-                    <div class="d-flex flex-between" style="width: 40px;">
-                        <b-dropdown-item @click="(form.classes='ePurple'),(color = '#AA96DA')" id="color-dropdown-item" value="ePurple"><i class="fa-solid fa-circle" style="color:#AA96DA;"></i></b-dropdown-item>
-                        <b-dropdown-item @click="(form.classes='eViolet'),(color = '#6F6EAD')" id="color-dropdown-item" value="eViolet"><i class="fa-solid fa-circle" style="color:#6F6EAD;"></i></b-dropdown-item>                        
-                    </div>
-                    <div class="d-flex flex-between" style="width: 40px;">
-                        <b-dropdown-item @click="(form.classes='eYellow'),(color = '#FFD74A')" id="color-dropdown-item" value="eYellow"><i class="fa-solid fa-circle" style="color:#FFD74A;"></i></b-dropdown-item>
-                        <b-dropdown-item @click="(form.classes='eOrange'),(color = '#F99500')" id="color-dropdown-item" value="eOrange"><i class="fa-solid fa-circle" style="color:#F99500;"></i></b-dropdown-item>                        
-                    </div>
-                    <div class="d-flex flex-between" style="width: 40px;">
-                        <b-dropdown-item @click="(form.classes='eBlue'),(color = '#259EE2')" id="color-dropdown-item" value="eBlue"><i class="fa-solid fa-circle" style="color:#259EE2;"></i></b-dropdown-item>
-                        <b-dropdown-item @click="(form.classes='eDarkBlue'),(color = '#0F5F8C')" id="color-dropdown-item" value="eDarkBlue"><i class="fa-solid fa-circle" style="color:#0F5F8C;"></i></b-dropdown-item>                        
-                    </div>
-                    <div class="d-flex flex-between" style="width: 40px;">
-                        <b-dropdown-item @click="(form.classes='ePink'),(color = '#F0A1A1')" id="color-dropdown-item" value="ePink"><i class="fa-solid fa-circle" style="color:#F0A1A1;"></i></b-dropdown-item>
-                        <b-dropdown-item @click="(form.classes='eRed'),(color = '#F11F1F')" id="color-dropdown-item" value="eRed"><i class="fa-solid fa-circle" style="color:#F11F1F;"></i></b-dropdown-item>                        
-                    </div>
-                </b-dropdown>
-                </div>
-            </template> -->
             <b-tabs pills card>
                 <b-tab title="Event" active style="padding:0px;">
                     <div class="d-flex justify-content-start" style="margin-top: 20px;">
@@ -426,6 +397,9 @@ export default {
         this.form.startDate = this.defaultDate
         this.form.endDate = this.defaultDate
         this.taskForm.startDate = this.defaultDate
+
+        this.form.startTime = "08:30"
+        this.form.endTime = "09:30"
         console.log('this is the start date', this.form.startDate)
 
     },
@@ -450,7 +424,7 @@ export default {
             }
 
         },
-        addWeekly() {
+        addWeekly(){
             this.eId = "e" + Math.random().toString(36).substr(2, 10)
             let newStartDate;
             let newEndDate;
@@ -486,56 +460,40 @@ export default {
             this.form.endDate = newEndDate.toUTCString()
             console.log(this.form.endDate)
             this.form.repeat = true
+
             this.form.recurring_id = this.eId
-            // this.postItem()
-            for(let i = 0; i < this.difference; i++){
-                let start_UTC;
-                ////setting start date
-                const start = new Date(this.form.startDate)
-                const userInputStart = this.form.startTime
-                const hours_start = userInputStart.slice(0,2)
-                const minutes_start = userInputStart.slice(3)
-                const year_start = start.getFullYear()
-                const month_start = start.getMonth()
-                const date_start = start.getDate()
-                
-                if(this.isAllDay){
-                    start_UTC = new Date(Date.UTC(year_start,month_start,date_start))
-                } else {
-                    start_UTC = new Date(Date.UTC(year_start,month_start,date_start,hours_start,minutes_start))
+            this.postItem()
+
+            if(this.endsOn === 'endsOn'){
+                for(let i = 0; i < this.difference; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 7)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 7)
+                    this.form.endDate = end
+                    this.form.repeat = true
+                    this.form.recurrence_pattern = "weekly"
+                    this.form.recurring_id = this.eId
+                    this.postItem()
+                    console.log(this.form.recurring_id)
                 }
+            } else if(this.endsOn === 'never'){
+                for(let i = 0; i < 52; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 7)
+                    this.form.startDate = start
 
-                start_UTC.setUTCDate(start_UTC.getUTCDate())
-                this.form.startDate = start_UTC.toUTCString()
-
-                ///setting end date
-                const end = new Date(this.form.endDate)
-                const userInputEnd = this.form.endTime
-                const hours_end = userInputEnd.slice(0,2)
-                const minutes_end = userInputEnd.slice(3)
-                const year_end = end.getFullYear()
-                const month_end = end.getMonth()
-                const date_end = end.getDate()
-                const hour_end = hours_end
-                const minute_end = minutes_end
-
-                var end_UTC = new Date(Date.UTC(year_end,month_end,date_end,hour_end,minute_end))
-
-                end_UTC.setUTCDate(end_UTC.getUTCDate())
-                this.form.endDate = end_UTC.toUTCString()
-
-                console.log('start date',this.form.startDate )
-                // // console.log('end date',this.form.endDate)
-                this.form.repeat = true
-                this.form.recurrence_pattern = this.selected 
-
-                this.postItem()
-                
-                start_UTC.setUTCDate(start_UTC.getUTCDate() + 7)
-                this.form.startDate = start_UTC.toUTCString()
-
-                end_UTC.setUTCDate(end_UTC.getUTCDate() + 7)
-                this.form.endDate = end_UTC.toUTCString()
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 7)
+                    this.form.endDate = end
+                    this.form.repeat = true
+                    this.form.recurrence_pattern = "weekly"
+                    this.form.recurring_id = this.eId
+                    this.postItem()
+                    console.log(this.form.recurring_id)
+                }
             }
         },
         addDaily() {
@@ -647,7 +605,7 @@ export default {
                 }
 
                 start_UTC.setUTCMonth(i)
-                this.form.startDate = start_UTC.toUTCString()
+                this.form.startDate = start_UTC
 
                 ///setting end date
                 const end = new Date(this.form.endDate)
@@ -663,7 +621,7 @@ export default {
                 end_UTC = new Date(Date.UTC(year_end,month_end,date_end,hour_end,minute_end))
 
                 end_UTC.setUTCMonth(i)
-                this.form.endDate = end_UTC.toUTCString()
+                this.form.endDate = end_UTC
                 this.form.repeat = true
                 this.form.recurrence_pattern = this.selected
                 this.form.recurring_id = this.eId
@@ -691,7 +649,7 @@ export default {
                 newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
             }
 
-            this.form.startDate = newStartDate.toUTCString()
+            this.form.startDate = newStartDate
 
             /// setting end date 
             const hours_end = userInputEnd.slice(0,2)
@@ -704,13 +662,23 @@ export default {
             } else{
                 newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
             }
-            this.form.endDate = newEndDate.toUTCString()
+            this.form.endDate = newEndDate
             console.log(this.form.endDate)
+
+            this.form.recurrence_pattern = null
+            this.form.recurring_id = null
 
             this.postItem()
 
         },
         postItem() {
+            if(this.isAllDay){
+                this.form.startTime = null
+                this.form.endTime = null
+            } 
+            else if(!this.isAllDay){
+                this.form.endDate = null
+            } 
             axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
             .then(response => {
                 console.log("NEW EVENTS",response.data.events)
@@ -873,6 +841,13 @@ export default {
             .catch(error => console.log(error))     
             
         },
+    },
+    watch:{
+        items: {
+            handler() {
+                this.$store.dispatch('getAllEvents')
+            }
+        }
     }
 }
 </script>

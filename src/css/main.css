@@ -196,4 +196,33 @@ input:focus{
    background: #beffc1;
 } */
 
+.quotes{
+   font-family: 'Poppins', sans-serif;
+   font-size: 18px;
+   /* font-family: 500; */
+   /* letter-spacing: -0.08em; */
+   font-style: italic;
+}
+
+.quotes-author{
+   font-family: 'Poppins', sans-serif;
+   font-size: 18px;
+   /* line-height: 1%; */
+   line-height: 51px;
+
+   /* font-family: 500;
+   letter-spacing: -0.08em; */
+   /* font-style: italic; */
+}
+
+.hide_sideBar{
+   display: none;
+}
+
+.display_sideBar{
+   display: block;
+   visibility: visible;
+}
+
+
 

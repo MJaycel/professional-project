@@ -27,6 +27,12 @@ export default {
       seconds: 0
     }
   },
+
+  // uses the set time method that we wrote
+  mounted () {
+    this.setTime()
+  },
+
   methods: {
 
 
@@ -40,24 +46,21 @@ export default {
         this.minutes = DATE.getMinutes()
         this.seconds = DATE.getSeconds()
 
+        if(this.minutes < 10){
+          this.minutes = '0' + this.minutes
+        }
+
         // this.minutes = this.checkForSingleDigit(DATE.getMinutes())
         // this.seconds = this.checkForSingleDigit(DATE.getSeconds())
 
         //allows for it to update every second (1000 ms = 1 sc)
       }, 1000)
     },
-
-    
     
     checkForSingleDigit (digit) {
       return ("0" + digit).slice(-2)
     }
   },
-
-  // uses the set time method that we wrote
-  mounted () {
-    this.setTime()
-  }
 
 
 }
