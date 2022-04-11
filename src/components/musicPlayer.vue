@@ -22,7 +22,7 @@
           
         </section> -->
 
-        <section class="my_container my_center">
+        <section class="my_container my_center breathe">
           <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
           <div class="player" v-for="song in songs" :key="song._id" >
             
@@ -44,10 +44,10 @@
           </div> -->
           
         </section>
-        <audio class="audio_width" :src="audio_controller" controls/>
+        <audio class="audio_width breathe" :src="audio_controller" controls/>
 
         <!-- YOUTUBE PLAYER -->
-        <div>
+        <div class="breathe">
           <section>
             <youtube
               :video-id="videoId"
@@ -57,26 +57,34 @@
               @playing="playing"
             ></youtube>
           </section>
-          <button class="np-ib np-button custom_button" @click="playYTvideo">Play</button>
-          <button class="np-ib np-button custom_button" @click="pauseYTvideo">Pause</button>
-          <button class="np-ib np-button custom_button" @click="stopYTvideo">Stop</button>
-          <button class="np-ib np-button custom_button" @click="getAllVideos">Get All</button>
+          <div class="breathe" />
+
+          <section class="my_container my_center">
+            <button class="np-ib np-button custom_button" @click="playYTvideo">Play</button>
+            <button class="np-ib np-button custom_button" @click="pauseYTvideo">Pause</button>
+            <button class="np-ib np-button custom_button" @click="stopYTvideo">Stop</button>
+            <button class="np-ib np-button custom_button" @click="getAllVideos">Get Videos</button>
+          </section>
+
 
           
-          <div>
-            <input type="name" placeholder="Insert Link Here" v-model="videoDetails.youtube_link">
-            <input type="name" placeholder="Insert Video Title Here" v-model="videoDetails.video_title">
-            <button class="np-ib np-button" @click="insertVideo(videoDetails)">Insert Video</button>
+          <div class="breathe my_container my_center">
+            <input type="name" placeholder="Add Video Title Here" v-model="videoDetails.video_title">
+            <input class="" type="name" placeholder="Add Youtube Link Here" v-model="videoDetails.youtube_link">
+            
           </div>
-
+          <br>
+          <button class="np-ib np-button custom_button" @click="insertVideo(videoDetails)">Insert Video</button>
+          <br>
           <!-- <button
             v-for="video in videos" :key="video._id"
           >
             <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
           </button> -->
 
-            <select v-model="youtube_link" @change="changeLink()">
-              <option v-for="video in videos" :key="video._id" :value="video.youtube_link">
+            <h4 class="breathe">Select Video</h4>
+            <select class="breathe" text="Select Videos" v-model="youtube_link" @change="changeLink()">
+              <option  v-for="video in videos" :key="video._id" :value="video.youtube_link">
                 {{ video.video_title }} 
               </option>
             </select>
@@ -356,7 +364,7 @@ export default {
     margin-left: 100px;
     margin-right: 100px;
     border-radius: 25px;
-    height: 1050px;
+    height: 1200px;
 }
 
 .music-image{
@@ -365,6 +373,10 @@ export default {
   object-fit: cover;
   border-radius: 20px;
   cursor: pointer;
+}
+
+.breathe{
+  margin-top: 20px;
 }
 
 .my_container{
@@ -393,7 +405,7 @@ button, input[type="submit"], input[type="reset"] {
 
 .custom_button{
   background-color: #ECCFCF;
-  padding: 10px;
+  padding: 5px;
 }
 
 </style>

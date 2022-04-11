@@ -27,8 +27,8 @@
           <img class="background-image" :src="require(`../assets/lofi-images/${$store.state.songClicked ? $store.state.background : background}.jpg`)" alt="">
         </div>
         
-        <a class="music-link">music</a>
-        <div class="background_red">
+        <a class="music-link" href="#music_player">Music</a>
+        <div class="background_red" id="music_player">
           <MusicPlayer/>
         </div>
         

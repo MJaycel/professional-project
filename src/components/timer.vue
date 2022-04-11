@@ -12,6 +12,7 @@
         <div class="buttons">
           
           <button @click="timerRun" v-if="!timerRunning">Start</button>
+          <button @click="timerRun, minutesSet = (25), totalTime = (25*60)" v-if="!timerRunning">Total Time 25</button>
           <button @click="timerRun, minutesSet = (30), totalTime = (30*60)" v-if="!timerRunning">Total Time 30</button>
           <button @click="timerRun, totalTime = (35 * 60)" v-if="!timerRunning">Total Time 35</button>
           <button @click="timerRun, totalTime = (40 * 60)" v-if="!timerRunning">Total Time 40</button>
@@ -36,7 +37,7 @@ name: 'Timer',
  
         // this is where the user can chose the length of time
         // default total time
-        totalTime: (1 * 2),
+        totalTime: (25 * 60),
         minutesSet: 1,
         timerRunning: false,
         timerPaused: false,
