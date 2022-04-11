@@ -38,27 +38,49 @@
                         <p class="font__fam" style="margin-bottom:0px;" >All day</p>
                         <b-form-checkbox style="margin-left:10px;margin-right:8px;" v-model="isAllDay" name="check-button" class="no__outline" size="lg" switch>
                         </b-form-checkbox>
-                        <p>{{this.isAllDay}}</p>
 
                         <!-- <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 130px;font-size:12px;" class="no__outline"></b-form-select> -->
                     </div>
-                    <div class="d-flex justiy-content-between">
-                        <div v-if="!isAllDay" style="margin-top: 10px;">
-                            <b-form-input style="width: 320px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                            <b-form-input style="width: 320px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
-                        </div>
-
-                        <div v-else style="margin-top: 10px;">
-                            <b-form-input style="width: 460px; border-radius: 4px;" v-model="form.startDate" type="date"></b-form-input>
-                            <b-form-input style="width: 460px; margin-top: 16px; border-radius: 4px;" v-model="form.endDate" type="date"></b-form-input>
-                        </div>
-
-                        <div v-if="!isAllDay" style="margin-top: 10px;">
-                        <b-form-input style="width: 130px; margin-left: 15px; border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
-                        <b-form-input style="width: 130px; margin-left: 15px; margin-top: 16px; border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                      
-                        </div>
+                    <div v-if="!isAllDay">
+                        <b-input-group>
+                            <b-form-datepicker
+                                class="date_picker"
+                                style="width:100px;"
+                                id="startDate-datepicker"
+                                locale="en"
+                                v-model="form.startDate"
+                                :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                            </b-form-datepicker>     
+                            <b-form-input style="margin-left: 15px; border-radius: 4px;"  :id="`startTime`" v-model="form.startTime" type="time"></b-form-input>
+                            <p class="font__fam" style="margin-bottom:0px;margin-top:10px;margin-left:10px;">to</p>
+                            <b-form-input style="margin-left: 15px;border-radius: 4px;"  :id="`endTime`" v-model="form.endTime" type="time"></b-form-input>                       
+                        </b-input-group>
                     </div>
+                    <div v-if="isAllDay">
+                        <b-input-group>
+                            <b-form-datepicker
+                                class="date_picker font__fam"
+                                id="startDate-datepicker"
+                                locale="en"
+                                v-model="form.startDate"
+                                :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                            </b-form-datepicker>     
+                            
+                            <p class="font__fam" style="margin-bottom:0px;margin-top:10px;margin-left:20px;margin-right:20px;">to</p>
 
+                            <b-form-datepicker
+                                class="date_picker font__fam"
+                                id="endDate-datepicker"
+                                locale="en"
+                                v-model="form.endDate"
+                                :date-format-options="{ weekday: 'short', month: 'short', day: 'numeric', year: undefined }"
+                                >
+                            </b-form-datepicker>     
+                   
+                        </b-input-group>
+                    </div>
                     <!-- <br> -->
                     <div class="d-flex justify-content-start pt-3">
                         <b-form-select @change="onOptionChanged" v-model="selected"  :options="options" style="width: 160px;font-size:14px;" class="no__outline"></b-form-select>
@@ -401,8 +423,10 @@ export default {
             if(this.selected === null){
                 this.addItem()
             }
+
         },
-        addItem() {
+        addWeekly(){
+            this.eId = "e" + Math.random().toString(36).substr(2, 10)
             let newStartDate;
             let newEndDate;
             
@@ -421,7 +445,7 @@ export default {
                 newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
             }
 
-            this.form.startDate = newStartDate
+            this.form.startDate = newStartDate.toUTCString()
 
             /// setting end date 
             const hours_end = userInputEnd.slice(0,2)
@@ -434,82 +458,13 @@ export default {
             } else{
                 newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
             }
-            this.form.endDate = newEndDate
+            this.form.endDate = newEndDate.toUTCString()
             console.log(this.form.endDate)
-
-            // this.form.recurring_id = null
-            if(this.selected === null){
-                this.form.recurrence_pattern = null
-                this.form.recurring_id = null
-            }
+            this.form.repeat = true
             this.form.isAllDay = this.isAllDay
 
-            console.log('allday',this.isAllDay)
+            this.form.recurring_id = this.eId
             this.postItem()
-
-        },
-        postItem() {
-            if(this.isAllDay){
-                this.form.startTime = null
-                this.form.endTime = null
-            } 
-            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
-            .then(response => {
-                console.log("NEW EVENTS",response.data.events)
-                // "refreshes" the calendar and shows new event that was added
-                this.$store.dispatch('getAllEvents')
-                this.$store.commit('setShowAddModal', false)
-                this.$bvModal.hide('add-item')
-            })
-            .catch(error => console.log(error))     
-        },
-        addDaily(){
-            this.eId = "e" + Math.random().toString(36).substr(2, 10)
-            this.form.recurring_id = this.eId
-            this.form.recurrence_pattern = this.selected
-            this.form.repeat = true
-            this.addItem()
-            if(this.endsOn === 'endsOn'){
-                for(let i = 0; i < this.difference; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 1)
-                    this.form.startDate = start
-
-                    const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 1)
-                    this.form.endDate = end
-                    this.form.repeat = true
-                    this.form.recurrence_pattern = this.selected
-                    this.form.recurring_id = this.eId
-                    this.form.isAllDay = this.isAllDay
-
-                    this.postItem()
-                }
-            } else if(this.endsOn === 'never'){
-                for(let i = 0; i < 365; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 1)
-                    this.form.startDate = start
-
-                    const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 1)
-                    this.form.endDate = end
-                    this.form.repeat = true
-                    this.form.recurrence_pattern = this.selected
-                    this.form.recurring_id = this.eId
-                    this.form.isAllDay = this.isAllDay
-
-                    this.postItem()
-
-                }
-            }
-        },
-        addWeekly(){
-            this.eId = "e" + Math.random().toString(36).substr(2, 10)
-            this.form.recurring_id = this.eId
-            this.form.recurrence_pattern = this.selected
-            this.form.repeat = true
-            this.addItem()
 
             if(this.endsOn === 'endsOn'){
                 for(let i = 0; i < this.difference; i++){
@@ -526,6 +481,7 @@ export default {
                     this.form.isAllDay = this.isAllDay
 
                     this.postItem()
+                    console.log(this.form.recurring_id)
                 }
             } else if(this.endsOn === 'never'){
                 for(let i = 0; i < 52; i++){
@@ -542,6 +498,94 @@ export default {
                     this.form.isAllDay = this.isAllDay
 
                     this.postItem()
+                    console.log(this.form.recurring_id)
+                }
+            }
+        },
+        addDaily() {
+            this.eId = "e" + Math.random().toString(36).substr(2, 10)
+            let newStartDate;
+            let newEndDate;
+            
+            const userInputStart = this.form.startTime
+            const userInputEnd = this.form.endTime
+
+            //setting start time
+            const hours_start = userInputStart.slice(0,2)
+            const minutes_start = userInputStart.slice(3)
+
+            const date_start = new Date(this.form.startDate)
+            // date_start.setHours(hours_start, minutes_start)
+            if(this.isAllDay){
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+            }else{
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+            }
+
+            this.form.startDate = newStartDate.toUTCString()
+
+            /// setting end date 
+            const hours_end = userInputEnd.slice(0,2)
+            const minutes_end = userInputEnd.slice(3)
+
+            const date_end = new Date(this.form.endDate)
+            // date_end.setHours(hours_end, minutes_end)
+            if(this.isAllDay){
+                newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+            } else{
+                newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+            }
+            this.form.endDate = newEndDate.toUTCString()
+            console.log(this.form.endDate)
+            this.form.repeat = true
+            this.form.isAllDay = this.isAllDay
+
+            this.form.recurring_id = this.eId
+            this.postItem()
+
+            if(this.endsOn === 'endsOn'){
+                for(let i = 0; i < this.difference; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 1)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 1)
+                    this.form.endDate = end
+                    this.form.repeat = true
+                    this.form.recurrence_pattern = this.selected
+                    this.form.recurring_id = this.eId
+                    this.form.isAllDay = this.isAllDay
+
+                    this.postItem()
+                    // this.form.recurring_id = this.eId
+
+                    // this.form.startDate = start
+                    // this.form.endDate = end
+
+                    console.log(this.form.recurring_id)
+                }
+            } else if(this.endsOn === 'never'){
+                for(let i = 0; i < 365; i++){
+                    const start = new Date(this.form.startDate)
+                    start.setDate(start.getDate() + 1)
+                    this.form.startDate = start
+
+                    const end = new Date(this.form.endDate)
+                    end.setDate(end.getDate() + 1)
+                    this.form.endDate = end
+                    this.form.repeat = true
+                    this.form.recurrence_pattern = this.selected
+                    this.form.recurring_id = this.eId
+                    this.form.isAllDay = this.isAllDay
+
+                    this.postItem()
+                    // this.form.recurring_id = this.eId
+
+                    // this.form.startDate = start
+                    // this.form.endDate = end
+
+                    console.log(this.form.recurring_id)
                 }
             }
         },
@@ -594,8 +638,71 @@ export default {
                 this.form.recurring_id = this.eId
                 this.form.isAllDay = this.isAllDay
 
+
                 this.postItem()
+
             }
+        },
+        addItem() {
+            let newStartDate;
+            let newEndDate;
+            
+            const userInputStart = this.form.startTime
+            const userInputEnd = this.form.endTime
+
+            //setting start time
+            const hours_start = userInputStart.slice(0,2)
+            const minutes_start = userInputStart.slice(3)
+
+            const date_start = new Date(this.form.startDate)
+            // date_start.setHours(hours_start, minutes_start)
+            if(this.isAllDay){
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+            }else{
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+            }
+
+            this.form.startDate = newStartDate
+
+            /// setting end date 
+            const hours_end = userInputEnd.slice(0,2)
+            const minutes_end = userInputEnd.slice(3)
+
+            const date_end = new Date(this.form.endDate)
+            // date_end.setHours(hours_end, minutes_end)
+            if(this.isAllDay){
+                newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+            } else{
+                newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+            }
+            this.form.endDate = newEndDate
+            console.log(this.form.endDate)
+
+            this.form.recurrence_pattern = null
+            this.form.recurring_id = null
+            this.form.isAllDay = this.isAllDay
+
+            console.log('allday',this.isAllDay)
+            this.postItem()
+
+        },
+        postItem() {
+            if(this.isAllDay){
+                this.form.startTime = null
+                this.form.endTime = null
+            } 
+            else if(!this.isAllDay){
+                this.form.endDate = null
+            } 
+            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            .then(response => {
+                console.log("NEW EVENTS",response.data.events)
+                // "refreshes" the calendar and shows new event that was added
+                this.$store.dispatch('getAllEvents')
+                this.$store.commit('setShowAddModal', false)
+                this.$bvModal.hide('add-item')
+            })
+            .catch(error => console.log(error))     
         },
         cancel() {
             this.$bvModal.hide('add-item')

@@ -117,7 +117,7 @@
         <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
             <p>Are you sure you want to delete this event?</p>
             <div class="float-right">
-                <b-button class="cancel__btn" @click="hideDelete">Cancel</b-button>
+                <b-button class="cancel__btn" @click="$bvModal.hide('delete-event')">Cancel</b-button>
                 <b-button class="addItem__btn" @click="deleteEvent()">Delete</b-button>
             </div>
         </b-modal>
@@ -127,7 +127,7 @@
             <p>All</p>
             <p>This Event</p>
             <div class="float-right">
-                <b-button class="cancel__btn" @click="hideDelete">Cancel</b-button>
+                <b-button class="cancel__btn" @click="$bvModal.hide('delete-repeat-event')">Cancel</b-button>
                 <b-button class="addItem__btn" @click="deleteEvent()">delete this event</b-button>
                 <b-button class="addItem__btn" @click="deleteAllEvent()">delete all event</b-button>
 
@@ -275,9 +275,10 @@ export default ({
         showDelete(id) {
             this.id = id
             console.log(this.$route.params.id, this.id)
-            if(this.event.repeat === false){
+            
+            if(this.event.recurring_id === "" || this.event.recurring_id === null){
                 this.$bvModal.show('delete-event')
-            } else if (this.event.repeat === true) {
+            } else if (this.event.recurring_id !== null) {
                 this.rId = this.event.recurring_id
                 this.$bvModal.show('delete-repeat-event')
             }
@@ -288,7 +289,9 @@ export default ({
             this.$bvModal.hide('delete-event')
         },
         deleteEvent() {
-            this.deleteTask()
+            if(this.event.item_id != null){
+                this.deleteTask()
+            }
             axios.delete(`http://localhost:3030/calendar/delete/user/${this.$route.params.id}/event/${this.id}`)
             .then(response => {
                 console.log('Deleted', response)
@@ -339,6 +342,8 @@ export default ({
                 console.log('all recurring event deleted', response)
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('delete-repeat-event')
+                this.$bvModal.hide('read-event')
+
                 this.hideDelete()
                 this.showAlert()
             })
