@@ -13,7 +13,7 @@
                             
                             <div class="hero-image" @click=" changeAudio = (`${meditation.html_link}`)">
                                 <img  class="cover medi_image" :src="require(`../assets/lofi-images/${meditation.cover_image}.jpg`)"  alt="">
-                                <p class="meditation-title hero-text">{{meditation.title}}</p>
+                                <h4 class="meditation-title hero-text">{{meditation.title}}</h4>
                                 <!-- <audio :src="changeAudio" controls/> -->
                             </div>
                             
@@ -86,6 +86,7 @@ export default ({
     height: 162px;
     border-radius: 15px;
     cursor: pointer;
+    filter: brightness(60%)
 }
 
 .my_container{
@@ -116,6 +117,7 @@ export default ({
 }
 
 .hero-text{
+    font-family: 'Poppins',sans-serif;
     text-align: center;
     position: absolute;
     top: 50%;

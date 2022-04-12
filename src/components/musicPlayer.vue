@@ -28,7 +28,7 @@
             
             <img @click="songClicked(song.html_link, song.cover_image)" class="music-image" 
             :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" alt="">
-            <h4>{{song.title}} -<br> {{song.artist}}</h4>
+            <h4 class="header">{{song.title}} -<br> {{song.artist}}</h4>
             
 
           </div>
@@ -59,11 +59,11 @@
           </section>
           <div class="breathe" />
 
-          <section class="my_container my_center">
+          <section class="my_container my_center header">
             <button class="np-ib np-button custom_button" @click="playYTvideo">Play</button>
             <button class="np-ib np-button custom_button" @click="pauseYTvideo">Pause</button>
             <button class="np-ib np-button custom_button" @click="stopYTvideo">Stop</button>
-            <button class="np-ib np-button custom_button" @click="getAllVideos">Get Videos</button>
+            
           </section>
 
 
@@ -82,60 +82,13 @@
             <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
           </button> -->
 
-            <h4 class="breathe">Select Video</h4>
+            <h4 class="breathe header">Select Video</h4>
             <select class="breathe" text="Select Videos" v-model="youtube_link" @change="changeLink()">
               <option  v-for="video in videos" :key="video._id" :value="video.youtube_link">
                 {{ video.video_title }} 
               </option>
             </select>
         </div>
-        
-
-        <!-- WITHIN THE MODAL -->
-        <!-- <div>
-          <b-button v-b-modal.modal-1>Launch demo modal</b-button>
-          <b-modal id="modal-1" title="BootstrapVue">
-            <section class="player">
-              <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
-              <div class="control">
-                <button class="prev" @click="prev">Prev</button>
-                <button class="play" v-if="!isPlaying" @click="play">Play</button>
-                <button class="pause" v-else @click="pause">Pause</button>
-                <button class="next" @click="next">Next</button>
-              </div>
-            </section>
-            <section class="playlist">
-              <h3>The Playlist</h3>
-              <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
-              
-            </section>
-            <div>
-              <section>
-                <youtube
-                  :video-id="videoId"
-                  :player-width="500"
-                  :player-height="300"
-                  @ready="ready"
-                  @playing="playing"
-                ></youtube>
-              </section>
-              <button class="np-ib np-button" @click="playYTvideo">Play</button>
-              <button class="np-ib np-button" @click="pauseYTvideo">Pause</button>
-              <button class="np-ib np-button" @click="stopYTvideo">Stop</button>
-              <button class="np-ib np-button" @click="getAllVideos">Get All</button>
-              <div>
-                <input type="name" placeholder="Insert Link Here" v-model="videoDetails.youtube_link">
-                <input type="name" placeholder="Insert Video Title Here" v-model="videoDetails.video_title">
-                <button class="np-ib np-button" @click="insertVideo(videoDetails)">Insert Video</button>
-              </div>
-              <select v-model="youtube_link" @change="changeLink()">
-                <option v-for="video in videos" :key="video._id" :value="video.youtube_link">
-                  {{ video.video_title }} 
-                </option>
-              </select>
-            </div>
-          </b-modal>
-        </div> -->
 
       </main>
     </div>
@@ -146,16 +99,15 @@
 
 <script>
 import axios from 'axios';
-import { getIdFromURL } from "vue-youtube-embed";
+// import { getIdFromURL } from "vue-youtube-embed";
 // import {mapActions} from 'vuex'
-let videoId = getIdFromURL("https://www.youtube.com/watch?v=lTRiuFIWV54&ab_channel=LofiGirl");
 
 export default {
   name: 'MusicPlayer',
   data(){
     return{
       //-----youtube video player-----//////////////////////////
-      videoId,
+      videoId: "",
       videos: [],
       videoDetails:{
         youtube_link: "",
@@ -186,7 +138,7 @@ export default {
       //   src: require('../assets/Tranquillity - Riddiman.mp3')
       // }],
       songs: [],
-      audio_controller: 'https://professional-project-storage.s3.eu-west-1.amazonaws.com/Lukrembo+-+Biscuit+%5BFTUM+Release%5D.mp3',
+      audio_controller: 'https://professional-project-storage.s3.eu-west-1.amazonaws.com/LukremboMix.mp3',
       isVisibility: false,
       player: new Audio(),
       background: ''
@@ -197,15 +149,19 @@ export default {
     this.getAllVideos()
     this.changeLink()
     this.getAudio()
+    this.defaultVideo()
   },
 
   methods:{
+    defaultVideo(){
+      this.videoId = this.getID("https://www.youtube.com/watch?v=1fueZCTYkpA&ab_channel=LofiGirl")
+    },
 
     songClicked(link, cover){
 
-    this.audio_controller = link;
-    this.$store.dispatch('changeBackground', cover)
-  },
+      this.audio_controller = link;
+      this.$store.dispatch('changeBackground', cover)
+    },
     
     // play(song){
 
@@ -294,9 +250,7 @@ export default {
       console.log("paused");
     },
     insertVideo(videoDetails){
-
       // let userId = localStorage.getItem('userId')
-
       axios.post(`http://localhost:3030/youtube/add/${this.user_id}`, {
         youtube_link: videoDetails.youtube_link,
         video_title: videoDetails.video_title,
@@ -304,11 +258,14 @@ export default {
       })
       .then(response => {
         console.log("data is here",response)
+        this.getAllVideos()
       })
       .catch(error => {
         console.log(error)
       })
+      
     },
+
     getAllVideos(){
       let userId = localStorage.getItem('userId')
       axios.get(`http://localhost:3030/youtube/${userId}`)
@@ -320,6 +277,7 @@ export default {
         console.log(error)
       })
     },
+
     getID(link){
       let mySubString = link.substring(
           link.indexOf("v") + 1, 
@@ -367,6 +325,10 @@ export default {
     height: 1200px;
 }
 
+.header{
+  font-family: 'Poppins',sans-serif;
+}
+
 .music-image{
   width: 225px;
   height: 162px;
@@ -404,6 +366,7 @@ button, input[type="submit"], input[type="reset"] {
 }
 
 .custom_button{
+  font-family: 'Poppins',sans-serif;
   background-color: #ECCFCF;
   padding: 5px;
 }

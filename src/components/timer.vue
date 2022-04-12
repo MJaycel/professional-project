@@ -12,11 +12,11 @@
         <div class="buttons">
           
           <button @click="timerRun" v-if="!timerRunning">Start</button>
-          <button @click="timerRun, minutesSet = (25), totalTime = (25*60)" v-if="!timerRunning">Total Time 25</button>
-          <button @click="timerRun, minutesSet = (30), totalTime = (30*60)" v-if="!timerRunning">Total Time 30</button>
-          <button @click="timerRun, totalTime = (35 * 60)" v-if="!timerRunning">Total Time 35</button>
-          <button @click="timerRun, totalTime = (40 * 60)" v-if="!timerRunning">Total Time 40</button>
-          <button @click="timerRun, totalTime = (45 * 60)" v-if="!timerRunning">Total Time 45</button>
+          <button @click="timerRun, minutesSet = (25), totalTime = (25*60)" v-if="!timerRunning">25 Mins</button>
+          <button @click="timerRun, minutesSet = (30), totalTime = (30*60)" v-if="!timerRunning">30 Mins</button>
+          <button @click="timerRun, totalTime = (35 * 60)" v-if="!timerRunning">35 Mins</button>
+          <button @click="timerRun, totalTime = (40 * 60)" v-if="!timerRunning">40 Mins</button>
+          <button @click="timerRun, totalTime = (45 * 60)" v-if="!timerRunning">45 Mins</button>
     
           <button @click="timerPause" v-if="timerRunning">Pause</button>
     
@@ -249,11 +249,13 @@ name: 'Timer',
  
 #timer,
 #timer2{
+    font-family: 'Poppins',sans-serif;
     font-size: 200px;
     line-height: 1;
     color: white;
 }
 .title {
+    font-family: 'Poppins',sans-serif;
     text-align: center;
     font-size: 1.4em;
 }
@@ -262,6 +264,7 @@ name: 'Timer',
 }
  
 .buttons button {
+    font-family: 'Poppins',sans-serif;
     background-color: transparent;
     color: #f5f5f5;
     border: none;

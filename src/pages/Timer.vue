@@ -23,8 +23,9 @@
         
         <div class="col">
           <!-- {{ $store.state.songClicked ? $store.state.background : background }} -->
-          <Timer/>
+          
           <img class="background-image" :src="require(`../assets/lofi-images/${$store.state.songClicked ? $store.state.background : background}.jpg`)" alt="">
+          <Timer/>
         </div>
         
         <a class="music-link" href="#music_player">Music</a>
@@ -67,6 +68,8 @@ export default {
 
 <style>
 
+
+
 .background_red{
   background-color: #ECCFCF;
   padding-bottom: 70px;
@@ -77,10 +80,12 @@ export default {
   height: 1000px;
   object-fit: cover;
   margin-left: -15px;
+  filter: brightness(40%)
 
 }
 
 .music-link{
+  font-family: 'Poppins',sans-serif;
   text-align: center;
   position: absolute;
   top: 90%;
