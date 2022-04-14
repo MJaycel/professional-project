@@ -45,10 +45,12 @@
           
         </section>
         <audio class="audio_width breathe" :src="audio_controller" controls/>
+        
 
         <!-- YOUTUBE PLAYER -->
-        <div class="breathe">
-          <section>
+        <div class="breathe_large">
+          <h1 class="header">Add Your Own Playlist From Youtube!</h1>
+          <section class="breathe">
             <youtube
               :video-id="videoId"
               :player-width="500"
@@ -59,35 +61,54 @@
           </section>
           <div class="breathe" />
 
-          <section class="my_container my_center header">
+          <!-- <section class="my_container my_center header">
             <button class="np-ib np-button custom_button" @click="playYTvideo">Play</button>
             <button class="np-ib np-button custom_button" @click="pauseYTvideo">Pause</button>
             <button class="np-ib np-button custom_button" @click="stopYTvideo">Stop</button>
             
-          </section>
+          </section> -->
+          <h4 class="breathe header">Select Video</h4>
+          <select class="breathe" text="Select Videos" v-model="youtube_link" @change="changeLink()">
+            <option  v-for="video in videos" :key="video._id" :value="video.youtube_link">
+              {{ video.video_title }} 
+            </option>
+          </select>
+          <br>
 
 
-          
-          <div class="breathe my_container my_center">
-            <input type="name" placeholder="Add Video Title Here" v-model="videoDetails.video_title">
-            <input class="" type="name" placeholder="Add Youtube Link Here" v-model="videoDetails.youtube_link">
+          <button v-b-modal.collapse-3 class="breathe custom_button ">Add a New Video</button>
+          <b-modal id="collapse-3">
             
-          </div>
-          <br>
-          <button class="np-ib np-button custom_button" @click="insertVideo(videoDetails)">Insert Video</button>
-          <br>
+            <div class="col my_container my_center">
+              <div>
+                <input class="row" type="name" placeholder="Add Video Title Here" v-model="videoDetails.video_title">
+                <br>
+                <input class="row" type="name" placeholder="Add Youtube Link Here" v-model="videoDetails.youtube_link">
+              </div>
+
+              <br>
+             
+            </div>
+            <div class="breathe my_container my_center">
+              <button class=" custom_button" @click="insertVideo(videoDetails)">Add Video</button>
+
+            </div>
+              
+    
+        
+
+          </b-modal>
+          
+          
+
+
           <!-- <button
             v-for="video in videos" :key="video._id"
           >
             <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
           </button> -->
 
-            <h4 class="breathe header">Select Video</h4>
-            <select class="breathe" text="Select Videos" v-model="youtube_link" @change="changeLink()">
-              <option  v-for="video in videos" :key="video._id" :value="video.youtube_link">
-                {{ video.video_title }} 
-              </option>
-            </select>
+          
         </div>
 
       </main>
@@ -316,13 +337,19 @@ export default {
   box-sizing: border-box;
 }
 
+.insert-vid{
+  font-family: 'Poppins',sans-serif;
+  text-align: center;
+  color: black;
+}
+
 .background_white{
     background-color: white;
     padding: 50px 40px 50px 40px;
     margin-left: 100px;
     margin-right: 100px;
     border-radius: 25px;
-    height: 1200px;
+    height: 1250px;
 }
 
 .header{
@@ -339,6 +366,10 @@ export default {
 
 .breathe{
   margin-top: 20px;
+}
+
+.breathe_large{
+  margin-top: 70px;
 }
 
 .my_container{
