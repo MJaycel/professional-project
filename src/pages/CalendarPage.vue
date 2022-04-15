@@ -2,33 +2,23 @@
     <div class="container-fluid" >
         <div class="row">
             <!-- sidebar  -->
-            <div class="side__bar" style="height: 100vh;width: 65px !important;">
-                <div class="mt-5 links">
-                    <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                        <b-icon icon="house-door-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                        <b-icon icon="calendar-date-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
-                        <b-icon icon="card-checklist"></b-icon>
-                    </router-link>
-                </div>
+            <div v-if="hideSideBar" class="col-2" style="padding:0px;">
+                <SideBar :hideSideBar='hideSideBar'/>
             </div>
-            <div class="col-11 mt-5" style="margin-left: 1.5em">
-            <b-alert class="m-1"
-            :show="dismissCountDown"
-            dismissible
-            variant="success"
-            @dismissed="dismissCountDown=0"
-            @dismiss-count-down="countDownChanged()"
-            >
-            Event deleted
-            </b-alert>
+            <div style="font-size:26px;padding-top:10px;margin-left:8px;width:65px;">
+                <b-icon @click="hideBar" icon="list" style="cursor: pointer;"></b-icon>
+            </div>
+
+            <div :class="col_class">
+                <b-alert class="m-1"
+                :show="dismissCountDown"
+                dismissible
+                variant="success"
+                @dismissed="dismissCountDown=0"
+                @dismiss-count-down="countDownChanged()"
+                >
+                Event deleted
+                </b-alert>
             <!-- calendar div -->
             <div>
                 <calendar-view
@@ -136,10 +126,6 @@
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
         <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='item_list_id' :alert="showAlert"/>
-
-
-
-     
     </div>
 </template>
 
@@ -152,6 +138,8 @@ import EditEvent from '@/components/EditEvent.vue'
 import {mapActions} from 'vuex'
 import axios from 'axios'
 import TaskDetails from '@/components/TaskDetails.vue'
+import SideBar from '@/components/SideBar.vue'
+
 
 // require("vue-simple-calendar/static/css/default.css")
 // require("vue-simple-calendar/static/css/holidays-us.css")
@@ -166,13 +154,17 @@ export default ({
         // CalendarViewHeader,
         AddEvent,
         EditEvent,
-        TaskDetails
+        TaskDetails,
+         SideBar
     },
     data() {
         return{
             dismissSecs: 5,
             dismissCountDown: 0,
+            hideSideBar: false,
+            hideDisplay: '',
             showDate: new Date(),
+
             userId: localStorage.getItem('userId'),
             period: 'month',
             options: [
@@ -202,7 +194,10 @@ export default ({
             item_list_id: '',
             list_items: [],
             taskId : '',
-            rId : ''
+            rId : '',
+
+            /// change col size
+            col_class: ''
 
         }
     },
@@ -214,7 +209,17 @@ export default ({
     },
     methods: {
         ...mapActions(['getAllEvents']),
+        hideBar() {
+            this.hideSideBar = !this.hideSideBar
 
+            if(this.hideSideBar){
+                this.hideDisplay = 'hide_sideBar'
+                this.col_class = 'col-9 mt-5'
+            } else if(this.hideSideBar === false) {
+                this.hideDisplay = 'display_sideBar'
+                this.col_class = 'col-12'
+            }
+        },
         setShowDate(d) {
             this.showDate = d;
         },
@@ -274,15 +279,21 @@ export default ({
         },
         showDelete(id) {
             this.id = id
-            console.log(this.$route.params.id, this.id)
+            // console.log(this.$route.params.id, this.id)
             
             if(this.event.recurring_id === "" || this.event.recurring_id === null){
                 this.$bvModal.show('delete-event')
+
             } else if (this.event.recurring_id !== null) {
                 this.rId = this.event.recurring_id
                 this.$bvModal.show('delete-repeat-event')
-            }
 
+            }
+            
+            if(this.event.item_id != null || this.event.item_id === ""){
+                this.$bvModal.show('delete-event')
+                console.log("HELLO")
+            }
             // console.log('delete')
         },
         hideDelete() {

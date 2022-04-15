@@ -24,16 +24,14 @@
 
         <section class="my_container my_center breathe">
           <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
-          <div class="player" v-for="song in songs" :key="song._id" >
+          <div @click="songClicked(song.html_link, song.cover_image)" class="player" v-for="song in songs" :key="song._id" >
             
-            <img @click="songClicked(song.html_link, song.cover_image)" class="music-image" 
+            <img  class="music-image" 
             :src="require(`../assets/lofi-images/${song.cover_image}.jpg`)" alt="">
-            <h4 class="header">{{song.title}} -<br> {{song.artist}}</h4>
-            
+            <div class="image-header"><h4 class="image-text">{{song.title}} -<br> {{song.artist}}</h4></div>
 
           </div>
           <!-- <audio :src="audio_controller" controls/> -->
-
 
           <!-- <div class="control">
             <button class="prev" @click="prev">Prev</button>
@@ -45,7 +43,6 @@
           
         </section>
         <audio class="audio_width breathe" :src="audio_controller" controls/>
-        
 
         <!-- YOUTUBE PLAYER -->
         <div class="breathe_large">
@@ -75,7 +72,6 @@
           </select>
           <br>
 
-
           <button v-b-modal.collapse-3 class="breathe custom_button ">Add a New Video</button>
           <b-modal id="collapse-3">
             
@@ -85,36 +81,20 @@
                 <br>
                 <input class="row" type="name" placeholder="Add Youtube Link Here" v-model="videoDetails.youtube_link">
               </div>
-
               <br>
-             
             </div>
             <div class="breathe my_container my_center">
               <button class=" custom_button" @click="insertVideo(videoDetails)">Add Video</button>
-
             </div>
-              
-    
-        
-
           </b-modal>
-          
-          
-
-
           <!-- <button
             v-for="video in videos" :key="video._id"
           >
             <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
           </button> -->
-
-          
         </div>
-
       </main>
     </div>
-    
-    
   </div>
 </template>
 
@@ -352,9 +332,53 @@ export default {
     height: 1250px;
 }
 
-.header{
-  font-family: 'Poppins',sans-serif;
+/* .header{ */
+  /* font-family: 'Poppins',sans-serif;
+} */
+.player{
+  position: relative; 
+  width: 100%; /* for IE 6 */
+  cursor: pointer;
 }
+.image-header{ 
+
+  background: rgb(0, 0, 0); 
+  background: rgba(65, 64, 64, 0.3);
+  /* background-repeat: repeat; */
+  /* background-image: url("https://t3.ftcdn.net/jpg/02/51/42/54/360_F_251425426_ZaolrImRaeP6Q3VWtYqyr05lD3VfRDfr.jpg"); */
+  /* opacity: 0.5; */
+  padding: 10px; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width:100%;
+  height:100%;
+  border-radius: 20px;
+}
+
+.image-text{
+  color: white; 
+  font-family:'Poppins', Sans-Serif; 
+  font-size: 20px;
+  letter-spacing: -1px;  
+  margin-top: 50px;
+  opacity: 1 !important;
+}
+/* .header{
+    position: relative;
+} */
+/* .header:after {
+    content:'';
+    background: url('http://placehold.it/500x100') no-repeat center center;
+    position: absolute;
+    top:0px;
+    left: 0px;
+    width:100%;
+    height:100%;
+    z-index:-1;
+    opacity: 0.2; 
+} */
 
 .music-image{
   width: 225px;

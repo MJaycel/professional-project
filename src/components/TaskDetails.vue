@@ -270,7 +270,11 @@ export default ({
             setArchive: {
                 archived: false
             },
-            archived: false
+            archived: false,
+
+            // Original Val
+            TASK_START_DATE: ''
+
         }
     },
     computed: {
@@ -309,6 +313,7 @@ export default ({
                 this.taskForm.progress = this.item.progress
                 this.taskForm.inCalendar = this.item.inCalendar
                 this.taskForm.startTime = this.item.startTime
+
 
                 if(this.taskForm.inCalendar === true){
                     this.itemInCalendar = true
@@ -355,7 +360,7 @@ export default ({
                 this.taskForm.inCalendar = true
             }
 
-            if(this.taskForm.startDate === null){
+            if(this.taskForm.startDate === null || this.taskForm !== this.item.startDate){
                 this.taskForm.inCalendar = false
                 this.deleteEvent()
             }
@@ -378,8 +383,6 @@ export default ({
             .catch(error => console.log(error))       
         },
         showDelete() {
-            // this.id = id
-            // console.log(this.$route.params.id, this.id)
             this.$bvModal.show('delete-item')
         },
         deleteTask() {

@@ -2,29 +2,12 @@
   <div>
     <div class="container-fluid" >
       <div class="row ">
-        <div class="side__bar" style="height: 100vh;width: 65px !important;">
-          <div class="mt-5 links">
-              <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                  <b-icon icon="house-door-fill"></b-icon>
-              </router-link>
-          </div>
-          <div class="links">
-              <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                  <b-icon icon="calendar-date-fill"></b-icon>
-              </router-link>
-          </div>
-          <div class="links">
-              <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
-                  <b-icon icon="card-checklist"></b-icon>
-              </router-link>
-          </div>
-        </div>
-
-        
         <div class="col">
-          <!-- {{ $store.state.songClicked ? $store.state.background : background }} -->
-          
           <img class="background-image" :src="require(`../assets/lofi-images/${$store.state.songClicked ? $store.state.background : background}.jpg`)" alt="">
+          <div class="paperOverlay">
+            <b-icon icon="arrow-left" style="color: white;width:40px;height:40px;margin-left:20px;margin-top:20px;cursor:pointer" @click="goBack"></b-icon>
+          </div>
+          
           <Timer/>
         </div>
         
@@ -64,6 +47,10 @@ export default {
     changeBackground(){
       console.log(this.$store.state.background)
 
+    },
+    goBack(){
+      let userId = localStorage.getItem('userId')
+      this.$router.push({ name: 'home', params: { id: userId} })
     }
   }
 }
@@ -79,13 +66,29 @@ export default {
 }
 
 .background-image{
-  width: 102%;
-  height: 850px;
+  width: 102.2%;
+  /* height: 850px; */
+  height: 100vh;
   object-fit: cover;
   margin-left: -15px;
-  filter: brightness(40%)
+  filter: brightness(80%);
+  mix-blend-mode: multiply;
 
 }
+.paperOverlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-repeat: repeat;
+  background-image: url("https://t3.ftcdn.net/jpg/02/51/42/54/360_F_251425426_ZaolrImRaeP6Q3VWtYqyr05lD3VfRDfr.jpg");
+  filter: brightness(80%);
+  opacity: 0.5;
+}
+.noisy {
+  background-image: url(https://utemplates.net/wp-content/uploads/2017/07/White-Construction-Ppaer-Texture-For-Free-Download.jpg);  
+} 
 
 .music-link{
   font-family: 'Poppins',sans-serif;
