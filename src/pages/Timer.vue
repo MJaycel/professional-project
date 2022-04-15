@@ -23,14 +23,18 @@
         
         <div class="col">
           <!-- {{ $store.state.songClicked ? $store.state.background : background }} -->
-          <Timer/>
+          
           <img class="background-image" :src="require(`../assets/lofi-images/${$store.state.songClicked ? $store.state.background : background}.jpg`)" alt="">
+          <Timer/>
         </div>
         
-        <a class="music-link" href="#music_player">Music</a>
-        <div class="background_red" id="music_player">
-          <MusicPlayer/>
-        </div>
+        <a v-b-toggle.collapse-2 class="music-link" href="#music_player">Music</a>
+        <!-- <b-button v-b-toggle.collapse-2 class="music-link">View Music</b-button> -->
+        <b-collapse id="collapse-2" class="background_red">
+          <div class="" id="music_player">
+            <MusicPlayer/>
+          </div>
+        </b-collapse>
         
       </div>
 
@@ -67,6 +71,8 @@ export default {
 
 <style>
 
+
+
 .background_red{
   background-color: #ECCFCF;
   padding-bottom: 70px;
@@ -74,17 +80,20 @@ export default {
 
 .background-image{
   width: 102%;
-  height: 1000px;
+  height: 850px;
   object-fit: cover;
   margin-left: -15px;
+  filter: brightness(40%)
 
 }
 
 .music-link{
+  font-family: 'Poppins',sans-serif;
   text-align: center;
   position: absolute;
   top: 90%;
   left: 10%;
+  width: 200px;
   transform: translate(-50%, -50%);
   color: white;
 }
