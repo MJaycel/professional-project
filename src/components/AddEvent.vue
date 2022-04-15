@@ -278,7 +278,8 @@ export default {
                 repeat: false,
                 recurrence_pattern: "",
                 recurring_id: "",
-                isAllDay: false
+                isAllDay: false,
+                occurs_until: ''
             },
             isAllDay: false,
             selected: null,
@@ -471,29 +472,78 @@ export default {
             this.addItem()
             if(this.endsOn === 'endsOn'){
                 for(let i = 0; i < this.difference; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 1)
-                    this.form.startDate = start
+                    let newStartDate;
 
-                    const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 1)
-                    this.form.endDate = end
+                    const date_start = new Date(this.form.startDate)
+                    date_start.setDate(date_start.getDate() + 1)
+                    if(this.form.isAllDay){
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_start = userInputStart.slice(0,2)
+                        const minutes_start = userInputStart.slice(3)
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+                    }
+                    this.form.startDate = newStartDate
+
+                    let newEndDate;
+
+                    const date_end = new Date(this.form.endDate)
+                    date_end.setDate(date_end.getDate() + 1)
+
+                    if(this.form.isAllDay){
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_end = userInputStart.slice(0,2)
+                        const minutes_end = userInputStart.slice(3)
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+                    }
+                    this.form.endDate = newEndDate
+
                     this.form.repeat = true
                     this.form.recurrence_pattern = this.selected
                     this.form.recurring_id = this.eId
                     this.form.isAllDay = this.isAllDay
+                    this.form.occurs_until = this.daily_until
 
                     this.postItem()
                 }
             } else if(this.endsOn === 'never'){
                 for(let i = 0; i < 365; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 1)
-                    this.form.startDate = start
+                    let newStartDate;
 
-                    const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 1)
-                    this.form.endDate = end
+                    const date_start = new Date(this.form.startDate)
+                    date_start.setDate(date_start.getDate() + 1)
+                    if(this.form.isAllDay){
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_start = userInputStart.slice(0,2)
+                        const minutes_start = userInputStart.slice(3)
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+                    }
+                    this.form.startDate = newStartDate
+
+                    let newEndDate;
+
+                    const date_end = new Date(this.form.endDate)
+                    date_end.setDate(date_end.getDate() + 1)
+
+                    if(this.form.isAllDay){
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_end = userInputStart.slice(0,2)
+                        const minutes_end = userInputStart.slice(3)
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+                    }
+                    this.form.endDate = newEndDate
+
                     this.form.repeat = true
                     this.form.recurrence_pattern = this.selected
                     this.form.recurring_id = this.eId
@@ -509,17 +559,49 @@ export default {
             this.form.recurring_id = this.eId
             this.form.recurrence_pattern = this.selected
             this.form.repeat = true
+            this.form.occurs_until = this.weekly_until
+
             this.addItem()
 
             if(this.endsOn === 'endsOn'){
                 for(let i = 0; i < this.difference; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 7)
-                    this.form.startDate = start
+                    // const start = new Date(this.form.startDate)
+                    // start.setDate(start.getDate() + 7)
+                    // this.form.startDate = start
 
-                    const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 7)
-                    this.form.endDate = end
+                    // const end = new Date(this.form.endDate)
+                    // end.setDate(end.getDate() + 7)
+                    let newStartDate;
+
+                    const date_start = new Date(this.form.startDate)
+                    date_start.setDate(date_start.getDate() + 7)
+                    if(this.form.isAllDay){
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),0,0))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_start = userInputStart.slice(0,2)
+                        const minutes_start = userInputStart.slice(3)
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+                    }
+                    this.form.startDate = newStartDate.toUTCString()
+
+                    let newEndDate;
+
+                    const date_end = new Date(this.form.endDate)
+                    date_end.setDate(date_end.getDate() + 7)
+
+                    if(this.form.isAllDay){
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+                    }else{
+                        const userInputStart = this.form.endTime
+
+                        const hours_end = userInputStart.slice(0,2)
+                        const minutes_end = userInputStart.slice(3)
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+                    }
+                    this.form.endDate = newEndDate.toUTCString()
+                    // this.form.endDate = end
                     this.form.repeat = true
                     this.form.recurrence_pattern = "weekly"
                     this.form.recurring_id = this.eId
@@ -529,13 +611,43 @@ export default {
                 }
             } else if(this.endsOn === 'never'){
                 for(let i = 0; i < 52; i++){
-                    const start = new Date(this.form.startDate)
-                    start.setDate(start.getDate() + 7)
-                    this.form.startDate = start
+                    // const start = new Date(this.form.startDate)
+                    // start.setDate(start.getDate() + 7)
+                    // this.form.startDate = start
 
-                    const end = new Date(this.form.endDate)
-                    end.setDate(end.getDate() + 7)
-                    this.form.endDate = end
+                    // const end = new Date(this.form.endDate)
+                    // end.setDate(end.getDate() + 7)
+                    // this.form.endDate = end
+                    let newStartDate;
+
+                    const date_start = new Date(this.form.startDate)
+                    date_start.setDate(date_start.getDate() + 7)
+                    if(this.form.isAllDay){
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_start = userInputStart.slice(0,2)
+                        const minutes_start = userInputStart.slice(3)
+                        newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
+                    }
+                    this.form.startDate = newStartDate
+
+                    let newEndDate;
+
+                    const date_end = new Date(this.form.endDate)
+                    date_end.setDate(date_end.getDate() + 7)
+
+                    if(this.form.isAllDay){
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
+                    }else{
+                        const userInputStart = this.form.startTime
+
+                        const hours_end = userInputStart.slice(0,2)
+                        const minutes_end = userInputStart.slice(3)
+                        newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
+                    }
+                    this.form.endDate = newEndDate
                     this.form.repeat = true
                     this.form.recurrence_pattern = "weekly"
                     this.form.recurring_id = this.eId
@@ -632,7 +744,7 @@ export default {
                 const a = new Date(this.weekly_until)
                 const b = new Date(this.form.startDate)
     
-                this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000) + 1)
+                this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000))
                 console.log(this.difference)
             }
 
