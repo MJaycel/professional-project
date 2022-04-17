@@ -87,7 +87,7 @@
                 <b-button v-if="this.EVENT_DATA.repeat === false" class="addItem__btn" @click="saveEvent"> Save</b-button>
 
                 <!-- BUTTON FOR REPEATING EVENTS - THIS SHOWS THE OPTIONS FOR EDITING ALL EVENTS IN REPEATING SERIES OR JUST SINGLE EVENT -->
-                <b-button v-else class="addItem__btn" @click="saveOptions"> Save</b-button>                
+                <b-button v-else class="addItem__btn" @click="$bvModal.show('edit-repeat-event')"> Save</b-button>                
 
             </div>
         </b-modal>
@@ -130,15 +130,19 @@
 
         <!-- SAVE OPTIONS MODAL FOR REPEATING EVENTS -->
         <b-modal id="edit-repeat-event" hide-header centered  hide-footer hide-header-close>
-            <p>Edit Recurring Event</p>
-            <p>All</p>
-            <p>This Event</p>
-            <div class="float-right">
-                <b-button class="cancel__btn" @click="$bvModal.hide('edit-repeat-event')">Cancel</b-button>
-                <b-button class="addItem__btn" @click="editThisEvent">Edit this event</b-button>
-                <b-button class="addItem__btn" @click="$bvModal.show('warning-modal')">Edit all event</b-button>
+            <p class="heading_font">Edit Recurring Event</p>
 
+            <b-form-group v-slot="{ ariaDescribedby }">
+                <b-form-radio class="font__fam-style" v-model="saveOption" :aria-describedby="ariaDescribedby" name="some-radios" value="thisEvent">This Event</b-form-radio>
+                <b-form-radio class="font__fam-style" v-model="saveOption" :aria-describedby="ariaDescribedby" name="some-radios" value="allEvent">All Event</b-form-radio>
+            </b-form-group>
+
+            <div class="d-flex justify-content-end">
+                <p class="font__fam-style hover__link"  style="cursor:pointer;margin-left:10px;" @click="$bvModal.hide('edit-repeat-event')">cancel</p>
+                <p class="font__fam-style" @click="setOption" style="cursor:pointer;color: #3A2273;margin-left:10px;">Ok</p>
             </div>
+            <!-- <div class="mt-3">Selected: <strong>{{ selected }}</strong></div> -->
+
         </b-modal>
 
         <!-- MODAL WARNING WHEN SINGLE EVENT IS EDITED IN RECURRING -->
@@ -215,7 +219,10 @@ export default {
 
             /// ALL EVENTS IN DATE ARRAY
             EVENTS_IN_DATE: [],
-            EVENTS_IN_DATE_IDS: ''
+            EVENTS_IN_DATE_IDS: '',
+
+            // Radio
+            saveOption: ''
 
 
         }
@@ -284,10 +291,17 @@ export default {
             // this.postEdit()
         },
         // SAVE OPTIONS FOR REPEATING EVENTS
-        saveOptions(){
-            console.log('Show save options')
-            this.$bvModal.show('edit-repeat-event')
+        // saveOptions(){
+        //     console.log('Show save options')
+        //     this.$bvModal.show('edit-repeat-event')
 
+        // },
+        setOption(){
+            if(this.saveOption === "thisEvent"){
+                this.editThisEvent()
+            } else if(this.saveOption === "allEvent"){
+                this.$bvModal.show('warning-modal')
+            }
         },
         setForm(){
             let newStartDate;
@@ -333,14 +347,23 @@ export default {
 
             this.form.title = this.TITLE
             this.form.description = this.DESC
-            this.form.startTime = this.START_TIME
-            this.form.endTime = this.END_TIME
+            // this.form.startTime = this.START_TIME
+            // this.form.endTime = this.END_TIME
             this.form.classes = this.EVENT_CLASS
             this.form.repeat = this.IS_REPEAT
             this.form.recurring_id = this.RECURRING_ID
             this.form.recurrence_pattern = this.RECURRENCE_PATTERN
             this.form.isAllDay = this.IS_ALL_DAY
             this.form.occurs_until = this.OCCURS_UNTIL
+
+            if(this.IS_ALL_DAY){
+                this.form.endTime = null
+                this.form.startTime = null
+            } else {
+                this.form.endTime = this.END_TIME
+                this.form.startTime = this.START_TIME             
+            }
+
         },
 
         postEdit() {

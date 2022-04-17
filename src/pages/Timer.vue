@@ -11,8 +11,8 @@
           <Timer/>
         </div>
         
-        <a v-b-toggle.collapse-2 class="music-link" href="#music_player">Music</a>
         <!-- <b-button v-b-toggle.collapse-2 class="music-link">View Music</b-button> -->
+        <a v-b-toggle.collapse-2 class="music-link" href="#music_player">Music</a>
         <b-collapse id="collapse-2" class="background_red">
           <div class="" id="music_player">
             <MusicPlayer/>
@@ -84,7 +84,7 @@ export default {
   background-repeat: repeat;
   background-image: url("https://t3.ftcdn.net/jpg/02/51/42/54/360_F_251425426_ZaolrImRaeP6Q3VWtYqyr05lD3VfRDfr.jpg");
   filter: brightness(80%);
-  opacity: 0.5;
+  opacity: 0.4;
 }
 .noisy {
   background-image: url(https://utemplates.net/wp-content/uploads/2017/07/White-Construction-Ppaer-Texture-For-Free-Download.jpg);  
@@ -99,6 +99,11 @@ export default {
   width: 200px;
   transform: translate(-50%, -50%);
   color: white;
+}
+
+.music-link:hover{
+  text-decoration: none !important;
+  color: white !important;
 }
 
 

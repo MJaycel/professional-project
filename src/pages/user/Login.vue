@@ -1,34 +1,31 @@
 <template>
     <body class="background_green">
-        <div class="container ">
+        <div class="container d-flex justify-content-center">
             <br>
-            <div class=" background_white ">
+            <div class="background_white col-6">
 
-                <h1>FOCUS</h1>
-                <router-link :to="{path: '/register'}">Create an account</router-link>
-
-                <div class="">
-                    <span v-if="loginError" class="errors text-danger" >Invalid Email or Password. Please try again</span>
-
-                    <p>Email</p>
-                    <input class="col-8" type="email" v-model="form.email">
-
-                    <br>
-
-                    <p>Password</p>
-                    <input class="col-8" type="password" v-model="form.password">
+                <h2 class="focus_hub_login">FocusHub</h2>
+                <router-link class="register_link" :to="{path: '/register'}">Create an account</router-link>
 
 
+                <div class="mt-4">
+                    <p class="form-labels">Email</p>
+                    <input class="col form-size" type="email" v-model="form.email">
                 </div>
+                <div class="mt-4">
+                    <p class="form-labels">Password</p>
+                    <input class="col form-size" type="password" v-model="form.password">                        
+                </div>
+
+                <p v-if="loginError" class="errors" >Invalid Email or Password. Please try again</p>
+
+
                 <br>
-                <div class="col-8 row">
-                    <div class="col d-flex justify-content-end">
-                        <router-link :to="{path: '/'}">cancel</router-link>
-
-                        <button class="col-4 custom_button" @click="login(form)">Submit</button>
-                    </div>
+            
+                <div class="d-flex justify-content-end">
+                    <b-button class="cancel__btn" @click="goBack"> Cancel</b-button>
+                    <b-button class="addItem__btn" @click="login(form)"> Login</b-button>
                 </div>
-                
             </div>
 
         </div>
@@ -45,13 +42,16 @@ export default {
     data() {
         return{
             form: {
-                email: "zion@gmail.com",
-                password: "thomasthetankengine"
+                email: "",
+                password: ""
             },
         }
     },
     computed: {
         ...mapState(['isLoggedIn', 'loginError'])
+    },
+    mounted(){
+        this.$store.commit('setLoginError',false)
     },
     methods: {
 
@@ -59,6 +59,9 @@ export default {
 
         login() {
             this.$store.dispatch('login', this.form)
+        },
+        goBack(){
+            this.$router.push({path: '/'})       
         }
     }
 }
@@ -67,20 +70,10 @@ export default {
 <style>
 
 
-.background_green{
-    background-color: #A4D1A2;
-    padding-bottom: 200px;
-}
 
-.background_white{
-    background-color: white;
-    padding: 100px;
-    border-radius: 23px;
-}
-
-.center{
+/* .center{
     justify-content: center;
-}
+} */
 
 .custom_button{
     background: #AA96DA;
@@ -92,6 +85,7 @@ export default {
     width: 179px;
     height: 52px;
 }
+
 
 
 </style>

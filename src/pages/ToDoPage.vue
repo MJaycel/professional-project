@@ -25,16 +25,21 @@
                 </div>
 
                 <div class="row col-12" style="margin-left: 20px;padding:0px;">
-                <!-- to do list card -->
-
-                    <div @contextmenu="handler($event,list._id)" v-for="list in lists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;" @click="goToList(list._id)">
-                        <p class="list__title">{{list.list_title}}</p>
-                        <!-- <router-link class="list__title" :to="{name: 'single_todo', params: {id: userId}}">{{list.list_title}}</router-link> -->
-
+                    <!-- add to do list card -->
+                    <div v-b-hover="handleHover" class="card add_list_card col-2 d-flex justify-content-center" v-b-toggle.sidebar-right style="margin-left: 24px;margin-top:16px;">
+                        <b-icon  v-if="isHovered" icon="plus" style="color:#orange;width:70px;height:70px;align-self: center"></b-icon>
+                        <b-icon  v-else icon="plus" style="color:#575757;width:50px;height:50px;align-self: center"></b-icon>                            
                     </div>
+
+                    <!-- to do list card -->
+                    <div @contextmenu="handler($event,list._id)" v-for="list in unArchivedLists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;" @click="goToList(list._id)">
+                        <p class="list__title">{{list.list_title}}</p>
+                    </div>
+                    <!-- Right click Menu -->
                     <ul id="right-click-menu" tabindex="-1" ref="right" v-if="viewMenu" @focus="viewMenu = true" @blur="viewMenu=false" :style="{top:top,left:left}">
                         <li @click="editList">Edit</li>
                         <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li>
+                        <li @focus="viewMenu = true" @click="archiveList(listId)">Archive</li>
                     </ul>
 
                     <!-- Edit list form -->
@@ -88,11 +93,7 @@
                         </template>
 
                     </b-sidebar>
-                    <!-- add to do list card -->
-                    <div v-b-hover="handleHover" class="card add_list_card col-2 d-flex justify-content-center" v-b-toggle.sidebar-right style="margin-left: 24px;margin-top:16px;">
-                        <b-icon  v-if="isHovered" icon="plus" style="color:#orange;width:70px;height:70px;align-self: center"></b-icon>
-                        <b-icon  v-else icon="plus" style="color:#575757;width:50px;height:50px;align-self: center"></b-icon>                            
-                    </div>
+
                 </div>
                 <!-- add list form -->
                 <b-sidebar id="sidebar-right" no-header right>
@@ -143,11 +144,37 @@
                     </template>
 
                 </b-sidebar>
+
+
+                <!-- Archived lists -->
+                <!-- heading for archived lists -->
+                <div class="mt-5" style="padding-left: 20px;">
+                    <p v-if="display" @click="displayArchive" class="font__style" style="cursor:pointer">Hide all Archived Lists</p>
+                    <p v-else @click="displayArchive" class="font__style" style="cursor:pointer">View all Archived Lists</p>
+
+                </div>
+                <div v-if="display" class="row col-12" style="margin-left: 20px;padding:0px;">
+                    <p v-if="archivedLists.length <= 0" class="heading_font">No archived List</p>
+
+                    <div @contextmenu="archived($event,list._id)" v-for="list in archivedLists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;" @click="goToList(list._id)">
+                        <p class="list__title">{{list.list_title}}</p>
+                    </div>
+                    <!-- Right click Menu -->
+                    <ul id="right-click-menu" tabindex="-1" ref="archived" v-if="viewArchivedMenu" @focus="viewArchivedMenu = true" @blur="viewArchivedMenu=false" :style="{top:top,left:left}">
+                        <li @click="editList">Edit</li>
+                        <li @focus="viewArchivedMenu = true" @click="showDelete(listId)">Delete</li>
+                        <li @focus="viewArchivedMenu = true" @click="unArchiveList(listId)">Un Archive</li>
+                    </ul>
+                </div>
+            
                 
             </div>
         </div>
         <b-modal id="delete-list" hide-header centered  hide-footer hide-header-close>
-            <p>Are you sure you want to delete this List?</p>
+            <p class="heading_font">Confirmation</p>
+            <p class="font__fam-style">
+                Are you sure you want to permanently delete this List? 
+            </p>
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="hideDelete"> Cancel</b-button>
 
@@ -189,6 +216,8 @@ export default({
             colorSelected: false,
             selectedTheme: false,
             lists: [],
+            archivedLists: [],
+            unArchivedLists: [],
 
             listForm: {
                 list_title: '',
@@ -199,7 +228,13 @@ export default({
             top: '0px',
             left: '0px',
             listId: '',
-            edit: false
+            edit: false,
+
+            setArchive: {
+                archived: false
+            },
+            display: '',
+            viewArchivedMenu: false
         }
     },
     mounted(){
@@ -219,6 +254,9 @@ export default({
                 this.hideDisplay = 'display_sideBar'
             }
         },
+        displayArchive(){
+            this.display = !this.display
+        },
         ////// Dissmissable Alert //////
         countDownChanged(dismissCountDown) {
         this.dismissCountDown = dismissCountDown
@@ -230,18 +268,8 @@ export default({
             this.viewMenu = false
         },
         setMenu(top,left) {
-            // let largestHeight = window.innerHeight  -1;
-            // let largestWidth = window.innerWidth - 1 ;
-
-            // if (top > largestHeight) {top = largestHeight}
-
-            // if (left > largestWidth) {left = largestWidth}
-
             this.top = top + 'px';
             this.left = left + 'px';
-
-            console.log('offset',this.$refs.right.offsetHeight)
-
         },
         handler(e,id) {
             this.viewMenu = true;
@@ -250,6 +278,18 @@ export default({
                 this.$refs.right.focus();
 
                 this.setMenu(e.y - 90, e.x -90)
+            }.bind(this));
+            e.preventDefault();
+
+            console.log('this is the listid',this.listId)
+        },
+        archived(e,id){
+            this.viewArchivedMenu = true;
+            this.listId = id
+            this.$nextTick(function() {
+                this.$refs.archived.focus();
+
+                this.setMenu(e.y - 500, e.x -90)
             }.bind(this));
             e.preventDefault();
 
@@ -265,7 +305,8 @@ export default({
                     this.lists = response.data
                     console.log('Lists', response.data) 
                     // this.listForm.list_title = 
-                    // this.lists.filter(list => this.listForm.list_title = list.list_title)
+                    this.archivedLists = this.lists.filter(list => list.archived === true)
+                    this.unArchivedLists = this.lists.filter(list => list.archived === false)
 
                 }) 
                 .catch(error => console.log(error))
@@ -354,20 +395,39 @@ export default({
                     console.log('edited', response.data)
                     this.edit = false
                     this.getAllLists()
-            // this.$router.push({name: 'todo_page', params: {
-            //     id: userId
-            // }})                    
-            // this.getListData()
-                    // this.getData()
-                    // this.getListItems(response.data._id)
-                    // this.toDoTitle = response.data.list_title
                 }) 
                 .catch(error => console.log(error))
-        }
+        },
+        archiveList(id) {
+            // let userId = localStorage.getItem('userId')
 
+            this.setArchive.archived = true
 
+            axios.post(`http://localhost:3030/todo/archive/list/${id}`, this.setArchive)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.getAllLists()
+                }) 
+                .catch(error => console.log(error))
+        },
+        unArchiveList(id) {
 
+            this.setArchive.archived = false
 
+            axios.post(`http://localhost:3030/todo/archive/list/${id}`, this.setArchive)
+                .then(response => {
+                    console.log('edited', response.data)
+                    this.getAllLists()
+                }) 
+                .catch(error => console.log(error))
+        },
+    },
+    watch:{
+        unArchivedLists: {
+            handler(){
+                this.getAllLists()
+            }
+        },    
     }
 })
 </script>
@@ -427,6 +487,8 @@ export default({
 
 .orange {
     background-color: #FFC24A !important;
+    color: #DC9100 !important;
+
 }
 /* .orange:hover{
     background-color: #c08819 !important;
@@ -458,8 +520,8 @@ export default({
 }
 
 .yellow{
-    background-color: #E7C71C !important;
-        color: #B89B00 !important;
+    background-color: #FFDF6C !important;
+    color: #FFC700 !important;
 }
 
 .pink{

@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class=" background_white">
+    <!-- <div> -->
+        <div>
             <div class="my_container my_center">
                 <img src="../assets/meditation.svg" />
 
@@ -28,7 +28,7 @@
             </div>
         </div>
         
-    </div>
+    <!-- </div> -->
 </template>
 
 <script>
@@ -75,10 +75,10 @@ export default ({
 .background_white{
     background-color: white;
     padding: 50px 40px 50px 40px;
-    margin-left: 100px;
-    margin-right: 100px;
+    /* margin-left: 100px;
+    margin-right: 100px; */
     border-radius: 25px;
-    height: 650px;
+    height: 100vh;
 }
 
 .medi_image{
@@ -95,9 +95,9 @@ export default ({
     column-gap: 20px;
 }
 
-.max-width{
+/* .max-width{
     width: 250px;
-}
+} */
 
 .cover{
     object-fit: cover;

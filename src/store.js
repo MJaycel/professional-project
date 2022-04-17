@@ -39,7 +39,9 @@ export default new Vuex.Store({
         priority: '',
 
         background: 'timer-background',
-        songClicked: false
+        songClicked: false,
+
+        showProfileSettings: false
     },
     getters:{
         name: state => {
@@ -125,6 +127,10 @@ export default new Vuex.Store({
 
         setFirstList(state, list){
             state.firstList = list
+        },
+
+        setShowProfileSettings(state, profileSettings){
+            state.showProfileSettings = profileSettings
         }
     },
     actions: {
@@ -183,7 +189,13 @@ export default new Vuex.Store({
             .then(response => {
                 context.commit("setLoggedInStatus", true)
                 context.commit('setErrorsStatus', false)
+                
+                const name = response.data.user.name
+                let arr = []
+                arr = name.split(" ", 2);
+                const firstName = arr[0]
 
+                context.commit("SET_NAME", firstName)
                 router.push({name: 'home', params: {
                     id: response.data.user._id
                 }})
@@ -193,6 +205,7 @@ export default new Vuex.Store({
                 console.log("Register Succesful", response.data)
             })
             .catch(error => {
+                console.log(error.response)
                 if(error){
                     context.commit("setErrors", error.response.data.message.errors)
                     context.commit("setErrorsStatus", true);

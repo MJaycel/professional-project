@@ -6,24 +6,7 @@
 
       </header>
       <main>
-
-        <!-- <section class="player">
-          <h2 class="song-title">{{current.title}} - <span>{{current.artist}}</span></h2>
-          <div class="control">
-            <button class="prev" @click="prev">Prev</button>
-            <button class="play" v-if="!isPlaying" @click="play">Play</button>
-            <button class="pause" v-else @click="pause">Pause</button>
-            <button class="next" @click="next">Next</button>
-          </div>
-        </section>
-        <section class="playlist">
-          <h3>The Playlist</h3>
-          <button v-for="song in songs" :key="song.src" @click="play(song)" :class="(song.src == current.src) ? 'song playing' : 'song'" >{{song.title}} - {{song.artist}}</button>
-          
-        </section> -->
-
         <section class="my_container my_center breathe">
-          <!-- <h2 class="song-title">{{song.title}} - <span>{{song.artist}}</span></h2> -->
           <div @click="songClicked(song.html_link, song.cover_image)" class="player" v-for="song in songs" :key="song._id" >
             
             <img  class="music-image" 
@@ -31,16 +14,7 @@
             <div class="image-header"><h4 class="image-text">{{song.title}} -<br> {{song.artist}}</h4></div>
 
           </div>
-          <!-- <audio :src="audio_controller" controls/> -->
 
-          <!-- <div class="control">
-            <button class="prev" @click="prev">Prev</button>
-            <button class="play" v-if="!isPlaying" @click="play(current)">Play</button>
-            <button class="pause" v-else @click="pause">Pause</button>
-            <button class="play"  @click="loop()">Loop</button>
-            <button class="next" @click="next">Next</button>
-          </div> -->
-          
         </section>
         <audio class="audio_width breathe" :src="audio_controller" controls/>
 
@@ -58,12 +32,6 @@
           </section>
           <div class="breathe" />
 
-          <!-- <section class="my_container my_center header">
-            <button class="np-ib np-button custom_button" @click="playYTvideo">Play</button>
-            <button class="np-ib np-button custom_button" @click="pauseYTvideo">Pause</button>
-            <button class="np-ib np-button custom_button" @click="stopYTvideo">Stop</button>
-            
-          </section> -->
           <h4 class="breathe header">Select Video</h4>
           <select class="breathe" text="Select Videos" v-model="youtube_link" @change="changeLink()">
             <option  v-for="video in videos" :key="video._id" :value="video.youtube_link">
@@ -87,11 +55,6 @@
               <button class=" custom_button" @click="insertVideo(videoDetails)">Add Video</button>
             </div>
           </b-modal>
-          <!-- <button
-            v-for="video in videos" :key="video._id"
-          >
-            <h4 @click="changeLink(video.youtube_link)">{{video.video_title}}</h4>
-          </button> -->
         </div>
       </main>
     </div>
@@ -352,8 +315,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width:100%;
-  height:100%;
+  width: 225px;
+  height: 162px;
   border-radius: 20px;
 }
 

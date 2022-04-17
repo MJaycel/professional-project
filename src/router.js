@@ -13,7 +13,6 @@ import oldCal from "@/pages/Calendar.vue"
 
 import MusicPlayer from "@/pages/MusicPlayer.vue"
 import Timer from '@/pages/Timer.vue'
-import ToDo from '@/pages/ToDo.vue'
 import ToDoPage from '@/pages/ToDoPage.vue'
 import SingleToDo from '@/pages/SingleToDo.vue'
 import Profile from '@/pages/user/Profile.vue'
@@ -136,17 +135,6 @@ export default new Router ({
             path:'/Meditation',
             name: 'MeditationPage',
             component: Meditation
-        },
-        {
-            path:'/todo/:id',
-            name: 'todo',
-            component: ToDo,
-            beforeEnter: (to,from,next) => {
-                if(!localStorage.getItem('token') && !store.state.isLoggedIn){
-                    next({name: 'page_not_found'})
-                } else 
-                    next()
-            }
         },
         {
             path:'/todo/lists/:id',

@@ -68,8 +68,19 @@
                 <b-icon @click="hideBar" icon="list" style="cursor: pointer;"></b-icon>
             </div>
 
+
             <!-- greeting and clock -->
             <div class="col pt-4" style="margin-left:20px;">
+                <!-- dismissable  alert-->
+                <b-alert class="m-1"
+                    :show="dismissCountDown"
+                    dismissible
+                    variant="success"
+                    @dismissed="dismissCountDown=0"
+                    @dismiss-count-down="countDownChanged"
+                    >
+                    Task Deleted
+                </b-alert>
                 <div class="row">
                     <div class="col">
                         <div class="greeting">Good {{this.day}}, <p class="userName"> {{this.$store.getters.name}}</p> </div>
@@ -214,6 +225,8 @@ export default {
             date:'',
             printEvent: '',
             userId: localStorage.getItem('userId'),
+            dismissSecs: 5,
+            dismissCountDown: 0,
 
             hideSideBar: false,
             hideDisplay: '',
@@ -313,7 +326,13 @@ export default {
         //     this.$store.dispatch('logout')
         //     this.$router.push({name: 'landing_page'})
         // },
-        
+        ////// Dissmissable Alert //////
+        countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+        },
+        showAlert() {
+        this.dismissCountDown = this.dismissSecs
+        },
         getDate(){
             const CURRENT_DATE = new Date();
             // NOTE = had to manually add a "0" so once it gets to doube digits this will probs break
@@ -470,9 +489,9 @@ export default {
             this.taskForm.description = task.description
             this.taskForm.startDate = task.startDate
             this.taskForm.priorityLevel = task.priorityLevel
-            this.taskForm.progress = task.progress
+            this.taskForm.progress = 'Completed'
             this.taskForm.inCalendar = task.inCalendar
-            this.taskForm.isComplete = !this.taskForm.isComplete
+            this.taskForm.isComplete = true
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm) 
             .then(response => {
@@ -488,13 +507,13 @@ export default {
 
             axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.listId}/item/${id}`)
             .then(response => {
+                this.showAlert()
                 console.log('DELETED' ,response)
                 // this.getItem()
                 // this.getAllLists()
                 this.deleteEvent()
                 // this.$emit('getListData')
                 this.method()   
-                this.alert()
             })
             // this.$emit('deleteTask')
         },
@@ -549,22 +568,22 @@ export default {
                         events.startDate = this.dates.toDateString().slice(0,-4).trim()
 
                         this.itemsFound = this.dateItems.filter(events => events.startDate === this.today)
+
+                        this.tomorrowEvents = this.dateItems.filter(events => events.startDate === this.tomorrow)
+                    });
                         if(this.itemsFound.length < 1) {
                             this.emptyToday = true
                         } else {
                             this.emptyToday = false
                         }
-
-                        this.tomorrowEvents = this.dateItems.filter(events => events.startDate === this.tomorrow)
-                        if(this.tomorrowEvents < 1){
+                    
+                        if(this.tomorrowEvents.length < 1 ){
                             this.emptyTomorrow = true
                         } else {
                             this.emptyTomorrow = false
                         }
-                    });
-                    
 
-                    console.log('items', this.tomorrowEvents)
+                    console.log('items', this.tomorrowEvents,this.emptyTomorrow)
             })
             .catch(error => console.log(error))   
         },

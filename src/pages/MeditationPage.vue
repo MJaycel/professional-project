@@ -1,29 +1,15 @@
 <template>
-    <div class="container-fluid ">
-        <div class="background row" >
-            <div class="side__bar" style="height: 100vh;width: 65px !important;">
-                <div class="mt-5 links">
-                    <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                        <b-icon icon="house-door-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                        <b-icon icon="calendar-date-fill"></b-icon>
-                    </router-link>
-                </div>
-                <div class="links">
-                    <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
-                        <b-icon icon="card-checklist"></b-icon>
-                    </router-link>
-                </div>
-            </div>
+    <div class="container-fluid">
+        <!-- <div class="row" > -->
 
-            <div class="col-11 my_container my_center align_center">
+            <!-- <div :class="col_class" class="my_container my_center align_center">
+                <Meditation/>
+            </div> -->
+            <b-icon v-b-tooltip.hover title="Home" icon="arrow-left" class="arrow-left" @click="goBack"></b-icon>
+            <div :class="col_class" class="my_center align_center">
                 <Meditation/>
             </div>
-
-        </div>
+        <!-- </div> -->
     </div>
 
 </template>
@@ -35,7 +21,13 @@ import Meditation from '../components/Meditation.vue'
 export default ({
     name: 'MeditationPage',
     components:{
-        Meditation
+        Meditation,
+    },
+    methods:{
+        goBack(){
+            let userId = localStorage.getItem('userId')
+            this.$router.push({ name: 'home', params: { id: userId} })
+        }
     }
 })
 </script>
@@ -62,6 +54,15 @@ export default ({
 
 .background{
     background-color: #D2EAD3; 
+}
+
+.arrow-left{
+    color: rgb(22, 22, 22);
+    width:40px;
+    height:40px;
+    margin-left:20px;
+    margin-top:20px;
+    cursor:pointer
 }
 
 </style>

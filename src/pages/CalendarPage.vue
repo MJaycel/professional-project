@@ -41,7 +41,7 @@
                                         aria-label="Current Period"
                                         @click.prevent="setShowDate(headerProps.previousPeriod)"
                                     >
-                                    <b-icon icon="caret-left-fill" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
+                                    <b-icon icon="chevron-compact-left" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
                                     </button>
                                 </div>
                                 <div v-if="period === 'week'" class="cv-header button col-3 d-flex justify-content-center" style="color: #7BC17E;cursor:pointer;padding:0px;">
@@ -60,7 +60,7 @@
                                         aria-label="Current Period"
                                         @click.prevent="setShowDate(headerProps.nextPeriod)"
                                     >
-                                    <b-icon icon="caret-right-fill" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
+                                    <b-icon icon="chevron-compact-right" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
                                     </button>
                                 </div>
                                 <div class="cv-header button col-3" style="cursor:pointer;"  @click.prevent="setShowDate(headerProps.currentPeriod)" >
@@ -86,22 +86,23 @@
         </div>
 
         <b-modal id="read-event" hide-backdrop hide-header centered hide-footer  hide-header-close content-class="shadow" >
-            <div class="d-flex justify-content-between">
-                <div class='col'>
-                    <h4 v-if="this.event.title === ''">Untitled</h4>
-                    <h4>{{this.event.title}}</h4> 
-                </div>
+            <div class="d-flex justify-content-end">
                 <div class="col-3 d-flex justify-content-end">
                 <b-icon  style="width: 20px;height: 20px; margin-right: 20px;" icon="pencil-square" @click="showEdit(event._id)"></b-icon>       
                 <b-icon style="width: 20px;height: 20px;"  @click="showDelete(event._id)" icon="trash-fill"></b-icon>                            
                 </div>
             </div>
-
-            <p>{{this.event.description}}</p>
-            <p v-if="noEndDate">{{this.eventStartDate}}</p>
-            <p v-else>{{this.eventStartDate}} - {{this.eventEndDate}}</p>
-            <p>{{this.event.startTime}}</p>
-            <p>{{this.event.endTime}}</p>
+            <div class='col event_list_home' :class="event.classes" style="background:transparent !important;border-left:5px;border-style:solid;">
+                <p class="event__title" v-if="this.event.title === ''">Untitled</p>
+                <p class="event__title">{{this.event.title}}</p> 
+            </div>
+            <div style="padding-left:16px;">
+                <p class="event__details" v-if="noEndDate">{{this.eventStartDate}}</p>
+                <p class="event__details" v-else>{{this.eventStartDate}} - {{this.eventEndDate}}</p> 
+                <p class="event__details" v-if="this.event.startTime != null">{{this.event.startTime}} - {{this.event.endTime}}</p>
+                <p class="event__details" v-if="this.event.repeat === true">{{this.event.recurrence_pattern.charAt(0).toUpperCase() + this.event.recurrence_pattern.slice(1)}},until {{this.occurs_until}}</p>
+                <p class="event__details">{{this.event.description}}</p>
+            </div>
         </b-modal>
 
         <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
@@ -114,14 +115,17 @@
 
         <b-modal v-if="event.repeat === true" id="delete-repeat-event" hide-header centered  hide-footer hide-header-close>
             <p>Delete Recurring Event</p>
-            <p>All</p>
-            <p>This Event</p>
-            <div class="float-right">
-                <b-button class="cancel__btn" @click="$bvModal.hide('delete-repeat-event')">Cancel</b-button>
-                <b-button class="addItem__btn" @click="deleteEvent()">delete this event</b-button>
-                <b-button class="addItem__btn" @click="deleteAllEvent()">delete all event</b-button>
+            <b-form-group v-slot="{ ariaDescribedby }">
+                <b-form-radio class="font__fam-style" v-model="saveOption" :aria-describedby="ariaDescribedby" name="some-radios" value="thisEvent">This Event</b-form-radio>
+                <b-form-radio class="font__fam-style" v-model="saveOption" :aria-describedby="ariaDescribedby" name="some-radios" value="allEvent">All Event</b-form-radio>
+            </b-form-group>
 
+            <div class="d-flex justify-content-end">
+                <p class="font__fam-style hover__link"  style="cursor:pointer;margin-left:10px;" @click="$bvModal.hide('delete-repeat-event')">cancel</p>
+                <p class="font__fam-style" @click="setOption" style="cursor:pointer;color: #3A2273;margin-left:10px;">Ok</p>
             </div>
+
+
         </b-modal>
         <AddEvent v-if="showAddModal"/>
         <EditEvent v-if="showEditModal" :id='id'/>
@@ -155,7 +159,7 @@ export default ({
         AddEvent,
         EditEvent,
         TaskDetails,
-         SideBar
+        SideBar
     },
     data() {
         return{
@@ -197,7 +201,11 @@ export default ({
             rId : '',
 
             /// change col size
-            col_class: ''
+            col_class: '',
+
+            occurs_until: '',
+
+            saveOption: ''
 
         }
     },
@@ -218,6 +226,13 @@ export default ({
             } else if(this.hideSideBar === false) {
                 this.hideDisplay = 'display_sideBar'
                 this.col_class = 'col-12'
+            }
+        },
+        setOption(){
+            if(this.saveOption === "thisEvent"){
+                this.deleteEvent()
+            } else if(this.saveOption === "allEvent"){
+                this.deleteAllEvent()
             }
         },
         setShowDate(d) {
@@ -249,14 +264,23 @@ export default ({
                 this.event = response.data[0].events
 
                 const event_start_date = new Date(response.data[0].events.startDate)
+                const occurs_until_date = new Date(response.data[0].events.occurs_until)
                 this.eventStartDate = event_start_date.toDateString().slice(0,10)
+                this.occurs_until = occurs_until_date.toDateString().slice(0,10)
 
-                if(response.data[0].events.endDate != null){
+                // if(response.data[0].events.endDate != null){
+                //     const event_end_date = new Date(response.data[0].events.endDate)
+                //     this.eventEndDate = event_end_date.toDateString().slice(0,10)
+                //     this.noEndDate = false
+                // } else {
+                //     this.noEndDate = true
+                // }
+                if(response.data[0].events.endDate === response.data[0].events.startDate){
+                    this.noEndDate = true
+                } else {
                     const event_end_date = new Date(response.data[0].events.endDate)
                     this.eventEndDate = event_end_date.toDateString().slice(0,10)
                     this.noEndDate = false
-                } else {
-                    this.noEndDate = true
                 }
 
                 // console.log(this.eventDate)
@@ -305,13 +329,14 @@ export default ({
             }
             axios.delete(`http://localhost:3030/calendar/delete/user/${this.$route.params.id}/event/${this.id}`)
             .then(response => {
+                this.showAlert()
                 console.log('Deleted', response)
-                
                 
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('read-event')
+                this.$bvModal.hide('rdelete-repeat-event')
+
                 this.hideDelete()
-                this.showAlert()
             }) 
             .catch(error => console.log(error))
         },
@@ -350,13 +375,13 @@ export default ({
 
             axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${this.rId}`)
             .then(response => {
+                this.showAlert()
                 console.log('all recurring event deleted', response)
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('delete-repeat-event')
                 this.$bvModal.hide('read-event')
 
                 this.hideDelete()
-                this.showAlert()
             })
         },
         deleteTask(){
@@ -365,11 +390,11 @@ export default ({
 
             axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.item_list_id}/item/${this.event.item_id}`)
             .then(response => {
+                this.showAlert()
                 console.log('Deleted', response)
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('read-event')
                 this.hideDelete()
-                this.showAlert()
             })
         },
         ////// Dissmissable Alert //////
@@ -400,5 +425,21 @@ export default ({
 
 .event_class{
     background: orange !important;
+}
+
+.event_border{
+    border-top: none !important;
+    border-bottom: none !important;
+    border-right: none !important;
+    border-left: 5px solid !important;
+}
+.event__title{
+    font-family: 'Poppins',sans-serif;
+    font-size: 24px !important;
+}
+
+.event__details{
+    font-family: 'Poppins',sans-serif;
+    font-size: 16px;
 }
 </style>

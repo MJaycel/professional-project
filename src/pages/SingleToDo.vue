@@ -4,17 +4,17 @@
         <div style="width: 65px !important;padding:0px;background: white;" class="side__bar">
             <div class="mt-5"  style="padding: 20px;">
                 <router-link :class="theme" style="font-size: 18px;background-color: transparent !important;" :to="{name: 'home', params: {id: this.userId}}">
-                    <b-icon icon="house-door-fill" ></b-icon>
+                    <b-icon icon="house-door-fill" v-b-tooltip.hover title="Home"></b-icon>
                 </router-link>
             </div>
             <div style="padding: 20px;">
                 <router-link :class="theme" style="font-size: 18px;background-color: transparent !important;" :to="{name: 'calendar',params: {id: this.userId} }">
-                    <b-icon icon="calendar-date-fill" ></b-icon>
+                    <b-icon icon="calendar-date-fill" v-b-tooltip.hover title="Calendar"></b-icon>
                 </router-link>
             </div>
             <div style="padding: 20px;">
                 <router-link :class="theme" style="font-size: 18px;background-color: transparent !important;" :to="{name: 'todo_page',params: {id: this.userId} }">
-                    <b-icon icon="card-checklist"></b-icon>
+                    <b-icon icon="card-checklist" v-b-tooltip.hover title="My todo Lists"></b-icon>
                 </router-link>
             </div>
         </div>
@@ -214,11 +214,15 @@
                 </div>
             </div>
         <b-modal id="delete-item" hide-header centered  hide-footer hide-header-close>
-            <p>Are you sure you want to delete this Task?</p>
+            <p class="heading_font">Confirmation</p>
+            <p class="font__fam-style">
+                Are you sure you want to permanently delete this Item? 
+            </p>            
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="$bvModal.hide('delete-item')"> Cancel</b-button>
 
-            <b-button class="addItem__btn" @click="deleteTask">Delete</b-button>
+            <b-button class="addItem__btn" @click="deleteTask(); ">Delete</b-button>
+            <!-- <b-button @click="toast('b-toaster-top-right')" class="mb-2">b-toaster-top-right</b-button> -->
             </div>
         </b-modal>
         <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId' :method="getListData" :alert="showAlert"/>
@@ -246,6 +250,8 @@ export default ({
         return{
             dismissSecs: 5,
             dismissCountDown: 0,
+
+            counter: 0,
             // canvas,
             hideHeader: false,
             showTask: false,
@@ -342,7 +348,9 @@ export default ({
                 },
                 {
                     key: 'icon',
-                    label: ''
+                    label: '',
+                    tdClass: 'icon_table',
+
                 }
             ],  
 
@@ -710,6 +718,7 @@ export default ({
             axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.listId}/item/${this.deleteId}`)
             .then(response => {
                 console.log(response)
+                this.showAlert()
                 this.deleteEvent()
                 this.getListData()
                 this.$bvModal.hide('delete-item')
@@ -719,7 +728,6 @@ export default ({
                 
                 // this.$emit('getListData')
                 this.method()   
-                this.alert()
             })
         },
         deleteEvent() {
@@ -950,28 +958,22 @@ export default ({
     /* width:10%; */
 }
 
-/* .progress_table:hover{
-    background-color: #f5f5f5;
-} */
-
 .date_table{
     width:200px;
     font-family: 'Poppins',sans-serif;
     font-size: 14px;
 }
 
-/* .date_table:hover{
-    background-color: #f5f5f5;
-} */
-
 .priority_table{
     width:200px;
     max-width: 300px;
 }
-/* 
-.priority_table:hover{
-    background-color: #f5f5f5;
-} */
+
+.icon_table{
+    /* display: flex;
+    justify-content: end; */
+    width:50px;
+}
 
 .tr{
     padding:20px;
@@ -1086,5 +1088,11 @@ export default ({
 .collapse_btn:focus{
     outline:0px !important; 
     box-shadow: none !important;
+}
+
+.table thead th{
+    font-family: 'Poppins',sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
 }
 </style>

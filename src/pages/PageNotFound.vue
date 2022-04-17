@@ -1,9 +1,13 @@
 <template>
-    <div>
+    <div class="container">
         <!-- <b-button @click="goHome()">Home</b-button> -->
-        <router-link :to="{name: 'home', params: {id: this.id}}">Home</router-link>
-        <!-- <router-link :to="{name:'calendar'}">Calendar</router-link> -->
-        <h2>Oops, Somethings went wrong</h2>
+        <div class="row d-flex justify-content-center" style="margin-top:20%;">
+            <b-icon icon="emoji-frown-fill" style="width:90px;height:90px;color:#747474;"></b-icon>
+            <!-- <router-link :to="{name:'calendar'}">Calendar</router-link> -->
+            <h2 class="text-center" style="font-family: 'Poppins',sans-serif;" >Oops, Something went wrong</h2>
+            <router-link class="text-center heading_font" style="color:#AA96DA;" :to="{name: 'home', params: {id: this.id}}">Home</router-link>
+
+        </div>
 
     </div>
 </template>
