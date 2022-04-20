@@ -187,37 +187,49 @@
 
         <!-- SET DAILY MODAL -->
         <b-modal id="daily-modal" hide-header centered hide-footer>
-            <p>Repeat: Daily</p>
-            <p>Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
-            <p>Occurs Until</p> <b-form-input style="border-radius: 4px;" v-model="DAILY_UNTIL" type="date"></b-form-input>
+            <p class="repeat__heading">Repeat: Daily</p>
+            <div>
+                <p class="font__fam-style" style="margin:0px;">Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
+            </div>
+            <div style="margin-top:15px;">
+                <p class="font__fam-style" style="margin:0px;">Occurs Until:</p> <b-form-input style="border-radius: 4px;" v-model="DAILY_UNTIL" type="date"></b-form-input>
+            </div>
 
-            <div class="d-flex justify-content-end">
-                <button @click="$bvModal.hide('daily-modal')">Cancel</button>
-                <button @click="setDaily">Save</button>
+            <div class="d-flex justify-content-end mt-3">
+                <b-button class="cancel__btn" @click="$bvModal.hide('daily-modal')">Cancel</b-button>
+                <b-button class="addItem__btn" @click="setDaily">Save</b-button>
             </div>
         </b-modal>
 
         <!-- SET WEEKLY MODAL -->
         <b-modal id="weekly-modal" hide-header hide-footer centered>
-            <p>Repeat: Weekly</p>
-            <p>Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
-            <p>Occurs Until</p> <b-form-input style="border-radius: 4px;" v-model="WEEKLY_UNTIL" type="date"></b-form-input>
+            <p class="repeat__heading">Repeat: Weekly</p>
+            <div>
+                <p class="font__fam-style" style="margin-bottom:6px;">Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
+            </div>
+            <div style="margin-top:15px">
+                <p class="font__fam-style" style="margin-bottom:6px;">Occurs Until:</p> <b-form-input style="border-radius: 4px;" v-model="WEEKLY_UNTIL" type="date"></b-form-input>
+            </div>
 
-            <div class="d-flex justify-content-end">
-                <button @click="$bvModal.hide('weekly-modal')">Cancel</button>
-                <button @click="setWeekly">Save</button>
+            <div class="d-flex justify-content-end mt-3">
+                <b-button class="cancel__btn" @click="$bvModal.hide('weekly-modal')">Cancel</b-button>
+                <b-button class="addItem__btn" @click="setWeekly">Save</b-button>
             </div>        
         </b-modal>
 
         <!-- SET MONTHLY MODAL -->
         <b-modal id="monthly-modal" hide-header hide-footer centered>
-            <p>Repeat: Monthly</p>
-            <p>Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
-            <p>Occurs Until</p> <b-form-input style="border-radius: 4px;" v-model="MONTHLY_UNTIL" type="date"></b-form-input>
+            <p class="repeat__heading">Repeat: Monthly</p>
+            <div>
+                <p class="font__fam-style" style="margin-bottom:6px;">Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
+            </div>
+            <div style="margin-top:15px;">
+                <p class="font__fam-style" style="margin-bottom:6px;">Occurs Until:</p> <b-form-input style="border-radius: 4px;" v-model="MONTHLY_UNTIL" type="date"></b-form-input>
+            </div>
 
-            <div class="d-flex justify-content-end">
-                <button @click="$bvModal.hide('monthly-modal')">Cancel</button>
-                <button @click="setMonthly">Save</button>
+            <div class="d-flex justify-content-end mt-3">
+                <b-button class="cancel__btn" @click="$bvModal.hide('monthly-modal')">Cancel</b-button>
+                <b-button class="addItem__btn" @click="setMonthly">Save</b-button>
             </div>         
         </b-modal>
     </div>

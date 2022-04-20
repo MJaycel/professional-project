@@ -196,6 +196,7 @@ export default ({
             eventEndDate: '',
             eventStartDate: '',
             item_list_id: '',
+            item_ids: [],
             list_items: [],
             taskId : '',
             rId : '',
@@ -246,13 +247,13 @@ export default ({
         },
         clickItem(originalItem){
             this.item.id = originalItem.originalItem._id
+            this.getLists()
 
             // if(originalItem.originalItem.item_id != null){
             //     this.showTaskDetails(originalItem.originalItem.item_id)
             // }
             this.showEvent(this.item.id)
             this.$bvModal.show('read-event')
-            this.getLists()
 
         },
         showEvent(id) {
@@ -358,18 +359,12 @@ export default ({
                     console.log('Lists', response.data) 
                     // this.listForm.list_title = 
                     // this.lists.filter(list => this.listForm.list_title = list.list_title)
-                    Array.from(this.lists).forEach((list)=> {
-                        this.list_items = list.items
-                        this.list_items.filter(item => {
-                            if(item._id === this.event.item_id){
-                                this.item_list_id = list._id
-                            }
-                        })
-                    })
-                            console.log('list id', this.item_list_id)
+
 
                 }) 
                 .catch(error => console.log(error))
+
+
         },
         deleteAllEvent(){
 
@@ -385,7 +380,20 @@ export default ({
             })
         },
         deleteTask(){
-            // console.log('fck', this.event.item_id)
+            Array.from(this.lists).forEach((list)=> {
+                this.list_items = list.items
+                console.log('sdad', list.items)
+                this.list_items.filter(item => {
+                    if(item._id === this.event.item_id){
+                        this.item_list_id = list._id
+                        console.log('list id', this.item_list_id)
+                    }
+                })
+            })
+            console.log('fck', this.event.item_id)
+            console.log('listsdafda', this.item_list_id)
+
+            // this.getLists()
             let userId = localStorage.getItem('userId')
 
             axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.item_list_id}/item/${this.event.item_id}`)

@@ -40,21 +40,26 @@
           </select>
           <br>
 
-          <button v-b-modal.collapse-3 class="breathe custom_button ">Add a New Video</button>
-          <b-modal id="collapse-3">
+          <button v-b-modal.add-yt-link class="breathe custom_button">Add a New Video</button>
+
+          <b-modal id="add-yt-link" hide-footer>
             
-            <div class="col my_container my_center">
+            <div class="col">
               <div>
-                <input class="row" type="name" placeholder="Add Video Title Here" v-model="videoDetails.video_title">
-                <br>
-                <input class="row" type="name" placeholder="Add Youtube Link Here" v-model="videoDetails.youtube_link">
+                <p class="font__fam-style" style="margin-bottom:6px;">Video Title</p>
+                <input style="padding:4px;border-radius:4px;border:1px solid #3C2E5F" class="col" type="name" placeholder="Add Video Title Here" v-model="videoDetails.video_title">
+              </div>
+              <div style="margin-top:15px;">
+                <p class="font__fam-style" style="margin-bottom:6px;">Youtube Link</p>
+                <input style="padding:4px;border-radius:4px;border:1px solid #3C2E5F" class="col" type="name" placeholder="Add Youtube Link Here" v-model="videoDetails.youtube_link">
               </div>
               <br>
             </div>
-            <div class="breathe my_container my_center">
+            <div class="breathe my_container d-flex justify-content-end">
               <button class=" custom_button" @click="insertVideo(videoDetails)">Add Video</button>
             </div>
           </b-modal>
+
         </div>
       </main>
     </div>
@@ -222,6 +227,7 @@ export default {
       })
       .then(response => {
         console.log("data is here",response)
+        this.$bvModal.hide('add-yt-link')
         this.getAllVideos()
       })
       .catch(error => {
