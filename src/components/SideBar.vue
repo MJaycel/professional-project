@@ -80,6 +80,9 @@ export default({
     computed: {
         ...mapState(['loggedIn','showProfileSettings']),
     },
+    mounted(){
+        this.$store.commit('setShowProfileSettings', false)
+    },
     methods:{
         logout() {
             this.$store.dispatch('logout')

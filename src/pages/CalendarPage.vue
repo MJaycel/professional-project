@@ -334,7 +334,7 @@ export default ({
                 
                 this.$store.dispatch('getAllEvents')
                 this.$bvModal.hide('read-event')
-                this.$bvModal.hide('rdelete-repeat-event')
+                this.$bvModal.hide('delete-repeat-event')
 
                 this.hideDelete()
             }) 

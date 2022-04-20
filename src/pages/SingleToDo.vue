@@ -609,8 +609,16 @@ export default ({
             let userId = localStorage.getItem('userId')
 
             this.getItem(id)
-            this.addDueDate.inCalendar = true
+            if(this.addDueDate.startDate === null || this.addDueDate.startDate === ""){
+                this.addDueDate.inCalendar = false
+            } else {
+                this.addDueDate.inCalendar = true
+            }
             this.addDueDate.classes = 'item-event item-event-bg'   
+            
+            if(this.itemInCalendar === true){
+                this.deleteEvent()
+            }
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
@@ -619,7 +627,6 @@ export default ({
                 this.$refs.date_dropdown.hide()
                 console.log('item edited', response.data)
                 this.taskForm.title = ''
-
             })
             .catch(error => console.log(error))
         },

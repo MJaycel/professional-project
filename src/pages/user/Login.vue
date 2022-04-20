@@ -42,8 +42,8 @@ export default {
     data() {
         return{
             form: {
-                email: "",
-                password: ""
+                email: "admin.jaycel@focushub.com",
+                password: "mypassword"
             },
         }
     },
@@ -62,7 +62,7 @@ export default {
         },
         goBack(){
             this.$router.push({path: '/'})       
-        }
+        },
     }
 }
 </script>

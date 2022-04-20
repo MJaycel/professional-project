@@ -598,7 +598,7 @@ export default {
                 startDatesArray.push(all_start_dates)
                 endDatesArray.push(all_end_dates)
 
-                console.log("End Dates",endDatesArray)
+                // console.log("End Dates",endDatesArray)
 
                 /// Compare START_DATE && END_DATE (date input) with the events original dates
                 /// if different get the difference between two dates
@@ -707,7 +707,7 @@ export default {
                         this.form.endTime = this.END_TIME
                         this.form.startTime = this.START_TIME             
                     }
-    
+
                     // console.log(this.form.startDate , this.form.endDate, this.daysDiff)
                     console.log("FCK", this.form.startDate , this.form.endDate)
     
@@ -829,19 +829,59 @@ export default {
                         this.form.recurring_id = this.RECURRING_ID
                         this.form.recurrence_pattern = this.RECURRENCE_PATTERN
                         this.form.isAllDay = this.IS_ALL_DAY
-                        this.form.occurs_until = this.OCCURS_UNTIL
 
-                        axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
-                        .then(response => {
-                            console.log("NEW EVENTS",response.data)
-                            // "refreshes" the calendar and shows new event that was added
-                            this.$store.dispatch('getAllEvents')
-                            this.$store.commit('setShowEditModal', false)
-                            this.$bvModal.hide('edit-item')
+                        if(this.DAILY_UNTIL !== this.EVENT_DATA.occurs_until){
+                            console.log('occurs until not the same')
+                            let dateArray = [];
+
+                            if(this.DAILY_UNTIL <= this.EVENT_DATA.occurs_until){
+                                let currentDate = new Date(this.DAILY_UNTIL);
+                                currentDate.setDate(currentDate.getDate() + 1)
+                                let oldOccursUntil = new Date(this.OCCURS_UNTIL)
+                                oldOccursUntil.setDate(oldOccursUntil.getDate() + 1)
+
+                                // Get dates between og startdate and new start date
+                                while (currentDate <= oldOccursUntil) {
+                                    dateArray.push(new Date(currentDate));
+                                    // Use UTC date to prevent problems with time zones and DST
+                                    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+                                }
+                                // Push all events that has the start dare that is the dateArray
+                                // All this events will be deleted
+                                let EVENTS_IN_DATE = []
+
+                                for(let j = 0; j < dateArray.length-1; j++){
+                                    
+                                    let eventsArray = this.RECURRING_EVENTS.filter(item => item.startDate.slice(0,10) === dateArray[j].toISOString().slice(0,10))
+                                    EVENTS_IN_DATE.push(eventsArray[0])
+
+                                    console.log('current Date', EVENTS_IN_DATE)
+
+                                    axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${EVENTS_IN_DATE[j]._id}`)
+                                    .then(response => {
+                                        console.log('Deleted', response)
+                                        // this.$store.dispatch('getAllEvents')
+                                        // this.$bvModal.hide('warning-modal')
+                                        // this.$bvModal.hide('edit-repeat-event')
+                                        // this.$bvModal.hide('edit-item')
+                                    }) 
+                                    .catch(error => console.log(error))
+                                }
+                            } 
+                        } 
+                        this.form.occurs_until = this.DAILY_UNTIL
+
+                        // axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
+                        // .then(response => {
+                        //     console.log("NEW EVENTS",response.data)
+                        //     // "refreshes" the calendar and shows new event that was added
+                        //     this.$store.dispatch('getAllEvents')
+                        //     this.$store.commit('setShowEditModal', false)
+                        //     this.$bvModal.hide('edit-item')
     
-                            console.log('form',this.form)
-                        })
-                        .catch(error => console.log(error))     
+                        //     console.log('form',this.form)
+                        // })
+                        // .catch(error => console.log(error))     
                     }
                 }
             }
@@ -895,8 +935,6 @@ export default {
                             const hours_end = userInputEnd.slice(0,2)
                             const minute_end = userInputEnd.slice(3)
                             updatedFormEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minute_end)) 
-        
-        
                         }
         
                         if(this.END_DATE === this.START_DATE){
@@ -912,7 +950,7 @@ export default {
                         this.form.recurring_id = this.RECURRING_ID
                         this.form.recurrence_pattern = this.RECURRENCE_PATTERN
                         this.form.isAllDay = this.IS_ALL_DAY
-                        this.form.occurs_until = this.OCCURS_UNTIL
+                        this.form.occurs_until = this.MONTHLY_UNTIL
 
                         if(this.IS_ALL_DAY){
                             this.form.endTime = null
@@ -990,7 +1028,7 @@ export default {
                         this.form.recurring_id = this.RECURRING_ID
                         this.form.recurrence_pattern = this.RECURRENCE_PATTERN
                         this.form.isAllDay = this.IS_ALL_DAY
-                        this.form.occurs_until = this.OCCURS_UNTIL
+                        this.form.occurs_until = this.MONTHLY_UNTIL
 
                         axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
                         .then(response => {

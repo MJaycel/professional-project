@@ -83,7 +83,7 @@
                 </b-alert>
                 <div class="row">
                     <div class="col">
-                        <div class="greeting">Good {{this.day}}, <p class="userName"> {{this.$store.getters.name}}</p> </div>
+                        <div class="greeting">Good {{this.day}}, <p class="userName"> {{this.$store.state.name}}</p> </div>
                         <Clock/>
                     </div>
                     <div class="col-6 mt-3" style="margin-right:20px;">
@@ -221,6 +221,7 @@ export default {
     },
     data() {
         return{
+            userName: '',
             quotes:[],
             date:'',
             printEvent: '',
@@ -267,6 +268,7 @@ export default {
     },
 
     mounted(){
+        this.$store.dispatch('getUser')
         const CURRENT_DATE = new Date()
 
         const hours = CURRENT_DATE.getHours()
@@ -295,7 +297,7 @@ export default {
         // console.log('first to do ',this.$store.getters.firstList.items)
     },
     computed: {
-        ...mapState(['loggedIn','firstList','showTask']),
+        ...mapState(['loggedIn','firstList','showTask', 'name']),
         inComplete: function() {
             return this.tasks.filter(task => task.isComplete === false)
             // return this.inCompleteTasks
@@ -322,11 +324,6 @@ export default {
     },
 
     methods: {
-        // logout() {
-        //     this.$store.dispatch('logout')
-        //     this.$router.push({name: 'landing_page'})
-        // },
-        ////// Dissmissable Alert //////
         countDownChanged(dismissCountDown) {
         this.dismissCountDown = dismissCountDown
         },
@@ -523,6 +520,8 @@ export default {
             this.$router.push({name: 'todo_page', params: {
                 id: userId
             }})
+
+            this.$router.push({ path: `/todo/list/${this.listId}` })
         },
         viewDetails(id){
             console.log('details id', id)

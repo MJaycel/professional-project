@@ -265,7 +265,7 @@ export default {
             END_DATE: '',
             START_TIME: '',
             END_TIME: '',
-            EVENT_CLASS: '',
+            EVENT_CLASS: 'ePurple',
             IS_REPEAT: false,
             RECURRING_ID: '',
             RECURRENCE_PATTERN: '',
@@ -442,7 +442,7 @@ export default {
             this.form.description = this.DESC
             this.form.startTime = this.START_TIME
             this.form.endTime = this.END_TIME
-            // this.form.classes = this.EVENT_CLASS
+            this.form.classes = this.EVENT_CLASS 
             this.form.repeat = this.IS_REPEAT
             this.form.recurring_id = this.RECURRING_ID
             this.form.recurrence_pattern = this.RECURRENCE_PATTERN
@@ -552,7 +552,6 @@ export default {
         },
         createMonthly() {
             /// delete this event and create new with the recurring id
-            this.deleteEvent(this.id)
 
             this.RECURRING_ID = "e" + Math.random().toString(36).substr(2, 10)
 
@@ -600,6 +599,7 @@ export default {
                 this.form.isAllDay = this.IS_ALL_DAY
                 this.form.occurs_until = this.OCCURS_UNTIL
 
+                console.log(this.TITLE)
                 if(this.IS_ALL_DAY){
                     this.form.endTime = null
                     this.form.startTime = null

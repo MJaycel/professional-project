@@ -84,7 +84,7 @@ export default {
   background-repeat: repeat;
   background-image: url("https://t3.ftcdn.net/jpg/02/51/42/54/360_F_251425426_ZaolrImRaeP6Q3VWtYqyr05lD3VfRDfr.jpg");
   filter: brightness(80%);
-  opacity: 0.4;
+  opacity: 0.2;
 }
 .noisy {
   background-image: url(https://utemplates.net/wp-content/uploads/2017/07/White-Construction-Ppaer-Texture-For-Free-Download.jpg);  

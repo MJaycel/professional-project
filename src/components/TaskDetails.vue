@@ -322,15 +322,6 @@ export default ({
                 this.progress = this.taskForm.progress
 
                 this.priority = this.taskForm.priorityLevel
-        
-
-                // if(this.taskForm.startDate != null){
-                //     const date = new Date(this.taskForm.startDate).toDateString().slice(3)
-                //     this.taskForm.startDate = date                   
-                // } else {
-                //     this.taskForm.startDate = this.item.startDate
-                // }
-
 
                 console.log('form filled', this.taskForm.description)
 
@@ -356,29 +347,21 @@ export default ({
             }
             this.taskForm.classes = 'item-event item-event-bg'
 
-            if(this.taskForm.startDate != null){
+            if(this.taskForm.startDate != null || this.taskForm.startDate === ""){
                 this.taskForm.inCalendar = true
-            }
-
-            if(this.taskForm.startDate === null || this.taskForm !== this.item.startDate){
+            } else if(this.taskForm.startDate === null || this.taskForm !== this.item.startDate){
                 this.taskForm.inCalendar = false
                 this.deleteEvent()
             }
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}`, this.taskForm)
             .then(response => {
-                // this.getListData()
-                // this.$refs.date_dropdown.hide()
                 this.addItemtoCal()
                 console.log('item edited', response.data)
                 this.$bvModal.hide('task-details-modal')
                 this.$store.commit('setShowTask', false)
-
                 this.$store.dispatch('getAllEvents')
-                // this.$emit('getListData')
                 this.method()
-
-
             })
             .catch(error => console.log(error))       
         },
@@ -395,8 +378,6 @@ export default ({
                 this.$store.commit('setShowTask', false)
                 this.$bvModal.hide('delete-item')
                 this.deleteEvent()
-                
-                // this.$emit('getListData')
                 this.method()   
                 this.alert()
             })
@@ -496,10 +477,6 @@ export default ({
             } else {
                 this.showEditSubTask = false
             }
-            // this.editInputID = `edit-subtask-${id}`
-            // if(this.editInputID === `edit-subtask-${id}`){
-            //     this.showEditSubTask = true
-            // }
         },
         editSubTask(task,subTaskID){
             let userId = localStorage.getItem('userId')

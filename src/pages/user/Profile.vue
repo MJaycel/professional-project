@@ -12,6 +12,8 @@
                         <p class="form-labels">Name</p>
                         <input class="col form-size font__fam" type="email" v-model="name">
                         <p class="errors" style="margin-top:10px;" v-if="nameEmpty">Name is required</p>
+                        <p class="errors" style="margin-top:10px;" v-if="nameChar">Name must be at least 3 characters</p>
+
                     </div>
                     <div class="mt-4">
                         <p class="form-labels">Email</p>
@@ -63,7 +65,8 @@ export default {
             emailExist: false,
 
             name: '',
-            nameEmpty: false
+            nameEmpty: false,
+            nameChar: false
 
         }
     },
@@ -97,11 +100,12 @@ export default {
             this.validatePassword() 
             this.validateEmail()
             this.validateName()
-            if(!this.showPassError  &&!this.emailExist && !this.emailEmpty && !this.nameEmpty){
+            if(!this.showPassError  &&!this.emailExist && !this.emailEmpty && !this.nameEmpty && !this.nameChar){
                 axios.post(`http://localhost:3030/edit/user/${userId}` , this.form)
                 .then(response => {
                     // this.user = response.data
                     console.log(response.data)
+                    this.$store.dispatch('getUser')
                     this.hideModal()
                 }) .catch(error => console.log(error))
             }
@@ -141,6 +145,12 @@ export default {
             } else {
                 this.nameEmpty = false
                 this.form.name = this.name
+            }
+
+            if(this.name.length <= 3){
+                this.nameChar = true
+            } else {
+                this.nameChar = false
             }
         },
         getAllUsers() {

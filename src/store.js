@@ -41,7 +41,11 @@ export default new Vuex.Store({
         background: 'timer-background',
         songClicked: false,
 
-        showProfileSettings: false
+        showProfileSettings: false,
+
+        users: [],
+
+        emailExist: false
     },
     getters:{
         name: state => {
@@ -131,6 +135,14 @@ export default new Vuex.Store({
 
         setShowProfileSettings(state, profileSettings){
             state.showProfileSettings = profileSettings
+        },
+
+        setUsers(state, users){
+            state.users = users
+        },
+
+        setEmailExist(state, emailExist){
+            state.emailExist = emailExist
         }
     },
     actions: {
@@ -149,13 +161,6 @@ export default new Vuex.Store({
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('userId', response.data.user._id)
                 console.log("Login Succesful", response.data.user)
-
-                const name = response.data.user.name
-                let arr = []
-                arr = name.split(" ", 2);
-                const firstName = arr[0]
-
-                context.commit("SET_NAME", firstName)
 
                 const list = response.data.user.todoLists[0]
 
@@ -224,7 +229,28 @@ export default new Vuex.Store({
                 })
                 .catch(error => console.log(error))     
         },
+        getUser(context){
+            let userId = localStorage.getItem('userId')
+            axios.get(`http://localhost:3030/user/${userId}`)
+            .then(response => {
+                console.log('User',response.data)
+                const USER_NAME = response.data.name
+                let arr = []
+                arr = USER_NAME.split(" ", 2);
+                const firstName = arr[0]
 
+                context.commit("SET_NAME", firstName)
+
+            })
+            .catch(error => console.log(error))
+        },
+        getAllUsers(context) {
+            axios.get(`http://localhost:3030/users`)
+            .then(response => {
+                context.commit('setUsers', response.data)
+            })
+            .catch(error => console.log(error))
+        },
         // getAllToDo(context) {
         //     let userId = localStorage.getItem('userId')
         //     axios.get(`http://localhost:3030/todo/${userId}`)

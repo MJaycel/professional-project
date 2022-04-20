@@ -9,7 +9,6 @@ import Home from "@/pages/Home.vue"
 import PageNotFound from "@/pages/PageNotFound.vue"
 import Register from "@/pages/user/Register.vue"
 import Calendar from "@/pages/CalendarPage.vue"
-import oldCal from "@/pages/Calendar.vue"
 
 import MusicPlayer from "@/pages/MusicPlayer.vue"
 import Timer from '@/pages/Timer.vue'
@@ -17,12 +16,6 @@ import ToDoPage from '@/pages/ToDoPage.vue'
 import SingleToDo from '@/pages/SingleToDo.vue'
 import Profile from '@/pages/user/Profile.vue'
 import Meditation from '@/pages/MeditationPage.vue'
-
-
-
-
-
-
 
 Vue.use(Router)
 
@@ -117,24 +110,9 @@ export default new Router ({
             component: Calendar,
         },
         {
-            path: '/oldCal/:id',
-            name: 'oldCal',
-            component: oldCal,
-        },
-        {
-            path:'/music/:id',
-            name: 'MusicPlayer',
-            component: MusicPlayer
-        },
-        {
-            path:'/PomodoroTimer',
-            name: 'PomodoroTimer',
-            component: Timer
-        },
-        {
-            path:'/Meditation',
-            name: 'MeditationPage',
-            component: Meditation
+            path:'/todo/list/:id',
+            name: 'single_todo',
+            component: SingleToDo,
         },
         {
             path:'/todo/lists/:id',
@@ -148,14 +126,25 @@ export default new Router ({
             }
         },
         {
-            path:'/todo/list/:id',
-            name: 'single_todo',
-            component: SingleToDo,
+            path:'/PomodoroTimer',
+            name: 'PomodoroTimer',
+            component: Timer
         },
+        {
+            path:'/Meditation',
+            name: 'MeditationPage',
+            component: Meditation
+        },
+        
         {
             path:'/profile/user/:id',
             name: 'profile',
             component: Profile,
+        },
+        {
+            path:'/music/:id',
+            name: 'MusicPlayer',
+            component: MusicPlayer
         },
     ]
 })

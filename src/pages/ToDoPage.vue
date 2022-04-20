@@ -26,9 +26,9 @@
 
                 <div class="row col-12" style="margin-left: 20px;padding:0px;">
                     <!-- add to do list card -->
-                    <div v-b-hover="handleHover" class="card add_list_card col-2 d-flex justify-content-center" v-b-toggle.sidebar-right style="margin-left: 24px;margin-top:16px;">
-                        <b-icon  v-if="isHovered" icon="plus" style="color:#orange;width:70px;height:70px;align-self: center"></b-icon>
-                        <b-icon  v-else icon="plus" style="color:#575757;width:50px;height:50px;align-self: center"></b-icon>                            
+                    <div v-b-hover="handleHover" class="card add_list_card col-2 d-flex justify-content-center" @click="showEdit= false; showAdd = !showAdd" style="margin-left: 24px;margin-top:16px;">
+                        <b-icon  v-if="isHovered" icon="plus" style="color:#orange;width:70px;height:70px;align-self: center;cursor: pointer;"></b-icon>
+                        <b-icon  v-else icon="plus" style="color:#575757;width:50px;height:50px;align-self: center;cursor: pointer;"></b-icon>                            
                     </div>
 
                     <!-- to do list card -->
@@ -43,11 +43,11 @@
                     </ul>
 
                     <!-- Edit list form -->
-                    <b-sidebar v-if="edit" id="sidebar-edit" right visible no-header>
+                    <b-sidebar v-if="showEdit" id="sidebar-edit" right visible no-header>
                         <template #default="{hide}">
                             <!-- color themes -->
                             <div class="mt-3">
-                                <b-icon icon='x' @click="edit = false && hide" class="float-right" style="width:35px;height: 35px;"></b-icon>
+                                <b-icon icon='x' @click="showEdit = false && hide" class="float-right" style="width:35px;height: 35px;"></b-icon>
                                 <p class="title__input__font" style="margin-left:14px;margin-bottom:0px;">Edit theme</p>                            
                             </div>
 
@@ -96,11 +96,11 @@
 
                 </div>
                 <!-- add list form -->
-                <b-sidebar id="sidebar-right" no-header right>
+                <b-sidebar v-if="showAdd" id="sidebar-right" no-header visible right>
                     <!-- color themes -->
                     <template #default="{hide}">
                         <div class="mt-3">
-                            <b-icon icon='x' class="float-right" style="width:35px;height: 35px;" @click="hide"></b-icon>
+                            <b-icon icon='x' class="float-right" style="width:35px;height: 35px;"  @click="showAdd = false && hide"></b-icon>
                             <p class="title__input__font" style="margin-left:14px;margin-bottom:0px;">Choose a theme</p>                            
                         </div>                    
                         <div class="row" style="padding:10px;margin-left:17px; width:300px">
@@ -137,7 +137,7 @@
                     <!-- Title input -->
                     <div style="padding:14px;">
                         <p class="title__input__font">List Title</p>
-                        <b-form-input v-model="listForm.list_title" placeholder="add new list" class="list__title__input"></b-form-input>
+                        <b-form-input v-model="LIST_TITLE" placeholder="List title" class="list__title__input"></b-form-input>
 
                         <b-button class="save__list" @click="saveList">Create List</b-button>
                     </div>                        
@@ -149,8 +149,8 @@
                 <!-- Archived lists -->
                 <!-- heading for archived lists -->
                 <div class="mt-5" style="padding-left: 20px;">
-                    <p v-if="display" @click="displayArchive" class="font__style" style="cursor:pointer">Hide all Archived Lists</p>
-                    <p v-else @click="displayArchive" class="font__style" style="cursor:pointer">View all Archived Lists</p>
+                    <span v-if="display" @click="displayArchive" class="font__style" style="cursor:pointer">Hide all archived lists</span>
+                    <span v-else @click="displayArchive" class="font__style" style="cursor:pointer">View all archived lists</span>
 
                 </div>
                 <div v-if="display" class="row col-12" style="margin-left: 20px;padding:0px;">
@@ -178,7 +178,7 @@
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="hideDelete"> Cancel</b-button>
 
-            <b-button class="delete__list_btn" @click="deleteList">Delete</b-button>
+                <b-button class="addItem__btn" @click="deleteList">Delete</b-button>
             </div>
         </b-modal>
     </div>
@@ -224,17 +224,21 @@ export default({
                 theme: ''
             },
 
+            LIST_TITLE: '',
+
             viewMenu: false,
             top: '0px',
             left: '0px',
             listId: '',
-            edit: false,
+            showEdit: false,
 
             setArchive: {
                 archived: false
             },
             display: '',
-            viewArchivedMenu: false
+            viewArchivedMenu: false,
+
+            showAdd: false
         }
     },
     mounted(){
@@ -329,6 +333,8 @@ export default({
                 this.listForm.list_title = 'Untitled'
             }
 
+            this.listForm.list_title = this.LIST_TITLE
+
             axios.post(`http://localhost:3030/todo/add/list/${this.userId}`, this.listForm)
                 .then(response => {
                     this.listForm.list_title = ''
@@ -374,7 +380,8 @@ export default({
         editList(){
             console.log('edit list')
             this.getListData()
-            this.edit = true
+            this.showEdit = true
+            this.showAdd = false
         },
         getListData(){
             /////getting from users collection
