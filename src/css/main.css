@@ -358,5 +358,14 @@ input:focus{
    font-weight: 500;
 }
 
+.sticky{
+   position: sticky !important;
+   top: 10px !important;
+}
+.sticky-top{
+   position: sticky !important;
+   top: 100px !important;
+}
+
 
 

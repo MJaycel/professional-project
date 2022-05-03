@@ -7,9 +7,6 @@ let inProgress;
 let notStarted;
 const colors = ['#7BC17E', '#FA7045','#D4D4D4'];
 
-
-// let fullCircle = 360
-
 export function setPercentage(_percentage, _inProgress,_notStarted){
     percentage = _percentage;
     inProgress = _inProgress;
@@ -28,8 +25,6 @@ export function main(_p5){
         var canvas = p5.createCanvas(360,280);
         canvas.parent("p5Canvas")
         p5.background(255);
-       
-        // angles = [50,80,percentage]
     }
 
     p5.draw = () =>{
@@ -40,54 +35,17 @@ export function main(_p5){
         p5.strokeCap(p5.SQUARE);
         p5.circle('#efefef',360)
         p5.drawCircle(angles);
-
-        // p5.drawText();
     }
-
-    // p5.drawCircle = () => {
-    //     let startPercentage = 0;
-
-    //     // let fps = 1000/200;
-    //     var arcInterval = setInterval(function() {
-    //         startPercentage += 2;
-    //         // p5.clear();
-    //         // p5.beginShape();
-    //         // p5.strokeWeight(15);
-    //         // // p5.stroke('#df00');
-    //         // p5.strokeStyle = '#b1b1b1';
-    //         // p5.noFill();
-    //         // //arc(x, y, width, height, start, stop);
-    //         // p5.arc(0, 0, radius, radius, (Math.PI/180) * 270, (Math.PI/180) * (270 + 360), false );
-    //         // p5.lineWidth = lineWidth;
-
-    //         p5.beginShape();
-    //         p5.strokeWeight(15);
-    //         p5.stroke('#efefef');
-    //         // p5.strokeStyle = '#efefef';
-    //         p5.noFill();
-    //         //arc(x, y, width, height, start, stop);
-    //         p5.arc(0, 0, radius, radius, (Math.PI/180) * 270, (Math.PI/180) * (270 + startPercentage), false );
-    //         p5.lineWidth = lineWidth;
-
-    //         if(startPercentage >= percentage) clearInterval(arcInterval);
-
-        
-    //     }, 10);
-    // }
-
 
     ///////////////////////////////////////// 
     p5.drawCircle = (data) => {
         p5.beginShape();
         p5.strokeWeight(25);
-        // p5.stroke(color);
         p5.noFill();
-        //arc(x, y, width, height, start, stop);
         let lastAngle = 0;
 
         for(let i = 0; i < data.length; i++){
-            // let gray = p5.map(i, 0, data.length, 0, 255);
-            // p5.fill(gray)
+
             p5.stroke(colors[i])
             p5.arc(0, 0, radius, radius, lastAngle,lastAngle + p5.radians(data[i]) 
             );
@@ -101,7 +59,6 @@ export function main(_p5){
         p5.strokeWeight(25);
         p5.stroke(color);
         p5.noFill();
-        //arc(x, y, width, height, start, stop);
         p5.arc(0, 0, radius, radius, (Math.PI/180) * 270, (Math.PI/180) * (270 + data), false );
         p5.lineWidth = lineWidth;
     }

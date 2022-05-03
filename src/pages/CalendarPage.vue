@@ -33,9 +33,18 @@
                     <template #header="{ headerProps }">
                         <div class="row justify-content-between">
                             <div class="col row d-flex justify-content-start">
-                                <div style="width: 3em;">
+                                <div style="width:7em">
                                     <button
-                                        style="border:none;"
+                                        style="border:none;background:yellow;"
+                                        type="button"
+                                        class="previousYear"
+                                        aria-label="Current Year"
+                                        @click.prevent="setShowDate(headerProps.previousYear)"
+                                    >
+                                    <b-icon icon="chevron-compact-left" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
+                                    </button>
+                                    <button
+                                        style="border:none;background:yellow;"
                                         type="button"
                                         class="previousPeriod"
                                         aria-label="Current Period"
@@ -44,15 +53,13 @@
                                     <b-icon icon="chevron-compact-left" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
                                     </button>
                                 </div>
-                                <div v-if="period === 'week'" class="cv-header button col-3 d-flex justify-content-center" style="color: #7BC17E;cursor:pointer;padding:0px;">
+                                <div v-if="period === 'week'" class="cv-header button col-3 d-flex justify-content-center" style="color: #7BC17E;padding:0px;">
                                     <slot name="label">{{headerProps.periodLabel}}</slot>                            
-                                   <!-- <slot name="label">Today</slot>       -->
                                 </div>
                                 <div v-else class="cv-header button col-2 d-flex justify-content-center" style="color: #7BC17E;cursor:pointer;padding:0px;">
                                     <slot name="label">{{headerProps.periodLabel}}</slot>                            
-                                   <!-- <slot name="label">Today</slot>       -->
                                 </div>
-                                <div style="width: 3em;">
+                                <div style="width: 7em;">
                                     <button
                                         style="border:none;"
                                         type="button"
@@ -62,9 +69,17 @@
                                     >
                                     <b-icon icon="chevron-compact-right" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
                                     </button>
+                                    <button
+                                        style="border:none;"
+                                        type="button"
+                                        class="previousYear"
+                                        aria-label="Current Year"
+                                        @click.prevent="setShowDate(headerProps.nextYear)"
+                                    >
+                                    <b-icon icon="chevron-compact-right" style="color:#7BC17E;margin-top:0.4em;"></b-icon>
+                                    </button>
                                 </div>
                                 <div class="cv-header button col-3" style="cursor:pointer;"  @click.prevent="setShowDate(headerProps.currentPeriod)" >
-                                    <!-- <slot name="label">{{headerProps.periodLabel}}</slot>                             -->
                                    <slot name="label">Today</slot>      
                                 </div>
                             </div>
@@ -73,11 +88,6 @@
                             </div>
                         </div>
                     </template>
-                    <!-- <calendar-view-header
-                        slot="header"
-                        slot-scope="t"
-                        :header-props="t.headerProps"
-                        @input="setShowDate" /> -->
                 </calendar-view>                
             </div>
                 
@@ -97,16 +107,28 @@
                 <p class="event__title">{{this.event.title}}</p> 
             </div>
             <div style="padding-left:16px;">
-                <p class="event__details" v-if="noEndDate">{{this.eventStartDate}}</p>
-                <p class="event__details" v-else>{{this.eventStartDate}} - {{this.eventEndDate}}</p> 
-                <p class="event__details" v-if="this.event.startTime != null">{{this.event.startTime}} - {{this.event.endTime}}</p>
+                <!-- <p class="event__details" v-if="event.isAllDay && noEndDate === true">{{this.eventStartDate}}</p>
+                <p class="event__details" v-if="!event.isAllDay">{{this.eventStartDate}}, {{this.event.startTime}}</p>
+                <p class="event__details" v-if="!noEndDate">{{this.eventStartDate}}, {{this.event.startTime}} - {{this.eventEndDate}}, {{this.event.endTime}}</p> 
                 <p class="event__details" v-if="this.event.repeat === true">{{this.event.recurrence_pattern.charAt(0).toUpperCase() + this.event.recurrence_pattern.slice(1)}},until {{this.occurs_until}}</p>
-                <p class="event__details">{{this.event.description}}</p>
+                <p class="event__details">{{this.event.description}}</p> -->
+
+                <div style="margin-bottom:10px;">
+                    <p class="event__details" v-if="event.isAllDay === true">{{this.eventStartDate}}</p>
+                    <p class="event__details" v-if="event.isAllDay === false && event.endDate === event.startDate">{{this.eventStartDate}}, {{this.event.startTime}}</p>
+                    <p class="event__details" v-if="event.isAllDay === false && event.endDate !== event.startDate">{{this.eventStartDate}}, {{this.event.startTime}} - {{this.eventEndDate}}, {{this.event.endTime}}</p>
+                    <p class="event__details" v-if="event.repeat === true && event.recurrence_pattern === 'weekly'">{{this.event.recurrence_pattern.charAt(0).toUpperCase() + this.event.recurrence_pattern.slice(1)}} on {{this.occurs_until.toLocaleString('en-us', {  weekday: 'long' })}}</p>
+                    <p class="event__details" v-if="event.recurrence_pattern === 'daily' || event.recurrence_pattern === 'monthly' ">{{this.event.recurrence_pattern.charAt(0).toUpperCase() + this.event.recurrence_pattern.slice(1)}}, until {{this.occurs_until.toDateString()}}</p>
+                </div>
+
+                <div>
+                   <p class="event__details">{{this.event.description}}</p>
+                </div>
             </div>
         </b-modal>
 
         <b-modal id="delete-event" hide-header centered  hide-footer hide-header-close>
-            <p>Are you sure you want to delete this event?</p>
+            <p class="font__fam-style">Are you sure you want to delete this event?</p>
             <div class="float-right">
                 <b-button class="cancel__btn" @click="$bvModal.hide('delete-event')">Cancel</b-button>
                 <b-button class="addItem__btn" @click="deleteEvent()">Delete</b-button>
@@ -114,7 +136,7 @@
         </b-modal>
 
         <b-modal v-if="event.repeat === true" id="delete-repeat-event" hide-header centered  hide-footer hide-header-close>
-            <p>Delete Recurring Event</p>
+            <p class="heading_font">Delete Recurring Event</p>
             <b-form-group v-slot="{ ariaDescribedby }">
                 <b-form-radio class="font__fam-style" v-model="saveOption" :aria-describedby="ariaDescribedby" name="some-radios" value="thisEvent">This Event</b-form-radio>
                 <b-form-radio class="font__fam-style" v-model="saveOption" :aria-describedby="ariaDescribedby" name="some-radios" value="allEvent">All Event</b-form-radio>
@@ -247,35 +269,26 @@ export default ({
         },
         clickItem(originalItem){
             this.item.id = originalItem.originalItem._id
-            this.getLists()
 
-            // if(originalItem.originalItem.item_id != null){
-            //     this.showTaskDetails(originalItem.originalItem.item_id)
-            // }
             this.showEvent(this.item.id)
+
             this.$bvModal.show('read-event')
 
         },
         showEvent(id) {
             let userId = localStorage.getItem('userId')
-            // axios.get(`http://localhost:3030/calendar/event/${id}`)
             axios.get(`http://localhost:3030/calendar/user/${userId}/event/${id}`)
             .then(response => {
                 console.log('Found Event', response.data[0].events)
                 this.event = response.data[0].events
 
                 const event_start_date = new Date(response.data[0].events.startDate)
-                const occurs_until_date = new Date(response.data[0].events.occurs_until)
+                this.occurs_until = new Date(response.data[0].events.occurs_until)
                 this.eventStartDate = event_start_date.toDateString().slice(0,10)
-                this.occurs_until = occurs_until_date.toDateString().slice(0,10)
+                // this.occurs_until = occurs_until_date.toDateString().slice(0,10)
+                // this.occurs_until = occurs_until_date.toLocaleString('en-us', {  weekday: 'long' })
 
-                // if(response.data[0].events.endDate != null){
-                //     const event_end_date = new Date(response.data[0].events.endDate)
-                //     this.eventEndDate = event_end_date.toDateString().slice(0,10)
-                //     this.noEndDate = false
-                // } else {
-                //     this.noEndDate = true
-                // }
+
                 if(response.data[0].events.endDate === response.data[0].events.startDate){
                     this.noEndDate = true
                 } else {
@@ -284,7 +297,7 @@ export default ({
                     this.noEndDate = false
                 }
 
-                // console.log(this.eventDate)
+                this.getLists()
 
             }) 
             .catch(error => console.log(error))
@@ -328,7 +341,7 @@ export default ({
             if(this.event.item_id != null){
                 this.deleteTask()
             }
-            axios.delete(`http://localhost:3030/calendar/delete/user/${this.$route.params.id}/event/${this.id}`)
+            axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${this.id}`)
             .then(response => {
                 this.showAlert()
                 console.log('Deleted', response)
@@ -354,15 +367,23 @@ export default ({
             // let userId = localStorage.getItem('userID')
             //// get all lists then loop through it and find list id with the item id 
             axios.get(`http://localhost:3030/todo/${this.userId}`)
-                .then(response => {
-                    this.lists = response.data
-                    console.log('Lists', response.data) 
-                    // this.listForm.list_title = 
-                    // this.lists.filter(list => this.listForm.list_title = list.list_title)
+            .then(response => {
+                this.lists = response.data
+                console.log('LISTSS', this.lists)
 
+                Array.from(this.lists).forEach((list)=> {
 
-                }) 
-                .catch(error => console.log(error))
+                    this.list_items = list.items
+                    this.list_items.filter(item => {
+                        if(item._id === this.event.item_id){
+                            this.item_list_id = list._id
+                            console.log('list id', this.item_list_id)
+                        }
+                    })
+                })
+
+            }) 
+            .catch(error => console.log(error))
 
 
         },
@@ -382,18 +403,13 @@ export default ({
         deleteTask(){
             Array.from(this.lists).forEach((list)=> {
                 this.list_items = list.items
-                console.log('sdad', list.items)
                 this.list_items.filter(item => {
                     if(item._id === this.event.item_id){
                         this.item_list_id = list._id
-                        console.log('list id', this.item_list_id)
                     }
                 })
             })
-            console.log('fck', this.event.item_id)
-            console.log('listsdafda', this.item_list_id)
 
-            // this.getLists()
             let userId = localStorage.getItem('userId')
 
             axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.item_list_id}/item/${this.event.item_id}`)
@@ -413,13 +429,13 @@ export default ({
             this.dismissCountDown = this.dismissSecs
         }
     },
-    watch: {
-        items : {
-            handler() {
-                this.$store.dispatch('getAllEvents')
-            }
-        }
-    }
+    // watch: {
+    //     items : {
+    //         handler() {
+    //             this.$store.dispatch('getAllEvents')
+    //         }
+    //     }
+    // }
 })
 </script>
 
@@ -444,10 +460,12 @@ export default ({
 .event__title{
     font-family: 'Poppins',sans-serif;
     font-size: 24px !important;
+    margin-bottom: 0px;
 }
 
 .event__details{
     font-family: 'Poppins',sans-serif;
     font-size: 16px;
+    margin-bottom:0px;
 }
 </style>

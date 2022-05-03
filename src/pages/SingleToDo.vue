@@ -154,63 +154,61 @@
             </div>
 
             <div class="col" style="display:inline-block;padding:0px;">
-            <!-- progress tracker -->
-                <div class="col-11 details mt-3 flex-start" style="background: white;border-radius: 20px;margin-bottom:10px;padding:0px;color:black">
-                    <!-- <div class="d-flex justify-content-between"> -->
-                        <div style="padding: 20px;">
-                            <b-button v-b-toggle.collapse-progress class="progress_tracker collapse_btn">Progress Tracker</b-button>
-                            <b-collapse id="collapse-progress">
-                                <!-- <p class="progress_tracker">Progress Tracker</p> -->
-                                <div style="margin-top:30px;">
-                                    <p class="progress__tracker__titles" style="font-weight:600">
-                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
-                                        Total : {{this.total}}
-                                    </p>
-                                    <p class="progress__tracker__titles">
-                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
-                                        In Progress : {{this.total_in_progress.length}}
-                                    </p>
-                                    <p class="progress__tracker__titles">
-                                        <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
-                                        Completed: {{this.completedItems.length}}
-                                    </p>                                  
-                                </div>
-
-                                <div class="mt-5 d-flex justify-content-center" id="p5Canvas"></div>
-                            </b-collapse> 
-                        </div>
-                    <!-- </div> -->
-                </div>
-
-                <!-- Archived Items -->
-                <div class="col-11 details mt-3" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;color:black">
-                    <div class="d-flex justify-content-between">
-                        <b-button class="collapse_btn" v-b-toggle.collapse-1>Archive</b-button>
-                        <p style="margin-bottom: 0px;margin-top:5px;">{{this.archivedItems.length}}</p>
-                    </div>
-                    <b-collapse id="collapse-1" class="mt-2">
-                        <!-- <b-card>
-                        <p class="card-text">Collapse contents Here</p>
-                        </b-card> -->
-                        <b-list-group >
-                            <b-list-group-item class="list__group" v-for="item in archivedItems" :key="item._id">
-                                <div class="d-flex justify-content-between" >
-                                    <div @click="viewDetails(item._id)" style="cursor: pointer;">
-                                        {{item.title}}
+                <div class="sticky">
+                    <!-- progress tracker -->
+                    <div class="col-11 details mt-3 flex-start" style="background: white;border-radius: 20px;margin-bottom:10px;padding:0px;color:black">
+                        <!-- <div class="d-flex justify-content-between"> -->
+                            <div style="padding: 20px;">
+                                <b-button v-b-toggle.collapse-progress class="progress_tracker collapse_btn">Progress Tracker</b-button>
+                                <b-collapse id="collapse-progress">
+                                    <!-- <p class="progress_tracker">Progress Tracker</p> -->
+                                    <div style="margin-top:30px;">
+                                        <p class="progress__tracker__titles" style="font-weight:600">
+                                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#C4C4C4;margin-right:10px;"></b-icon>
+                                            Total : {{this.total}}
+                                        </p>
+                                        <p class="progress__tracker__titles">
+                                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#FA7045;margin-right:10px;"></b-icon>
+                                            In Progress : {{this.total_in_progress.length}}
+                                        </p>
+                                        <p class="progress__tracker__titles">
+                                            <b-icon icon="circle-fill" style="width:12px;height:12px;color:#339637;margin-right:10px;"></b-icon>
+                                            Completed: {{this.completedItems.length}}
+                                        </p>                                  
                                     </div>
-                                    <b-dropdown id="icon-dropdown" no-caret right>
-                                        <template #button-content>
-                                            <b-icon icon="three-dots-vertical"></b-icon>
-                                        </template>
-                                        <b-dropdown-item @click="viewDetails(item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item>
-                                        <b-dropdown-item @click="unArchiveItem(item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Un Archive</b-dropdown-item>
-                                        <b-dropdown-item @click="showDelete(item._id)"><b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
-                                    </b-dropdown>
-                                </div>
-                            </b-list-group-item>
-                            <!-- <b-list-group-item v-if="emptyArchive"> No Archived Tasks</b-list-group-item> -->
-                        </b-list-group>
-                    </b-collapse>
+
+                                    <div class="mt-5 d-flex justify-content-center" id="p5Canvas"></div>
+                                </b-collapse> 
+                            </div>
+                        <!-- </div> -->
+                    </div>
+
+                    <!-- Archived Items -->
+                    <div class="col-11 details mt-3" style="background: white;border-radius: 20px;padding: 20px;margin-bottom:10px;color:black">
+                        <div class="d-flex justify-content-between">
+                            <b-button class="collapse_btn" v-b-toggle.collapse-1>Archive</b-button>
+                            <p style="margin-bottom: 0px;margin-top:5px;">{{this.archivedItems.length}}</p>
+                        </div>
+                        <b-collapse id="collapse-1" class="mt-2">
+                            <b-list-group >
+                                <b-list-group-item class="list__group" v-for="item in archivedItems" :key="item._id">
+                                    <div class="d-flex justify-content-between" >
+                                        <div @click="viewDetails(item._id)" style="cursor: pointer;">
+                                            {{item.title}}
+                                        </div>
+                                        <b-dropdown id="icon-dropdown" no-caret right>
+                                            <template #button-content>
+                                                <b-icon icon="three-dots-vertical"></b-icon>
+                                            </template>
+                                            <b-dropdown-item @click="viewDetails(item._id)"><b-icon icon="pencil-square" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Edit</b-dropdown-item>
+                                            <b-dropdown-item @click="unArchiveItem(item._id)"><b-icon icon="archive" style="margin-top: 14px;margin-right: 15px;width:15px;height:15px;" ></b-icon> Un Archive</b-dropdown-item>
+                                            <b-dropdown-item @click="showDelete(item._id)"><b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;width:16px;height:16px;"></b-icon> Delete</b-dropdown-item>
+                                        </b-dropdown>
+                                    </div>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </b-collapse>
+                    </div>
                 </div>
             </div>
         <b-modal id="delete-item" hide-header centered  hide-footer hide-header-close>
@@ -373,6 +371,7 @@ export default ({
         }
     },
     mounted() {
+        console.log('LIST ID',this.listId)
         this.getListData()
         this.setPercNum()
         this.findInEvents()
@@ -425,7 +424,7 @@ export default ({
         setPercNum(){
             var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
             if(res){
-                // create p5 instance -- components/CircularProgress.js
+                // create p5 instance -- components/donutChart.js
                 new P5(donutChart.main);
             }  
         },
@@ -436,7 +435,6 @@ export default ({
             axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}`)
             .then(response => {
                 console.log(response.data[0])
-                // this.editForm.list_title = response.data[0].list_title
                 this.form.list_title = response.data[0].list_title
                 this.theme = response.data[0].theme
                 this.items = response.data[0].items
@@ -445,15 +443,13 @@ export default ({
 
                 this.archivedItems = this.items.filter(item => item.archived === true)
 
-                console.log('subtasks', this.subTasks)
-
                 if(this.archivedItems.length === 0){
                     this.emptyArchive = true
                 }
 
-                /// looping through each items and setting date format as Month, D, Yr
                 Array.from(this.items).forEach((item)=> {
                     if(item.startDate != null){
+                        /// looping through each items and setting date format as Month, D, Yr
                         const item_date = new Date(item.startDate).toDateString().slice(3)
                         item.startDate = item_date                       
                     }
@@ -466,14 +462,8 @@ export default ({
                     if(item.priorityLevel === 'Low Priority'){
                         this.colorClass = 'pyellow'
                     }
-
-
-                    console.log('dATE', item.startDate)
                 })
 
-                this.total = this.items.length
-
-                this.total_in_progress = this.items.filter(item => item.progress === 'In Progress')
                 this.countItems()
             })
             .catch(error => console.log(error))
@@ -504,34 +494,25 @@ export default ({
         },
         /////// count array items
         countItems() {
-            let result = this.items.length
-            console.log('result', result)
+            this.total = this.items.length
             
             //circle progress - degrees
             const totalPercentage = 360
-            const num = totalPercentage / result
+            const num = totalPercentage / this.total
 
-            this.completedItems = this.items.filter(item => 
-            item.isComplete === true)
+            this.total_in_progress = this.items.filter(item => item.progress === 'In Progress')
+            this.completedItems = this.items.filter(item => item.isComplete === true)
+            this.notStarted = this.items.filter(item => item.progress === 'Not Started')
 
-            this.notStarted = this.items.filter(item => {
-                item.progress === 'Not Started'            
-            })
-
-            console.log('completed', this.completedItems.length)
             this.percNum = this.completedItems.length * num
-
             this.progressNum = this.total_in_progress.length * num
-
             this.noStartedNum = this.notStarted.length * num
 
             this.$store.commit('setCompleted', this.percNum)
-            console.log('deg', this.progressNum, this.percNum)
         }, 
 
         ///// Add new task
         addTask() {
-            // console.log('add', this.listId)
             let userId = localStorage.getItem('userId')
 
             if(this.taskForm.title === ''){
@@ -545,7 +526,6 @@ export default ({
             .then(response => {
                 console.log('New task added', response.data)
                 this.taskForm.title = ''
-                // this.getData()
                 this.getListData()
             })
             .catch(error => console.log(error))
@@ -572,7 +552,6 @@ export default ({
             }        
         },
         editPriority(id){
-
             let userId = localStorage.getItem('userId')
 
             this.setPriority.priorityLevel = this.priority
@@ -583,9 +562,6 @@ export default ({
 
             })
             .catch(error => console.log(error))
-            // console.log('p', this.taskForm.priorityLevel)
-
-            // console.log('id',id)
         },
         editProgress(id){
             let userId = localStorage.getItem('userId')
@@ -605,42 +581,45 @@ export default ({
         },
 
         dueDate(id) {
-            console.log('due date',this.addDueDate.startDate)
             let userId = localStorage.getItem('userId')
 
             this.getItem(id)
+            
             if(this.addDueDate.startDate === null || this.addDueDate.startDate === ""){
                 this.addDueDate.inCalendar = false
+                this.deleteId = id
+                this.deleteEvent()
             } else {
                 this.addDueDate.inCalendar = true
             }
             this.addDueDate.classes = 'item-event item-event-bg'   
             
-            if(this.itemInCalendar === true){
-                this.deleteEvent()
-            }
+            // if(this.itemInCalendar === true){
+            //     this.deleteEvent()
+            // }
 
             axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.addDueDate)
             .then(response => {
+                    
                 this.addItemtoCal(id)
                 this.getListData()
+
                 this.$refs.date_dropdown.hide()
-                console.log('item edited', response.data)
                 this.taskForm.title = ''
+
+                console.log('item edited', response.data)
             })
             .catch(error => console.log(error))
         },
         viewDetails(id){
-            console.log('details id', id)
+            this.$store.commit('setShowTask', true)
             console.log('show Task', this.$store.state.showTask)
 
             this.id = id
             this.list_id = this.listId
-            this.$store.commit('setShowTask', true)
+            console.log('details id', this.list_id)
         },
         EditListName() {
-            // console.log('got the id', this.listId)
-
             axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.form)
                 .then(response => {
                     console.log('edited', response.data)
@@ -649,17 +628,26 @@ export default ({
                 .catch(error => console.log(error))
         },
         addItemtoCal(id) {
-            // getItem()
+
             this.findInEvents(id)
-            // let userId = localStorage.getItem('userId')
-            this.calForm.startDate = this.addDueDate.startDate
+
+            let newStartDate;
+
+            const date_start = new Date(this.addDueDate.startDate)
+            newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+            this.calForm.startDate = newStartDate.toUTCString()
+            this.calForm.endDate = newStartDate.toUTCString()
+
+            if(this.taskForm.startDate === null || this.taskForm.startDate === ""){
+                this.calForm.startTime = null
+            } 
+            // this.calForm.startDate = this.addDueDate.startDate
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
             this.calForm.classes = 'item-event item-event-bg'
 
             this.calForm.item_id = id 
-
 
             if(this.itemInCalendar === true){
                 axios.post(`http://localhost:3030/calendar/edit/event/${this.event_id}` , this.calForm )
@@ -673,6 +661,7 @@ export default ({
                 let userId = localStorage.getItem('userId')
                 axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
                 .then(response => {
+                    this.calForm.title = ''
                     console.log("Task added to calendar",response.data)
                 })
                 .catch(error => console.log(error))     
@@ -751,7 +740,6 @@ export default ({
     watch: {
         percNum: {
             handler(){
-                console.log("chaaaange")
                 var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
                 if(res){
                     donutChart.main;
@@ -761,7 +749,6 @@ export default ({
         },
         noStartedNum: {
             handler(){
-                console.log("chaaaange")
                 var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
                 if(res){
                     donutChart.main;
@@ -771,7 +758,6 @@ export default ({
         },
         progressNum: {
             handler(){
-                console.log("chaaaange")
                 var res = donutChart.setPercentage(this.percNum,this.progressNum,this.noStartedNum);
                 if(res){
                     donutChart.main;

@@ -28,7 +28,6 @@
                         </select>
                     </form>
                 </div>
-                <!-- <b-icon icon="trash" style="margin-top: 14px;margin-right: 15px;cursor: pointer;" @click="showDelete"></b-icon> -->
                 <b-dropdown id="icon-dropdown" no-caret right>
                     <template #button-content>
                         <b-icon icon="three-dots-vertical" style="margin-top:10px;"></b-icon>
@@ -58,13 +57,11 @@
                             <p class="modal_forms" style="padding-left:12px;padding-top:10px;">Priority</p>
                         </div>
                         <div class="col">
-
                             <div class="d-flex justify-content-start priority_div" style="padding:0px;">
                                 <div>
                                     <b-icon v-if="priority === 'Low Priority'" icon="circle-fill" style="width:12px;height:12px;color:#F3CC00;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
                                     <b-icon v-if="priority === 'High Priority'" icon="circle-fill" style="width:12px;height:12px;color:#E30000;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
                                     <b-icon v-if="priority === 'Medium Priority'" icon="circle-fill" style="width:12px;height:12px;color:#FF8B4A;margin-top:15px;margin-right:2px;margin-bottom:4px;margin-left:5px;"></b-icon>
-
                                 </div>
                                 <div>
                                     <form v-if="priority === 'Low Priority'" class="mt-2" style="border-radius:20px;padding:0px 5px 0px 5px;">
@@ -129,17 +126,13 @@
                         </div>
                     </div>
 
-                    <!-- <div class="row mt-2"> -->
-                        <div class="col-3 mt-2" style="padding-left:13px;">
-                            <p class="modal_forms" style="padding-top:10px;">Description</p>
-                        </div>
-                        <div class="mt-2" style="padding: 0px;">
-                            <!-- <p v-if="!showDesc" class="desc__task__input no__outline" @click="showDesc = !showDesc">{{this.taskForm.description}}</p> -->
-                            <b-form-textarea v-if="taskForm.description === ''" rows="6" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
-                            <b-form-textarea v-else no-auto-shrink rows="6" class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
-                        </div>                
-                    <!-- </div> -->
-                    
+                    <div class="col-3 mt-2" style="padding-left:13px;">
+                        <p class="modal_forms" style="padding-top:10px;">Description</p>
+                    </div>
+                    <div class="mt-2" style="padding: 0px;">
+                        <b-form-textarea v-if="taskForm.description === ''" rows="6" class="desc__task__input_focus no__outline" v-model="taskForm.description" placeholder="Add a description"></b-form-textarea>
+                        <b-form-textarea v-else no-auto-shrink rows="6" class="desc__task__input no__outline" v-model="taskForm.description"></b-form-textarea>
+                    </div>                
                 </div>
 
                 <div class="col">
@@ -155,7 +148,6 @@
                                     <b-input-group>
                                     <b-icon icon="check-circle" v-if="!task.isComplete" style="margin-right: 10px;margin-top: 8px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
                                     <b-icon icon="check-circle-fill" v-else style="margin-right: 10px;margin-top: 8px;width:16px;height:16px;color: green;cursor: pointer;" v-b-tooltip.hover title="Set task as complete" @click="setComplete(task,task._id)"></b-icon>
-
                                         <b-form-input
                                             class="subTask_edit_input"
                                             v-model="task.title"
@@ -175,17 +167,16 @@
 
            <div class="d-flex justify-content-end mt-4">
                 <b-button class="cancel__btn" style="margin-right: 10px;" @click="hideModal"> Cancel</b-button>
-
                 <b-button class="addItem__btn" @click="save"> Save</b-button>                
             </div>        
         </b-modal>
 
+        <!-- Delete Modal -->
         <b-modal id="delete-item" hide-header centered  hide-footer hide-header-close>
             <p>Are you sure you want to delete this Task?</p>
             <div class="d-flex justify-content-end">
                 <b-button class="cancel__btn" @click="$bvModal.hide('delete-item')"> Cancel</b-button>
-
-            <b-button class="addItem__btn" @click="deleteTask">Delete</b-button>
+                <b-button class="addItem__btn" @click="deleteTask">Delete</b-button>
             </div>
         </b-modal>
     </div>
@@ -273,7 +264,9 @@ export default ({
             archived: false,
 
             // Original Val
-            TASK_START_DATE: ''
+            TASK_START_DATE: '',
+
+            EVENT_ID_EXISTS: false
 
         }
     },
@@ -281,11 +274,9 @@ export default ({
         ...mapState(['showTask'])
     },
     mounted(){
+        console.log('LIST id', this.list_id)
         this.getItem()
         this.$bvModal.show('task-details-modal')
-
-        console.log('id', this.id)
-        console.log('WTF', this.$store.state.showTask)
     },
     methods:{
         ...mapActions(['getAllEvents']),
@@ -295,7 +286,6 @@ export default ({
         },
         // Get Item
         getItem() {
-            // let userId = localStorage.getItem('userId')
 
             axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.list_id}/item/${this.id}`)
             .then(response => {
@@ -312,9 +302,14 @@ export default ({
                 this.taskForm.priorityLevel = this.item.priorityLevel
                 this.taskForm.progress = this.item.progress
                 this.taskForm.inCalendar = this.item.inCalendar
-                this.taskForm.startTime = this.item.startTime
+                // this.taskForm.startTime = this.item.startTime
 
 
+                if(this.item.startDate === null || this.item.startDate === ""){
+                    this.taskForm.startTime = null
+                } else {
+                    this.taskForm.startTime = this.item.startTime
+                }
                 if(this.taskForm.inCalendar === true){
                     this.itemInCalendar = true
                 }
@@ -335,22 +330,25 @@ export default ({
         },
         save() {
             let userId = localStorage.getItem('userId')
+
             this.taskForm.progress = this.progress
             this.taskForm.priorityLevel = this.priority
-
-
+            this.taskForm.classes = 'item-event item-event-bg'
             this.taskForm.progress = this.progress
+
             if(this.taskForm.progress === 'Completed'){
                 this.taskForm.isComplete = true
             } else {
                 this.taskForm.isComplete = false
             }
-            this.taskForm.classes = 'item-event item-event-bg'
 
-            if(this.taskForm.startDate != null || this.taskForm.startDate === ""){
+            if(this.taskForm.startDate !== null){
                 this.taskForm.inCalendar = true
-            } else if(this.taskForm.startDate === null || this.taskForm !== this.item.startDate){
+            } else if(this.taskForm.startDate === null || this.taskForm.startDate !== this.item.startDate){
+                /// Delete task from calendar if the start date is null or if the start date 
+                /// is different from the original date
                 this.taskForm.inCalendar = false
+                this.taskForm.startTime = null
                 this.deleteEvent()
             }
 
@@ -384,35 +382,41 @@ export default ({
         },
         deleteEvent() {
             this.findInEvents()
+            
             let userId = localStorage.getItem('userId')
             axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
             .then(response => {
                 console.log('Deleted', response)
-                // this.$store.dispatch('getAllEvents')
             }) 
             .catch(error => console.log(error))
         },
 
         addItemtoCal() {
-            // this.getItem()
             this.findInEvents()
+            let newStartDate;
 
             if(this.taskForm.startTime != null){
-                let newStartDate;
                 const userInputStart = this.taskForm.startTime
                 const hours_start = userInputStart.slice(0,2)
                 const minutes_start = userInputStart.slice(3)
     
-                const date_start = new Date(this.taskForm.startDate)
+                let date_start = new Date(this.taskForm.startDate)
                 newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
     
-                
                 this.calForm.startDate = newStartDate.toUTCString()
                 this.calForm.startTime = this.taskForm.startTime
+
+                this.calForm.endDate = newStartDate.toUTCString()
             } else {
-                this.calForm.startDate = this.taskForm.startDate
+                const date_start = new Date(this.taskForm.startDate)
+                newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate()))
+                this.calForm.startDate = newStartDate.toUTCString()
+                this.calForm.endDate = newStartDate.toUTCString()
             }
 
+            if(this.taskForm.startDate === null || this.taskForm.startDate === ""){
+                this.calForm.startTime = null
+            } 
             this.calForm.title = this.taskForm.title
             this.calForm.description = this.taskForm.description
             this.calForm.isComplete = this.taskForm.isComplete
@@ -445,7 +449,6 @@ export default ({
         findInEvents() {
             this.$store.dispatch('getAllEvents')
 
-            console.log('EVENTS FROM CAL', this.$store.state.items)
             /// looping through each events and find the item that has the id that is being passed 
             // if found set event_id as the event that was found and use that id to edit the startDate on the task/event
             Array.from(this.$store.state.items).forEach((item)=> {
@@ -453,6 +456,12 @@ export default ({
                     this.event_id = item._id
                 }    
             })
+
+            if(this.event_id !== null){
+                this.EVENT_ID_EXISTS = true
+            }
+
+            console.log('EVENT ID',this.EVENT_ID_EXISTS)
         },
 
         /////ADDING SUBTASKS
@@ -487,7 +496,6 @@ export default ({
             .then(response => {
                 console.log("Sub Task Added", response.data)
                 this.getItem()
-                // this.subTaskForm.title = ''
             })   
             .catch(error => console.log(error))
         },
@@ -512,8 +520,6 @@ export default ({
             .then(response => {
                 console.log('DELETED' ,response)
                 this.getItem()
-                
-                // this.$emit('getListData')
                 this.method()   
                 this.alert()
             })

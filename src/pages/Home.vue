@@ -1,64 +1,4 @@
 <template>
-        <!-- <div class="container-fluid" >
-            <div class="row ">
-                <div class="side__bar" style="height: 100vh;width: 65px !important;">
-                    <div class="mt-5 links">
-                        <router-link class="home__link" :to="{name: 'profile', params: {id: this.userId}}">
-                            <b-icon icon="person-fill"></b-icon>
-                        </router-link>
-                    </div>
-                    <div class="links">
-                        <router-link class="home__link" :to="{name: 'home', params: {id: this.userId}}">
-                            <b-icon icon="house-door-fill"></b-icon>
-                        </router-link>
-                    </div>
-                    <div class="links">
-                        <router-link class="home__link" :to="{name: 'calendar',params: {id: this.userId} }">
-                            <b-icon icon="calendar-date-fill"></b-icon>
-                        </router-link>
-                    </div>
-                    <div class="links">
-                        <router-link class="home__link" :to="{name: 'todo_page',params: {id: this.userId} }">
-                            <b-icon icon="card-checklist"></b-icon>
-                        </router-link>
-                    </div>
-                    <div class="links">
-                        <router-link class="home__link" :to="{name: 'PomodoroTimer'}">
-                            <b-icon icon="hourglass-bottom"></b-icon>
-                        </router-link>
-                    </div>
-
-                    <div class="links">
-                        <router-link class="home__link" :to="{name: 'MeditationPage'}">
-                            <img src="../assets/meditation-icon.svg" style="width:25px;height:25px;"/>
-                        </router-link>
-                    </div>
-                    <div class="links">
-                        <router-link class="home__link" :to="{name: 'MusicPlayer'}">
-                            <b-icon icon="headphones"></b-icon>
-                        </router-link>
-                    </div>
-
-                </div>
-                <div class="col-5">
-                    <h1>Good day, {{this.$store.getters.name}}</h1>
-                    <Clock/>
-                    <p>You have {{printEvent}} events due</p>
-
-                </div>
-
-                <div class="col-6">
-                    <p>"{{quotes.content}}"</p>
-                    <p>-{{quotes.author}}</p>
-                </div>
-                
-
-
-
-
-            </div>
-        </div> -->
-        <!-- <b-button @click="logout()">Logout</b-button> -->
     <div class="container-fluid">
         <div class="row">
             <div v-if="hideSideBar" class="col-2" style="padding:0px;">
@@ -197,7 +137,7 @@
 
         </div>
         <!-- end of row -->
-        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='listId'/>
+        <TaskDetails v-if="this.$store.state.showTask" :id ='id' :list_id ='selectedList'/>
 
 
     </div>
@@ -262,13 +202,12 @@ export default {
             inCompleteTasks: [],
             overDue: [],
             selectedList: ''
-
-
         }
     },
 
     mounted(){
         this.$store.dispatch('getUser')
+        this.$store.commit('setShowTask',false)
         const CURRENT_DATE = new Date()
 
         const hours = CURRENT_DATE.getHours()
@@ -285,16 +224,9 @@ export default {
         this.tomorrow.setDate(this.tomorrow.getDate() + 1)
         this.tomorrow = this.tomorrow.toDateString().slice(0,-4).trim();
         this.getQuotes();
-        // this.getDate();
-        // this.getAllLists();
         this.todaysEvents();
         this.firstItem = this.$store.state.firstList
 
-        // this.tasks = this.firstItem.items
-        console.log(this.$store.getters.name);
-        console.log('tomorrow', this.tomorrow)
-        // console.log("events today",this.$store.getters.events);
-        // console.log('first to do ',this.$store.getters.firstList.items)
     },
     computed: {
         ...mapState(['loggedIn','firstList','showTask', 'name']),
@@ -311,7 +243,7 @@ export default {
                 this.lists = response.data
                 this.selectedList = response.data[0]._id
                 console.log('Lists', response.data[0]) 
-                this.listId = response.data[0]._id
+                // this.selectedList = response.data[0]._id
 
                 this.tasks = response.data[0].items
                 this.inCompleteTasks = this.tasks.filter(task => task.isComplete === false)
@@ -322,7 +254,6 @@ export default {
             }) 
             .catch(error => console.log(error))
     },
-
     methods: {
         countDownChanged(dismissCountDown) {
         this.dismissCountDown = dismissCountDown
@@ -405,7 +336,6 @@ export default {
         },
         ///// Add new task
         addTask() {
-            // console.log('add', this.listId)
             let userId = localStorage.getItem('userId')
 
             if(this.taskForm.title === ''){
@@ -417,12 +347,13 @@ export default {
             this.taskForm.priorityLevel = 'Medium Priority'
             this.taskForm.progress = 'Not Started'
             this.taskForm.isComplete = false
+            this.taskForm.inCalendar = false
 
-            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.listId}`, this.taskForm)
+
+            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
                 this.taskTitle = ''
-                // this.getData()
                 this.getAllLists()
             })
             .catch(error => console.log(error))
@@ -434,7 +365,7 @@ export default {
             this.taskForm.title = task.title
 
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm)
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.selectedList}/item/${id}`, this.taskForm)
             .then(response => {
                 console.log('item edited', response.data)
 
@@ -447,8 +378,6 @@ export default {
             axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.selectedList}`)
             .then(response => {
                 console.log(response.data[0])
-                // this.editForm.list_title = response.data[0].list_title
-
                     this.tasks = response.data[0].items
                     this.inCompleteTasks = this.tasks.filter(task => task.isComplete === false)
                     console.log('taskss', this.inCompleteTasks)
@@ -457,7 +386,7 @@ export default {
         },
         // Get Item
         getItem(id) {
-            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}/item/${id}`)
+            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.selectedList}/item/${id}`)
             .then(response => {
                 console.log('EDIT',response.data[0].todoLists.items)
                 this.item = response.data[0].todoLists.items
@@ -490,46 +419,38 @@ export default {
             this.taskForm.inCalendar = task.inCalendar
             this.taskForm.isComplete = true
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.listId}/item/${id}`, this.taskForm) 
+            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.selectedList}/item/${id}`, this.taskForm) 
             .then(response => {
                 console.log("set complete", response.data)
-                // this.subTaskForm.title = ''
                 this.getAllLists()
-                // this.getItem(id)
             })   
             .catch(error => console.log(error))
         },
         deleteTask(id){
             let userId = localStorage.getItem('userId')
 
-            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.listId}/item/${id}`)
+            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.selectedList}/item/${id}`)
             .then(response => {
                 this.showAlert()
                 console.log('DELETED' ,response)
-                // this.getItem()
-                // this.getAllLists()
                 this.deleteEvent()
-                // this.$emit('getListData')
                 this.method()   
             })
-            // this.$emit('deleteTask')
         },
         goToAllTasks(){
-            let userId = localStorage.getItem('userId')
-
-            this.$router.push({name: 'todo_page', params: {
-                id: userId
-            }})
-
-            this.$router.push({ path: `/todo/list/${this.listId}` })
+            this.$store.commit('setListId', this.selectedList)
+            this.$router.push({
+                name: 'single_todo',
+                params: {
+                    id: this.selectedList
+                }
+            })
         },
         viewDetails(id){
-            console.log('details id', id)
-            console.log('show Task', this.$store.state.showTask)
+            this.$store.commit('setShowTask', true)
 
             this.id = id
-            this.list_id = this.listId
-            this.$store.commit('setShowTask', true)
+            this.list_id = this.selectedList
         },
 
         deleteEvent() {
@@ -607,9 +528,13 @@ export default {
             handler() {
                 this.todaysEvents()
             }
+        },
+        tomorrowEvents: {
+            handler() {
+                this.todaysEvents()
+            }
         }
     } 
-    
 }
 </script>
 

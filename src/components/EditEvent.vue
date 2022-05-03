@@ -94,37 +94,49 @@
 
         <!-- SET DAILY MODAL -->
         <b-modal id="daily-modal" hide-header centered hide-footer>
-            <p>Repeat: Daily</p>
-            <p>Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
-            <p>Occurs Until</p> <b-form-input style="border-radius: 4px;" v-model="DAILY_UNTIL" type="date"></b-form-input>
+            <p class="repeat__heading">Repeat: Daily</p>
+            <div>
+                <p class="font__fam-style" style="margin:0px;">Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
+            </div>
+            <div style="margin-top:15px;">
+                <p class="font__fam-style" style="margin:0px;">Occurs Until:</p> <b-form-input style="border-radius: 4px;" v-model="DAILY_UNTIL" type="date"></b-form-input>
+            </div>
 
-            <div class="d-flex justify-content-end">
-                <button @click="$bvModal.hide('daily-modal')">Cancel</button>
-                <button @click="setDaily">Save</button>
+            <div class="d-flex justify-content-end mt-3">
+                <b-button class="cancel__btn" @click="$bvModal.hide('daily-modal')">Cancel</b-button>
+                <b-button class="addItem__btn" @click="setDaily">Save</b-button>
             </div>
         </b-modal>
 
         <!-- SET WEEKLY MODAL -->
         <b-modal id="weekly-modal" hide-header hide-footer centered>
-            <p>Repeat: Weekly</p>
-            <p>Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
-            <p>Occurs Until</p> <b-form-input style="border-radius: 4px;" v-model="WEEKLY_UNTIL" type="date"></b-form-input>
+            <p class="repeat__heading">Repeat: Weekly</p>
+            <div>
+                <p class="font__fam-style" style="margin-bottom:6px;">Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
+            </div>
+            <div style="margin-top:15px">
+                <p class="font__fam-style" style="margin-bottom:6px;">Occurs Until:</p> <b-form-input style="border-radius: 4px;" v-model="WEEKLY_UNTIL" type="date"></b-form-input>
+            </div>
 
-            <div class="d-flex justify-content-end">
-                <button @click="$bvModal.hide('weekly-modal')">Cancel</button>
-                <button @click="setWeekly">Save</button>
+            <div class="d-flex justify-content-end mt-3">
+                <b-button class="cancel__btn" @click="$bvModal.hide('weekly-modal')">Cancel</b-button>
+                <b-button class="addItem__btn" @click="setWeekly">Save</b-button>
             </div>        
         </b-modal>
 
         <!-- SET MONTHLY MODAL -->
         <b-modal id="monthly-modal" hide-header hide-footer centered>
-            <p>Repeat: Monthly</p>
-            <p>Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
-            <p>Occurs Until</p> <b-form-input style="border-radius: 4px;" v-model="MONTHLY_UNTIL" type="date"></b-form-input>
+            <p class="repeat__heading">Repeat: Monthly</p>
+            <div>
+                <p class="font__fam-style" style="margin-bottom:6px;">Start:</p> <b-form-input style="border-radius: 4px;" v-model="START_DATE" type="date"></b-form-input>
+            </div>
+            <div style="margin-top:15px;">
+                <p class="font__fam-style" style="margin-bottom:6px;">Occurs Until:</p> <b-form-input style="border-radius: 4px;" v-model="MONTHLY_UNTIL" type="date"></b-form-input>
+            </div>
 
-            <div class="d-flex justify-content-end">
-                <button @click="$bvModal.hide('monthly-modal')">Cancel</button>
-                <button @click="setMonthly">Save</button>
+            <div class="d-flex justify-content-end mt-3">
+                <b-button class="cancel__btn" @click="$bvModal.hide('monthly-modal')">Cancel</b-button>
+                <b-button class="addItem__btn" @click="setMonthly">Save</b-button>
             </div>         
         </b-modal>
 
@@ -147,7 +159,7 @@
 
         <!-- MODAL WARNING WHEN SINGLE EVENT IS EDITED IN RECURRING -->
         <b-modal id="warning-modal" hide-header centered  hide-footer hide-header-close>
-            <p>If you have changed specific events in the series, your changes will be canceled and the events will match the series again</p>
+            <p class="font__fam-style">If you have changed specific events in the series, your changes will be canceled and the events will match the series again</p>
             <div class="float-right">
                 <b-button class="cancel__btn" @click="$bvModal.hide('warning-modal')">Cancel</b-button>
                 <b-button class="addItem__btn" @click="editAllEvent">Save</b-button>
@@ -327,7 +339,7 @@ export default {
                 
                 const date_end = new Date(this.END_DATE)
                 // date_end.setHours(hours_end, minutes_end)
-                if(this.IS_ALL_DAY){
+                if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                                    
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                 } else{
                     const userInputEnd = this.END_TIME
@@ -360,8 +372,13 @@ export default {
                 this.form.endTime = null
                 this.form.startTime = null
             } else {
-                this.form.endTime = this.END_TIME
-                this.form.startTime = this.START_TIME             
+                this.form.startTime = this.START_TIME  
+
+                if(this.END_TIME === "" || this.END_TIME === null){
+                    this.form.endTime = this.START_TIME
+                } else {
+                    this.form.endTime = this.END_TIME
+                }
             }
 
         },
@@ -421,7 +438,7 @@ export default {
                 const date_end = new Date(this.form.endDate)
                 date_end.setDate(date_end.getDate() + 1)
 
-                if(this.IS_ALL_DAY){
+                if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                 }else{
                     const userInputEnd = this.END_TIME
@@ -473,7 +490,7 @@ export default {
                 const date_end = new Date(this.form.endDate)
                 date_end.setDate(date_end.getDate() + 7)
 
-                if(this.IS_ALL_DAY){
+                if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                 }else{
                     const userInputEnd = this.END_TIME
@@ -502,7 +519,7 @@ export default {
             this.RECURRING_ID = "e" + Math.random().toString(36).substr(2, 10)
 
             // this.createRepeatingEvent()
-            for(let i = 0; i < this.difference; i++){
+            for(let i = 0; i < this.difference + 1; i++){
                 ////setting start date
                 let newStartDate;
 
@@ -516,13 +533,13 @@ export default {
                     const minutes_start = userInputStart.slice(3)
                     newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
                 }
-                newStartDate.setUTCMonth(i)
+                newStartDate.setUTCMonth(newStartDate.getUTCMonth() + i)
                 this.form.startDate = newStartDate
 
                 let newEndDate;
 
                 const date_end = new Date(this.END_DATE)
-                if(this.IS_ALL_DAY){
+                if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                 }else{
                     const userInputEnd = this.END_TIME
@@ -531,7 +548,7 @@ export default {
                     const minutes_end = userInputEnd.slice(3)
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
                 }
-                newEndDate.setUTCMonth(i)
+                newEndDate.setUTCMonth(newEndDate.getUTCMonth() + i)
                 this.form.endDate = newEndDate
 
                 this.RECURRENCE_PATTERN = this.selected.charAt(0).toLowerCase() + this.selected.slice(1)
@@ -549,8 +566,13 @@ export default {
                     this.form.endTime = null
                     this.form.startTime = null
                 } else {
-                    this.form.endTime = this.END_TIME
-                    this.form.startTime = this.START_TIME             
+                    this.form.startTime = this.START_TIME  
+
+                    if(this.END_TIME === "" || this.END_TIME === null){
+                        this.form.endTime = this.START_TIME
+                    } else {
+                        this.form.endTime = this.END_TIME
+                    }
                 }
 
                 axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
@@ -567,9 +589,16 @@ export default {
 
         /// EDIT ONE EVENT IN RECURRING SERIES
         editThisEvent(){
-            // this.saveEvent()
-            this.setForm()
-            this.postEdit()
+            if(this.EVENT_DATA.recurrence_pattern !== 'weekly' && this.selected === "Weekly"){
+                this.createWeekly()
+            } else if(this.EVENT_DATA.recurrence_pattern !== 'daily' && this.selected === "Daily"){
+                this.createDaily()
+            } else if(this.EVENT_DATA.recurrence_pattern !== 'monthly' && this.selected === "Monthly") {
+                this.createMonthly()
+             }else {
+                this.setForm()
+                this.postEdit()
+            }
         },
         editAllEvent(){
             // filter events and get all events that has the same recurring ID
@@ -598,51 +627,40 @@ export default {
                 startDatesArray.push(all_start_dates)
                 endDatesArray.push(all_end_dates)
 
-                // console.log("End Dates",endDatesArray)
-
                 /// Compare START_DATE && END_DATE (date input) with the events original dates
                 /// if different get the difference between two dates
-                // if(this.selected === "Weekly"){
-                    if(this.START_DATE != EVENT_START_DATE){
-                        console.log("changed")
-                        var date1 = new Date(this.START_DATE)
-                        var date2 = new Date(EVENT_START_DATE)
-            
-                        const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-                        diffInDays = Math.floor((date1 - date2) / _MS_PER_DAY);
-                    } else {
-                        diffInDays = 0;
-                    }
-    
-                    if(this.END_DATE != EVENT_END_DATE){
-                        const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-    
-                        var date3 = new Date(this.END_DATE)
-                        var date4 = new Date(EVENT_END_DATE)
-            
-                        diffInEndDates = Math.floor((date3 - date4) / _MS_PER_DAY);
-                        // console.log('days diff', this.diffInEndDates)
-    
-                    } else {
-                        diffInEndDates = 0;
-                    }
-                // }
+                if(this.START_DATE != EVENT_START_DATE){
+                    var date1 = new Date(this.START_DATE)
+                    var date2 = new Date(EVENT_START_DATE)
+        
+                    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+                    diffInDays = Math.floor((date1 - date2) / _MS_PER_DAY);
+                } else {
+                    diffInDays = 0;
+                }
+
+                if(this.END_DATE != EVENT_END_DATE){
+                    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+                    var date3 = new Date(this.END_DATE)
+                    var date4 = new Date(EVENT_END_DATE)
+        
+                    diffInEndDates = Math.floor((date3 - date4) / _MS_PER_DAY);
+                } else {
+                    diffInEndDates = 0;
+                }
             }
 
             // If event original recurrence pattern is not weekly and user changes recurrence to weekly
             // All original recurrence series are deleted and weekly events are created
             if(this.EVENT_DATA.recurrence_pattern !== "weekly" && this.selected === "Weekly"){
-                console.log("WHAT")
                 let rId;
-
                 rId = this.EVENT_DATA.recurring_id
-
-                console.log("RID", rId)
 
                 axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${rId}`)
                 .then(response => {
                     console.log('all recurring event deleted', response)
                 })
+                .catch(error => console.log(error))
 
                 this.createWeekly()
             } 
@@ -672,7 +690,7 @@ export default {
                     newFormEndDate = endDatesArray[i].setDate(endDatesArray[i].getDate() + diffInEndDates)
     
                     const date_end = new Date(newFormEndDate)
-                    if(this.IS_ALL_DAY){
+                    if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                         var updatedFormEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                     } else {
                         const userInputEnd = this.END_TIME
@@ -681,8 +699,6 @@ export default {
                         const hours_end = userInputEnd.slice(0,2)
                         const minute_end = userInputEnd.slice(3)
                         updatedFormEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minute_end)) 
-    
-    
                     }
     
                     if(this.END_DATE === this.START_DATE){
@@ -704,16 +720,17 @@ export default {
                         this.form.endTime = null
                         this.form.startTime = null
                     } else {
-                        this.form.endTime = this.END_TIME
-                        this.form.startTime = this.START_TIME             
+                        this.form.startTime = this.START_TIME  
+
+                        if(this.END_TIME === "" || this.END_TIME === null){
+                            this.form.endTime = this.START_TIME
+                        } else {
+                            this.form.endTime = this.END_TIME
+                        }
                     }
 
-                    // console.log(this.form.startDate , this.form.endDate, this.daysDiff)
-                    console.log("FCK", this.form.startDate , this.form.endDate)
-    
                     var id = this.RECURRING_EVENTS[i]._id
     
-                    console.log(this.form.startDate)
                     axios.post(`http://localhost:3030/calendar/edit/event/${id}` , this.form )
                     .then(response => {
                         console.log("NEW EVENTS",response.data)
@@ -738,9 +755,11 @@ export default {
                 axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${rId}`)
                 .then(response => {
                     console.log('all recurring event deleted', response)
-                })
+                }) 
+                .catch (error => { console.log(error)})
                 this.createDaily()
-            } else if(this.EVENT_DATA.recurrence_pattern === "daily" && this.selected === "Daily"){
+            } 
+            else if(this.EVENT_DATA.recurrence_pattern === "daily" && this.selected === "Daily"){
                 // if start date is changed get the original start and the new start date and get difference in date
                 if(this.START_DATE != EVENT_START_DATE){
 
@@ -797,7 +816,7 @@ export default {
                         endDatesArray[i] = new Date(endDatesArray[i]);
                         newFormEndDate = endDatesArray[i].setDate(endDatesArray[i].getDate() + diffInEndDates)
                         const date_end = new Date(newFormEndDate)
-                        if(this.IS_ALL_DAY){
+                        if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                             updatedFormEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                         } else {
                             const userInputEnd = this.END_TIME
@@ -818,8 +837,13 @@ export default {
                             this.form.endTime = null
                             this.form.startTime = null
                         } else {
-                            this.form.endTime = this.END_TIME
-                            this.form.startTime = this.START_TIME             
+                            this.form.startTime = this.START_TIME  
+
+                            if(this.END_TIME === "" || this.END_TIME === null){
+                                this.form.endTime = this.START_TIME
+                            } else {
+                                this.form.endTime = this.END_TIME
+                            }
                         }
 
                         this.form.title = this.TITLE
@@ -860,28 +884,24 @@ export default {
                                     axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${EVENTS_IN_DATE[j]._id}`)
                                     .then(response => {
                                         console.log('Deleted', response)
-                                        // this.$store.dispatch('getAllEvents')
-                                        // this.$bvModal.hide('warning-modal')
-                                        // this.$bvModal.hide('edit-repeat-event')
-                                        // this.$bvModal.hide('edit-item')
                                     }) 
                                     .catch(error => console.log(error))
                                 }
                             } 
                         } 
-                        this.form.occurs_until = this.DAILY_UNTIL
+                        this.form.occurs_until = this.OCCURS_UNTIL
 
-                        // axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
-                        // .then(response => {
-                        //     console.log("NEW EVENTS",response.data)
-                        //     // "refreshes" the calendar and shows new event that was added
-                        //     this.$store.dispatch('getAllEvents')
-                        //     this.$store.commit('setShowEditModal', false)
-                        //     this.$bvModal.hide('edit-item')
+                        axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
+                        .then(response => {
+                            console.log("NEW EVENTS",response.data)
+                            // "refreshes" the calendar and shows new event that was added
+                            this.$store.dispatch('getAllEvents')
+                            this.$store.commit('setShowEditModal', false)
+                            this.$bvModal.hide('edit-item')
     
-                        //     console.log('form',this.form)
-                        // })
-                        // .catch(error => console.log(error))     
+                            console.log('form',this.form)
+                        })
+                        .catch(error => console.log(error))     
                     }
                 }
             }
@@ -899,6 +919,8 @@ export default {
                 .then(response => {
                     console.log('all recurring event deleted', response)
                 })
+                .catch(error => console.log(error))
+
                 this.createMonthly()
             } else if(this.EVENT_DATA.recurrence_pattern === "monthly" && this.selected === "Monthly"){
                 // if start date is changed get the original start and the new start date and get difference in date
@@ -926,7 +948,7 @@ export default {
                         newFormEndDate = endDatesArray[i].setDate(endDatesArray[i].getDate() + diffInEndDates)
         
                         const date_end = new Date(newFormEndDate)
-                        if(this.IS_ALL_DAY){
+                        if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                             updatedFormEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                         } else {
                             const userInputEnd = this.END_TIME
@@ -950,21 +972,20 @@ export default {
                         this.form.recurring_id = this.RECURRING_ID
                         this.form.recurrence_pattern = this.RECURRENCE_PATTERN
                         this.form.isAllDay = this.IS_ALL_DAY
-                        this.form.occurs_until = this.MONTHLY_UNTIL
+                        this.form.occurs_until = this.OCCURS_UNTIL
 
                         if(this.IS_ALL_DAY){
                             this.form.endTime = null
                             this.form.startTime = null
                         } else {
-                            this.form.endTime = this.END_TIME
-                            this.form.startTime = this.START_TIME             
+                            this.form.startTime = this.START_TIME  
+
+                            if(this.END_TIME === "" || this.END_TIME === null){
+                                this.form.endTime = this.START_TIME
+                            } else {
+                                this.form.endTime = this.END_TIME
+                            }
                         }
-        
-                        // console.log(this.form.startDate , this.form.endDate, this.daysDiff)
-                        console.log("FCK", this.form.startDate , this.form.endDate)
-        
-                        // var id = this.RECURRING_EVENTS[i]._id
-        
                         console.log(this.form.startDate)
                         axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
                         .then(response => {
@@ -996,7 +1017,7 @@ export default {
                         endDatesArray[i] = new Date(endDatesArray[i]);
                         newFormEndDate = endDatesArray[i].setDate(endDatesArray[i].getDate() + diffInEndDates)
                         const date_end = new Date(newFormEndDate)
-                        if(this.IS_ALL_DAY){
+                        if(this.IS_ALL_DAY || this.END_TIME === null || this.END_TIME === ""){                        
                             updatedFormEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                         } else {
                             const userInputEnd = this.END_TIME
@@ -1017,8 +1038,13 @@ export default {
                             this.form.endTime = null
                             this.form.startTime = null
                         } else {
-                            this.form.endTime = this.END_TIME
-                            this.form.startTime = this.START_TIME             
+                            this.form.startTime = this.START_TIME  
+
+                            if(this.END_TIME === "" || this.END_TIME === null){
+                                this.form.endTime = this.START_TIME
+                            } else {
+                                this.form.endTime = this.END_TIME
+                            }
                         }
 
                         this.form.title = this.TITLE
@@ -1028,7 +1054,7 @@ export default {
                         this.form.recurring_id = this.RECURRING_ID
                         this.form.recurrence_pattern = this.RECURRENCE_PATTERN
                         this.form.isAllDay = this.IS_ALL_DAY
-                        this.form.occurs_until = this.MONTHLY_UNTIL
+                        this.form.occurs_until = this.OCCURS_UNTIL
 
                         axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
                         .then(response => {
@@ -1048,12 +1074,13 @@ export default {
         // SET REPEAT OPTIONS
         setNever(){
             this.selected = "Never"
+            this.IS_REPEAT = false
         },
         // DAILY MODAL AND SET DIFFERENCE
         openDailyModal(){
 
             /// get start date and add 4 months as default
-            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === ""){
+            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === "" || this.EVENT_DATA.recurrence_pattern !== 'daily'){
                 const addFourMonths = new Date(this.START_DATE)
                 addFourMonths.setMonth(addFourMonths.getMonth() + 4)
     
@@ -1061,8 +1088,6 @@ export default {
             } else {
                 this.DAILY_UNTIL = this.OCCURS_UNTIL.slice(0,10)
             }
-
-            // console.log(this.DAILY_UNTIL)
 
             this.$bvModal.show('daily-modal')
             
@@ -1074,27 +1099,27 @@ export default {
             this.difference = Math.floor((a - b) / (1000 * 60 * 60 * 24))
 
             this.IS_REPEAT = true
-            this.selected = "Daily"
+            this.OCCURS_UNTIL = this.DAILY_UNTIL
 
-            console.log(this.difference)
+            this.selected = "Daily"
 
             this.$bvModal.hide('daily-modal')
         },
         // WEEKLY MODAL AND SET DIFFERENCE
         openWeeklyModal(){
 
-            /// get start date and add 4 months as default
-            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === ""){
-            const addFullYear = new Date(this.START_DATE)
-            addFullYear.setFullYear(addFullYear.getFullYear() + 1)
+            // get start date and add 4 months as default
+            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === "" || this.EVENT_DATA.recurrence_pattern !== 'weekly'){
+                const addFullYear = new Date(this.START_DATE)
+                addFullYear.setFullYear(addFullYear.getFullYear() + 1)
 
-            this.WEEKLY_UNTIL = addFullYear.toISOString().slice(0,10)
-            } else{
+                this.WEEKLY_UNTIL = addFullYear.toISOString().slice(0,10)
+            } else if (this.EVENT_DATA.recurrence_pattern === 'weekly'){
                 this.WEEKLY_UNTIL = this.OCCURS_UNTIL.slice(0,10)
-            }
+            } 
+
             this.$bvModal.show('weekly-modal')
 
-            console.log(this.DAILY_UNTIL)
         },
         setWeekly() {
             const a = new Date(this.WEEKLY_UNTIL)
@@ -1103,8 +1128,8 @@ export default {
             this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000))
 
             this.IS_REPEAT = true
+            this.OCCURS_UNTIL = this.WEEKLY_UNTIL
 
-            console.log(this.difference)
             this.selected = "Weekly"
 
             this.$bvModal.hide('weekly-modal')
@@ -1113,17 +1138,16 @@ export default {
         // MONTHLY MODAL
         openMonthlyModal(){
             /// get start date and add 4 months as default
-            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === ""){
-            const addMonths = new Date(this.START_DATE)
-            addMonths.setMonth(addMonths.getMonth() + 12)
+            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === "" || this.EVENT_DATA.recurrence_pattern !== 'monthly'){
+                const addFullYear = new Date(this.START_DATE)
+                addFullYear.setFullYear(addFullYear.getFullYear() + 1)
 
-            this.MONTHLY_UNTIL = addMonths.toISOString().slice(0,10)
+                this.MONTHLY_UNTIL = addFullYear.toISOString().slice(0,10)
             } else{
                 this.MONTHLY_UNTIL = this.OCCURS_UNTIL.slice(0,10)
             }
             this.$bvModal.show('monthly-modal')
 
-            console.log(this.DAILY_UNTIL)
         },
         setMonthly() {
             const a = new Date(this.MONTHLY_UNTIL)
@@ -1132,6 +1156,7 @@ export default {
             this.difference = Math.floor(a.getMonth() - b.getMonth() + (12 * (a.getFullYear() - b.getFullYear())))
 
             this.IS_REPEAT = true
+            this.OCCURS_UNTIL = this.MONTHLY_UNTIL
 
             console.log(this.difference)
             this.selected = "Monthly"

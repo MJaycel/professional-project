@@ -370,7 +370,7 @@ export default {
             }            
         } else {
             this.defaultDate = year + '-0' + month + '-' + date
-            if(date < 9){
+            if(date < 10){
                 this.defaultDate = year + '-0' + month + '-0' + date
             }          
         }
@@ -431,7 +431,6 @@ export default {
             if(this.END_DATE !== this.START_DATE){
                 
                 const date_end = new Date(this.END_DATE)
-                // date_end.setHours(hours_end, minutes_end)
                 if(this.IS_ALL_DAY){
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate()))
                 } else{
@@ -452,14 +451,26 @@ export default {
 
             this.form.title = this.TITLE
             this.form.description = this.DESC
-            this.form.startTime = this.START_TIME
-            this.form.endTime = this.END_TIME
             this.form.classes = this.EVENT_CLASS 
             this.form.repeat = this.IS_REPEAT
             this.form.recurring_id = this.RECURRING_ID
             this.form.recurrence_pattern = this.RECURRENCE_PATTERN
             this.form.isAllDay = this.IS_ALL_DAY
-            this.form.occurs_until = this.OCCURS_UNTIL
+
+            if(this.IS_ALL_DAY){
+                this.form.endTime = null
+                this.form.startTime = null
+            } else {
+                this.form.startTime = this.START_TIME  
+
+                if(this.END_TIME === "" || this.END_TIME === null){
+                    this.form.endTime = this.START_TIME
+                } else {
+                    this.form.endTime = this.END_TIME
+                }
+            }
+
+            // this.form.occurs_until = this.OCCURS_UNTIL
         },
 
         postAdd() {
@@ -482,6 +493,8 @@ export default {
         createDaily(){
 
             this.RECURRING_ID = "e" + Math.random().toString(36).substr(2, 10)
+
+            this.form.occurs_until = this.DAILY_UNTIL
 
             this.createRepeatingEvent()
             
@@ -523,6 +536,7 @@ export default {
         createWeekly(){
 
             this.RECURRING_ID = "e" + Math.random().toString(36).substr(2, 10)
+            this.form.occurs_until = this.WEEKLY_UNTIL
 
             this.createRepeatingEvent()
             
@@ -568,7 +582,7 @@ export default {
             this.RECURRING_ID = "e" + Math.random().toString(36).substr(2, 10)
 
             // this.createRepeatingEvent()
-            for(let i = 0; i < this.difference; i++){
+            for(let i = 0; i < this.difference + 1; i++){
                 ////setting start date
                 let newStartDate;
 
@@ -582,7 +596,7 @@ export default {
                     const minutes_start = userInputStart.slice(3)
                     newStartDate = new Date(Date.UTC(date_start.getFullYear(), date_start.getMonth(), date_start.getDate(),hours_start,minutes_start))
                 }
-                newStartDate.setUTCMonth(i)
+                newStartDate.setUTCMonth(newStartDate.getUTCMonth() + i)
                 this.form.startDate = newStartDate
 
                 let newEndDate;
@@ -597,7 +611,7 @@ export default {
                     const minutes_end = userInputEnd.slice(3)
                     newEndDate = new Date(Date.UTC(date_end.getFullYear(), date_end.getMonth(), date_end.getDate(),hours_end,minutes_end))
                 }
-                newEndDate.setUTCMonth(i)
+                newEndDate.setUTCMonth(newEndDate.getUTCMonth() + i)
                 this.form.endDate = newEndDate
 
                 this.RECURRENCE_PATTERN = this.selected.charAt(0).toLowerCase() + this.selected.slice(1)
@@ -611,13 +625,17 @@ export default {
                 this.form.isAllDay = this.IS_ALL_DAY
                 this.form.occurs_until = this.OCCURS_UNTIL
 
-                console.log(this.TITLE)
                 if(this.IS_ALL_DAY){
                     this.form.endTime = null
                     this.form.startTime = null
                 } else {
-                    this.form.endTime = this.END_TIME
-                    this.form.startTime = this.START_TIME             
+                    this.form.startTime = this.START_TIME  
+
+                    if(this.END_TIME === "" || this.END_TIME === null){
+                        this.form.endTime = this.START_TIME
+                    } else {
+                        this.form.endTime = this.END_TIME
+                    }
                 }
 
                 this.postAdd()
@@ -628,21 +646,16 @@ export default {
         // SET REPEAT OPTIONS
         setNever(){
             this.selected = "Never"
+            this.IS_REPEAT = false
         },
         // DAILY MODAL AND SET DIFFERENCE
         openDailyModal(){
 
             /// get start date and add 4 months as default
-            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === ""){
-                const addFourMonths = new Date(this.START_DATE)
-                addFourMonths.setMonth(addFourMonths.getMonth() + 4)
+            const addFourMonths = new Date(this.START_DATE)
+            addFourMonths.setMonth(addFourMonths.getMonth() + 4)
     
-                this.DAILY_UNTIL = addFourMonths.toISOString().slice(0,10)
-            } else {
-                this.DAILY_UNTIL = this.OCCURS_UNTIL.slice(0,10)
-            }
-
-            // console.log(this.DAILY_UNTIL)
+            this.DAILY_UNTIL = addFourMonths.toISOString().slice(0,10)
 
             this.$bvModal.show('daily-modal')
             
@@ -666,14 +679,10 @@ export default {
         openWeeklyModal(){
 
             /// get start date and add 4 months as default
-            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === ""){
             const addFullYear = new Date(this.START_DATE)
             addFullYear.setFullYear(addFullYear.getFullYear() + 1)
 
             this.WEEKLY_UNTIL = addFullYear.toISOString().slice(0,10)
-            } else{
-                this.WEEKLY_UNTIL = this.OCCURS_UNTIL.slice(0,10)
-            }
 
             this.$bvModal.show('weekly-modal')
 
@@ -697,23 +706,24 @@ export default {
         // MONTHLY MODAL
         openMonthlyModal(){
             /// get start date and add 4 months as default
-            if(this.OCCURS_UNTIL === null || this.OCCURS_UNTIL === ""){
-            const addMonths = new Date(this.START_DATE)
-            addMonths.setMonth(addMonths.getMonth() + 12)
+            // const addMonths = new Date(this.START_DATE)
+            // addMonths.setMonth(addMonths.getMonth() + 12)
 
-            this.MONTHLY_UNTIL = addMonths.toISOString().slice(0,10)
-            } else{
-                this.MONTHLY_UNTIL = this.OCCURS_UNTIL.slice(0,10)
-            }
+            // this.MONTHLY_UNTIL = addMonths.toISOString().slice(0,10)
+            const addFullYear = new Date(this.START_DATE)
+            addFullYear.setFullYear(addFullYear.getFullYear() + 1)
+
+            this.MONTHLY_UNTIL = addFullYear.toISOString().slice(0,10)
+
             this.$bvModal.show('monthly-modal')
-
-            console.log(this.DAILY_UNTIL)
         },
         setMonthly() {
             const a = new Date(this.MONTHLY_UNTIL)
             const b = new Date(this.START_DATE)
 
             this.difference = Math.floor(a.getMonth() - b.getMonth() + (12 * (a.getFullYear() - b.getFullYear())))
+            // this.difference = Math.floor((a - b) / (7 * 24 * 60 * 60 * 1000))
+
 
             this.IS_REPEAT = true
             this.OCCURS_UNTIL = this.MONTHLY_UNTIL
@@ -746,7 +756,6 @@ export default {
         },
         //// add as task first 
         addTask() {
-            // console.log('add', this.listId)
             let userId = localStorage.getItem('userId')
 
             if(this.taskForm.title === ''){
@@ -755,7 +764,6 @@ export default {
 
             this.taskForm.progress = 'Not Started'
             this.taskForm.priorityLevel = this.priority
-
 
             axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
             .then(response => {
@@ -784,9 +792,6 @@ export default {
                     this.$bvModal.hide('add-item')                   
                 }) 
                 .catch(error => console.log(error))
-
-
-
             })
             .catch(error => console.log(error))
         },
@@ -833,13 +838,13 @@ export default {
             this.$store.commit('setShowAddModal', false)
         },
     },
-    watch:{
-        items: {
-            handler() {
-                this.$store.dispatch('getAllEvents')
-            }
-        }
-    }
+    // watch:{
+    //     items: {
+    //         handler() {
+    //             this.$store.dispatch('getAllEvents')
+    //         }
+    //     }
+    // }
 }
 </script>
 

@@ -34,16 +34,6 @@ export default new Router ({
                     next({name: 'home'})
                 } else 
                     next()
-
-                //check if logged in
-                // if(store.state.isLoggedIn || to.name === 'LandingPage') {
-                //     console.log('token pass', localStorage.getItem('token'));
-                //     next(false) 
-                //     if(!next(false)){
-                //         next({name : 'page_not_found'})
-                //     }
-                // } else 
-                //     next()
             }
         },
         {
@@ -78,7 +68,6 @@ export default new Router ({
                 //check if logged in
                 if(store.state.isLoggedIn) {
                     console.log('token pass', localStorage.getItem('token'));
-                    // next({name: 'home', params: {id: store.state.user_id}})
                     next(false)
                 } else 
                     //set errors state back

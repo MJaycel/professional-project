@@ -161,20 +161,12 @@ export default new Vuex.Store({
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('userId', response.data.user._id)
                 console.log("Login Succesful", response.data.user)
-
-                const list = response.data.user.todoLists[0]
-
-                context.commit('setFirstList', list)
-                console.log('to do', list)
-
-                
-                console.log(response)
             })
             .catch(error => {
                 if(error){
                     context.commit('setLoginError', true)
                 }
-                console.log(error)
+                console.log(error.response)
             })
         },
         logout(context) {
@@ -194,13 +186,7 @@ export default new Vuex.Store({
             .then(response => {
                 context.commit("setLoggedInStatus", true)
                 context.commit('setErrorsStatus', false)
-                
-                const name = response.data.user.name
-                let arr = []
-                arr = name.split(" ", 2);
-                const firstName = arr[0]
 
-                context.commit("SET_NAME", firstName)
                 router.push({name: 'home', params: {
                     id: response.data.user._id
                 }})

@@ -37,7 +37,7 @@
                     </div>
                     <!-- Right click Menu -->
                     <ul id="right-click-menu" tabindex="-1" ref="right" v-if="viewMenu" @focus="viewMenu = true" @blur="viewMenu=false" :style="{top:top,left:left}">
-                        <li @click="editList">Edit</li>
+                        <li @click="edit">Edit</li>
                         <li @focus="viewMenu = true" @click="showDelete(listId)">Delete</li>
                         <li @focus="viewMenu = true" @click="archiveList(listId)">Archive</li>
                     </ul>
@@ -53,9 +53,6 @@
 
                             <div class="row" style="padding:10px;margin-left:17px; width:300px">
                                 <div v-for="color in colorClasses" :key="color" class="col" style="padding:10px;">
-                                    <!-- <div :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-show="color" icon="check"></b-icon>
-                                    </div> -->
                                     <div v-if="color === 'blue'" :class="color" class="color_themes" @click="setTheme(color)">
                                         <b-icon v-if="listForm.theme === 'blue'" v-show="color" icon="check"></b-icon>
                                     </div>
@@ -88,7 +85,7 @@
                                 <p class="title__input__font">List Title</p>
                                 <b-form-input v-model="listForm.list_title" placeholder="add new list" class="list__title__input"></b-form-input>
 
-                                <b-button class="save__list" @click="EditListName">Edit List</b-button>
+                                <b-button class="save__list" @click="editList">Edit List</b-button>
                             </div>                            
                         </template>
 
@@ -105,32 +102,30 @@
                         </div>                    
                         <div class="row" style="padding:10px;margin-left:17px; width:300px">
                             <div v-for="color in colorClasses" :key="color" class="col" style="padding:10px;">
-                                <!-- <div :class="color" class="color_themes" @click="setTheme(color)">
-                                </div> -->
-                                    <div v-if="color === 'blue'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'blue'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'orange'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'orange'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'darkGreen'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'darkGreen'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'red'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'red'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'green'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'green'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'yellow'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'yellow'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'purple'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'purple'" v-show="color" icon="check"></b-icon>
-                                    </div>
-                                    <div v-if="color === 'pink'" :class="color" class="color_themes" @click="setTheme(color)">
-                                        <b-icon v-if="listForm.theme === 'pink'" v-show="color" icon="check"></b-icon>
-                                    </div>
+                                <div v-if="color === 'blue'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'blue'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'orange'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'orange'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'darkGreen'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'darkGreen'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'red'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'red'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'green'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'green'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'yellow'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'yellow'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'purple'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'purple'" v-show="color" icon="check"></b-icon>
+                                </div>
+                                <div v-if="color === 'pink'" :class="color" class="color_themes" @click="setTheme(color)">
+                                    <b-icon v-if="listForm.theme === 'pink'" v-show="color" icon="check"></b-icon>
+                                </div>
                             </div>                            
                         </div>
 
@@ -144,10 +139,9 @@
                     </template>
 
                 </b-sidebar>
-
+                                                                                                                                                                            
 
                 <!-- Archived lists -->
-                <!-- heading for archived lists -->
                 <div class="mt-5" style="padding-left: 20px;">
                     <span v-if="display" @click="displayArchive" class="font__style" style="cursor:pointer">Hide all archived lists</span>
                     <span v-else @click="displayArchive" class="font__style" style="cursor:pointer">View all archived lists</span>
@@ -156,7 +150,11 @@
                 <div v-if="display" class="row col-12" style="margin-left: 20px;padding:0px;">
                     <p v-if="archivedLists.length <= 0" class="heading_font">No archived List</p>
 
-                    <div @contextmenu="archived($event,list._id)" v-for="list in archivedLists" :key="list._id" :class="list.theme" class="card list_card col-2 d-flex justify-content-center"  style="margin-left: 24px;margin-top:16px;" @click="goToList(list._id)">
+                    <div @contextmenu="archived($event,list._id)" v-for="list in archivedLists" 
+                    :key="list._id" :class="list.theme" 
+                    class="card list_card col-2 d-flex justify-content-center"  
+                    style="margin-left: 24px;margin-top:16px;" 
+                    @click="goToList(list._id)">
                         <p class="list__title">{{list.list_title}}</p>
                     </div>
                     <!-- Right click Menu -->
@@ -221,8 +219,9 @@ export default({
 
             listForm: {
                 list_title: '',
-                theme: ''
+                theme: 'green'
             },
+
 
             LIST_TITLE: '',
 
@@ -238,7 +237,10 @@ export default({
             display: '',
             viewArchivedMenu: false,
 
-            showAdd: false
+            showAdd: false,
+
+            listItems: [],
+            event_id: ''
         }
     },
     mounted(){
@@ -308,41 +310,34 @@ export default({
                 .then(response => {
                     this.lists = response.data
                     console.log('Lists', response.data) 
-                    // this.listForm.list_title = 
                     this.archivedLists = this.lists.filter(list => list.archived === true)
                     this.unArchivedLists = this.lists.filter(list => list.archived === false)
-
                 }) 
                 .catch(error => console.log(error))
+
+
         },
         //testing
         setTheme(color) {
             this.listForm.theme = color
-            // this.selectedTheme = true
             this.selectedTheme = !this.selectedTheme
-            // this.colorSelected = true
-            // console.log('color',this.listForm.theme)
         },        
         /// Add new list
         saveList() {
-
-            if(this.listForm.theme === ''){
-                this.listForm.theme = 'green'
+            if(this.LIST_TITLE === ''){
+                this.LIST_TITLE = 'Untitled'
             }
-            if(this.listForm.list_title === ''){
-                this.listForm.list_title = 'Untitled'
-            }
-
             this.listForm.list_title = this.LIST_TITLE
 
             axios.post(`http://localhost:3030/todo/add/list/${this.userId}`, this.listForm)
-                .then(response => {
-                    this.listForm.list_title = ''
-                    this.listForm.theme = ''
-                    console.log('added', response.data)
-                    this.getAllLists()
-                }) 
-                .catch(error => console.log(error))
+            .then(response => {
+                this.getAllLists()
+                this.LIST_TITLE = ''
+                this.showAdd = false
+                
+                console.log('added', response.data)
+            }) 
+            .catch(error => console.log(error))
         },
 
         /// direct page to single list
@@ -351,13 +346,12 @@ export default({
             this.$router.push({
                 name: 'single_todo',
                 params: {
-                    id: this.userId
+                    id: id
                 }
             })
         },
         showDelete(id) {
             this.id = id
-            console.log(this.$route.params.id, this.id)
             this.$bvModal.show('delete-list')
         },
         deleteList(){
@@ -366,18 +360,18 @@ export default({
             axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.id}`)
             .then(response => {
                 console.log('Deleted', response)
-
                 this.getAllLists()
-                // this.editForm.list_title = ''
+                this.checkItems()
                 this.hideDelete()
                 this.showAlert()
+
             }) 
             .catch(error => console.log(error))
         },
         hideDelete() {
             this.$bvModal.hide('delete-list')
         },
-        editList(){
+        edit(){
             console.log('edit list')
             this.getListData()
             this.showEdit = true
@@ -387,26 +381,22 @@ export default({
             /////getting from users collection
             axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}`)
             .then(response => {
-                console.log(response.data[0])
-                // this.editForm.list_title = response.data[0].list_title
+                console.log('List data',response.data[0])
                 this.listForm.list_title = response.data[0].list_title
                 this.listForm.theme = response.data[0].theme
             })
             .catch(error => console.log(error))
         },
-        EditListName() {
-            // console.log('got the id', this.listId)
-
+        editList() {
             axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.listForm)
                 .then(response => {
                     console.log('edited', response.data)
-                    this.edit = false
+                    this.showEdit = false
                     this.getAllLists()
                 }) 
                 .catch(error => console.log(error))
         },
         archiveList(id) {
-            // let userId = localStorage.getItem('userId')
 
             this.setArchive.archived = true
 
@@ -428,6 +418,42 @@ export default({
                 }) 
                 .catch(error => console.log(error))
         },
+        checkItems(){
+
+            // loop through items
+            for(let i = 0; i < this.lists.length; i++){
+                this.listItems = this.lists[i].items
+
+                for(let j = 0; j < this.listItems.length; j++){
+                    /// get each items id and use the ids to find items in calendar
+                    // then delete events if list is deleted
+                    this.findInEvents(this.listItems[j]._id)
+
+                    this.deleteEvent()
+                    console.log('items length', this.listItems[j]._id)
+                }
+            }
+        },
+        findInEvents(id) {
+            this.$store.dispatch('getAllEvents')
+
+            console.log('EVENTS FROM CAL', this.$store.state.items)
+            /// looping through each events and find the item that has the id that is being passed 
+            // if found set event_id as the event that was found
+            Array.from(this.$store.state.items).forEach((item)=> {
+                if(item.item_id === id){
+                    this.event_id = item._id
+                }    
+            })
+        },
+        deleteEvent() {
+            let userId = localStorage.getItem('userId')
+            axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
+            .then(response => {
+                console.log('Deleted', response)
+            }) 
+            .catch(error => console.log(error))
+        }
     },
     watch:{
         unArchivedLists: {
@@ -497,9 +523,6 @@ export default({
     color: #DC9100 !important;
 
 }
-/* .orange:hover{
-    background-color: #c08819 !important;
-} */
 
 .blue {
     background-color: #201E80 !important;

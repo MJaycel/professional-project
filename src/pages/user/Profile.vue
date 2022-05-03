@@ -107,7 +107,12 @@ export default {
                     console.log(response.data)
                     this.$store.dispatch('getUser')
                     this.hideModal()
-                }) .catch(error => console.log(error))
+                }) 
+                .catch((error) => {
+                    this.validateEmail()
+                    console.log(error)
+
+                })
             }
         },
         validatePassword(){
@@ -127,12 +132,12 @@ export default {
                 this.form.email = this.email
             }
 
-            // loop through all users excluding current user and compare the email with the other users
+            // loop through all users excluding current user and compare the email with the other users                                                          
             // if found the same show error 
             Array.from(this.users).forEach((user)=> {
                 if(this.email === user.email){
                     this.emailExist = true
-                    console.log('efdfds')
+                    console.log('email exists')
                 } else {
                     this.emailExist = false
                     this.form.email = this.email
