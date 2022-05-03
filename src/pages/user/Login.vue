@@ -42,8 +42,8 @@ export default {
     data() {
         return{
             form: {
-                email: "admin.jaycel@focushub.com",
-                password: "mypassword"
+                email: "",
+                password: ""
             },
         }
     },
