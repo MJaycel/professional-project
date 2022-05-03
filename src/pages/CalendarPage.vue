@@ -29,7 +29,8 @@
                     :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
                     :displayPeriodUom="period"
                     @click-item='clickItem'
-                    class="theme-default cal">
+                    class="theme-default cal"
+                    style="height:90vh;">
                     <template #header="{ headerProps }">
                         <div class="row justify-content-between">
                             <div class="col row d-flex justify-content-start">
