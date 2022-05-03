@@ -80,7 +80,7 @@ export default {
     methods:{
         getData(){
             let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/user/${userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/user/${userId}`)
             .then(response => {
                 this.user = response.data
                 this.password = this.user.password.slice(0,15)
@@ -101,7 +101,7 @@ export default {
             this.validateEmail()
             this.validateName()
             if(!this.showPassError  &&!this.emailExist && !this.emailEmpty && !this.nameEmpty && !this.nameChar){
-                axios.post(`http://localhost:3030/edit/user/${userId}` , this.form)
+                axios.post(`https://focus-hub.herokuapp.com/edit/user/${userId}` , this.form)
                 .then(response => {
                     // this.user = response.data
                     console.log(response.data)
@@ -160,7 +160,7 @@ export default {
         },
         getAllUsers() {
             let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/users`)
+            axios.get(`https://focus-hub.herokuapp.com/users`)
             .then(response => {
                 this.users = response.data
 

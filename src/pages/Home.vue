@@ -237,7 +237,7 @@ export default {
 
     },
     created(){
-        axios.get(`http://localhost:3030/todo/${this.userId}`)
+        axios.get(`https://focus-hub.herokuapp.com/todo/${this.userId}`)
             .then(response => {
                 this.list = response.data[0]
                 this.lists = response.data
@@ -350,7 +350,7 @@ export default {
             this.taskForm.inCalendar = false
 
 
-            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
+            axios.post(`https://focus-hub.herokuapp.com/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
                 this.taskTitle = ''
@@ -365,7 +365,7 @@ export default {
             this.taskForm.title = task.title
 
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.selectedList}/item/${id}`, this.taskForm)
+            axios.post(`https://focus-hub.herokuapp.com/todo/edit/user/${userId}/list/${this.selectedList}/item/${id}`, this.taskForm)
             .then(response => {
                 console.log('item edited', response.data)
 
@@ -375,7 +375,7 @@ export default {
         ///////////// GET LIST DATA 
         getListData(){
             /////getting from users collection
-            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.selectedList}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/user/${this.userId}/list/${this.selectedList}`)
             .then(response => {
                 console.log(response.data[0])
                     this.tasks = response.data[0].items
@@ -386,7 +386,7 @@ export default {
         },
         // Get Item
         getItem(id) {
-            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.selectedList}/item/${id}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/user/${this.userId}/list/${this.selectedList}/item/${id}`)
             .then(response => {
                 console.log('EDIT',response.data[0].todoLists.items)
                 this.item = response.data[0].todoLists.items
@@ -419,7 +419,7 @@ export default {
             this.taskForm.inCalendar = task.inCalendar
             this.taskForm.isComplete = true
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.selectedList}/item/${id}`, this.taskForm) 
+            axios.post(`https://focus-hub.herokuapp.com/todo/edit/user/${userId}/list/${this.selectedList}/item/${id}`, this.taskForm) 
             .then(response => {
                 console.log("set complete", response.data)
                 this.getAllLists()
@@ -429,7 +429,7 @@ export default {
         deleteTask(id){
             let userId = localStorage.getItem('userId')
 
-            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.selectedList}/item/${id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/todo/delete/user/${userId}/list/${this.selectedList}/item/${id}`)
             .then(response => {
                 this.showAlert()
                 console.log('DELETED' ,response)
@@ -456,7 +456,7 @@ export default {
         deleteEvent() {
             this.findInEvents()
             let userId = localStorage.getItem('userId')
-            axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${userId}/event/${this.event_id}`)
             .then(response => {
                 console.log('Deleted', response)
                 // this.$store.dispatch('getAllEvents')
@@ -480,7 +480,7 @@ export default {
         todaysEvents() {
             //get all events first
             let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/calendar/${userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/calendar/${userId}`)
             .then(response=> {
                 this.dateItems = response.data
                     this.dateItems.forEach(events => {

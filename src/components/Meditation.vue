@@ -50,7 +50,7 @@ export default ({
 
         getMeditationAudio(){
             axios
-            .get(`http://localhost:3030/meditation`)
+            .get(`https://focus-hub.herokuapp.com/meditation`)
             .then(response => {
                 console.log("Meditation is here: ", response.data)
                 this.meditations = response.data

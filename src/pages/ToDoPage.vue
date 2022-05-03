@@ -306,7 +306,7 @@ export default({
         },
         //// get all users lists
         getAllLists(){
-            axios.get(`http://localhost:3030/todo/${this.userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/${this.userId}`)
                 .then(response => {
                     this.lists = response.data
                     console.log('Lists', response.data) 
@@ -329,7 +329,7 @@ export default({
             }
             this.listForm.list_title = this.LIST_TITLE
 
-            axios.post(`http://localhost:3030/todo/add/list/${this.userId}`, this.listForm)
+            axios.post(`https://focus-hub.herokuapp.com/todo/add/list/${this.userId}`, this.listForm)
             .then(response => {
                 this.getAllLists()
                 this.LIST_TITLE = ''
@@ -357,7 +357,7 @@ export default({
         deleteList(){
             let userId = localStorage.getItem('userId')
 
-            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/todo/delete/user/${userId}/list/${this.id}`)
             .then(response => {
                 console.log('Deleted', response)
                 this.getAllLists()
@@ -379,7 +379,7 @@ export default({
         },
         getListData(){
             /////getting from users collection
-            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.listId}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/user/${this.userId}/list/${this.listId}`)
             .then(response => {
                 console.log('List data',response.data[0])
                 this.listForm.list_title = response.data[0].list_title
@@ -388,7 +388,7 @@ export default({
             .catch(error => console.log(error))
         },
         editList() {
-            axios.post(`http://localhost:3030/todo/edit/list/${this.listId}`, this.listForm)
+            axios.post(`https://focus-hub.herokuapp.com/todo/edit/list/${this.listId}`, this.listForm)
                 .then(response => {
                     console.log('edited', response.data)
                     this.showEdit = false
@@ -400,7 +400,7 @@ export default({
 
             this.setArchive.archived = true
 
-            axios.post(`http://localhost:3030/todo/archive/list/${id}`, this.setArchive)
+            axios.post(`https://focus-hub.herokuapp.com/todo/archive/list/${id}`, this.setArchive)
                 .then(response => {
                     console.log('edited', response.data)
                     this.getAllLists()
@@ -411,7 +411,7 @@ export default({
 
             this.setArchive.archived = false
 
-            axios.post(`http://localhost:3030/todo/archive/list/${id}`, this.setArchive)
+            axios.post(`https://focus-hub.herokuapp.com/todo/archive/list/${id}`, this.setArchive)
                 .then(response => {
                     console.log('edited', response.data)
                     this.getAllLists()
@@ -448,7 +448,7 @@ export default({
         },
         deleteEvent() {
             let userId = localStorage.getItem('userId')
-            axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${userId}/event/${this.event_id}`)
             .then(response => {
                 console.log('Deleted', response)
             }) 

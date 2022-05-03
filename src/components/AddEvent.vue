@@ -474,7 +474,7 @@ export default {
         },
 
         postAdd() {
-            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${this.userId}` , this.form )
                 .then(response => {
                     console.log("NEW EVENTS",response.data.events)
                     // "refreshes" the calendar and shows new event that was added
@@ -737,7 +737,7 @@ export default {
         },
         // DELETE EVENT
         deleteEvent(id){
-            axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${this.userId}/event/${id}`)
             .then(response => {
                 console.log('Deleted', response)
             }) 
@@ -746,7 +746,7 @@ export default {
         ////////// TASKS
         //// get all users lists
         getAllLists(){
-            axios.get(`http://localhost:3030/todo/${this.userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/${this.userId}`)
             .then(response => {
                 this.lists = response.data
                 this.selectedList = response.data[0]._id
@@ -765,11 +765,11 @@ export default {
             this.taskForm.progress = 'Not Started'
             this.taskForm.priorityLevel = this.priority
 
-            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
+            axios.post(`https://focus-hub.herokuapp.com/todo/add/user/${userId}/list/${this.selectedList}`, this.taskForm)
             .then(response => {
                 console.log('New task added', response.data)
 
-                axios.get(`http://localhost:3030/todo/${userId}`)
+                axios.get(`https://focus-hub.herokuapp.com/todo/${userId}`)
                 .then(response => {
                     this.todoLists = response.data
                     console.log('Lists', this.todoLists) 
@@ -822,7 +822,7 @@ export default {
             this.calForm.item_id = this.lastItemId 
 
             let userId = localStorage.getItem('userId')
-            axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
+            axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${userId}` , this.calForm )
             .then(response => {
                 console.log("Task added to calendar",response.data)
                 this.$store.dispatch('getAllEvents')

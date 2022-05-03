@@ -255,7 +255,7 @@ export default {
         },
         /// GET EVENT DATA AND FILLS IN THE FORM
         getData(){
-            axios.get(`http://localhost:3030/calendar/user/${this.userId}/event/${this.id}`)
+            axios.get(`https://focus-hub.herokuapp.com/calendar/user/${this.userId}/event/${this.id}`)
             .then(response => {
                 console.log('Found Event', response.data[0].events)
                     this.EVENT_DATA = response.data[0].events
@@ -384,7 +384,7 @@ export default {
         },
 
         postEdit() {
-            axios.post(`http://localhost:3030/calendar/edit/event/${this.id}` , this.form )
+            axios.post(`https://focus-hub.herokuapp.com/calendar/edit/event/${this.id}` , this.form )
             .then(response => {
                 console.log("NEW EVENTS",response.data)
                 // "refreshes" the calendar and shows new event that was added
@@ -400,7 +400,7 @@ export default {
         createRepeatingEvent(){
             this.setForm()
 
-            axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+            axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${this.userId}` , this.form )
             .then(response => {
                 console.log("NEW EVENTS",response.data.events)
                 // "refreshes" the calendar and shows new event that was added
@@ -449,7 +449,7 @@ export default {
                 }
                 this.form.endDate = newEndDate
 
-                axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${this.userId}` , this.form )
                 .then(response => {
                     console.log("NEW EVENTS",response.data.events)
                     // "refreshes" the calendar and shows new event that was added
@@ -501,7 +501,7 @@ export default {
                 }
                 this.form.endDate = newEndDate
 
-                axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${this.userId}` , this.form )
                 .then(response => {
                     console.log("NEW EVENTS",response.data.events)
                     // "refreshes" the calendar and shows new event that was added
@@ -575,7 +575,7 @@ export default {
                     }
                 }
 
-                axios.post(`http://localhost:3030/calendar/add/event/${this.userId}` , this.form )
+                axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${this.userId}` , this.form )
                 .then(response => {
                     console.log("NEW EVENTS",response.data.events)
                     // "refreshes" the calendar and shows new event that was added
@@ -656,7 +656,7 @@ export default {
                 let rId;
                 rId = this.EVENT_DATA.recurring_id
 
-                axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${rId}`)
+                axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/many/user/${this.userId}/event/${rId}`)
                 .then(response => {
                     console.log('all recurring event deleted', response)
                 })
@@ -731,7 +731,7 @@ export default {
 
                     var id = this.RECURRING_EVENTS[i]._id
     
-                    axios.post(`http://localhost:3030/calendar/edit/event/${id}` , this.form )
+                    axios.post(`https://focus-hub.herokuapp.com/calendar/edit/event/${id}` , this.form )
                     .then(response => {
                         console.log("NEW EVENTS",response.data)
                         // "refreshes" the calendar and shows new event that was added
@@ -752,7 +752,7 @@ export default {
 
                 console.log("RID", rId)
 
-                axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${rId}`)
+                axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/many/user/${this.userId}/event/${rId}`)
                 .then(response => {
                     console.log('all recurring event deleted', response)
                 }) 
@@ -782,7 +782,7 @@ export default {
                             let eventsArray = this.RECURRING_EVENTS.filter(item => item.startDate.slice(0,10) === dateArray[j].toISOString().slice(0,10))
                             EVENTS_IN_DATE.push(eventsArray[0])
 
-                            axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${EVENTS_IN_DATE[j]._id}`)
+                            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${this.userId}/event/${EVENTS_IN_DATE[j]._id}`)
                             .then(response => {
                                 console.log('Deleted', response)
                                 this.$store.dispatch('getAllEvents')
@@ -881,7 +881,7 @@ export default {
 
                                     console.log('current Date', EVENTS_IN_DATE)
 
-                                    axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${EVENTS_IN_DATE[j]._id}`)
+                                    axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${this.userId}/event/${EVENTS_IN_DATE[j]._id}`)
                                     .then(response => {
                                         console.log('Deleted', response)
                                     }) 
@@ -891,7 +891,7 @@ export default {
                         } 
                         this.form.occurs_until = this.OCCURS_UNTIL
 
-                        axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
+                        axios.post(`https://focus-hub.herokuapp.com/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
                         .then(response => {
                             console.log("NEW EVENTS",response.data)
                             // "refreshes" the calendar and shows new event that was added
@@ -915,7 +915,7 @@ export default {
 
                 console.log("RID", rId)
 
-                axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${rId}`)
+                axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/many/user/${this.userId}/event/${rId}`)
                 .then(response => {
                     console.log('all recurring event deleted', response)
                 })
@@ -987,7 +987,7 @@ export default {
                             }
                         }
                         console.log(this.form.startDate)
-                        axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
+                        axios.post(`https://focus-hub.herokuapp.com/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
                         .then(response => {
                             console.log("NEW EVENTS",response.data)
                             // "refreshes" the calendar and shows new event that was added
@@ -1056,7 +1056,7 @@ export default {
                         this.form.isAllDay = this.IS_ALL_DAY
                         this.form.occurs_until = this.OCCURS_UNTIL
 
-                        axios.post(`http://localhost:3030/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
+                        axios.post(`https://focus-hub.herokuapp.com/calendar/edit/event/${this.RECURRING_EVENTS[i]._id}` , this.form )
                         .then(response => {
                             console.log("NEW EVENTS",response.data)
                             // "refreshes" the calendar and shows new event that was added
@@ -1167,7 +1167,7 @@ export default {
         },
         // DELETE EVENT
         deleteEvent(id){
-            axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${this.userId}/event/${id}`)
             .then(response => {
                 console.log('Deleted', response)
             }) 

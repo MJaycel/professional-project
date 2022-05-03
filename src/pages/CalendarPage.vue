@@ -277,7 +277,7 @@ export default ({
         },
         showEvent(id) {
             let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/calendar/user/${userId}/event/${id}`)
+            axios.get(`https://focus-hub.herokuapp.com/calendar/user/${userId}/event/${id}`)
             .then(response => {
                 console.log('Found Event', response.data[0].events)
                 this.event = response.data[0].events
@@ -341,7 +341,7 @@ export default ({
             if(this.event.item_id != null){
                 this.deleteTask()
             }
-            axios.delete(`http://localhost:3030/calendar/delete/user/${this.userId}/event/${this.id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${this.userId}/event/${this.id}`)
             .then(response => {
                 this.showAlert()
                 console.log('Deleted', response)
@@ -366,7 +366,7 @@ export default ({
         getLists(){
             // let userId = localStorage.getItem('userID')
             //// get all lists then loop through it and find list id with the item id 
-            axios.get(`http://localhost:3030/todo/${this.userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/${this.userId}`)
             .then(response => {
                 this.lists = response.data
                 console.log('LISTSS', this.lists)
@@ -389,7 +389,7 @@ export default ({
         },
         deleteAllEvent(){
 
-            axios.delete(`http://localhost:3030/calendar/delete/many/user/${this.userId}/event/${this.rId}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/many/user/${this.userId}/event/${this.rId}`)
             .then(response => {
                 this.showAlert()
                 console.log('all recurring event deleted', response)
@@ -412,7 +412,7 @@ export default ({
 
             let userId = localStorage.getItem('userId')
 
-            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.item_list_id}/item/${this.event.item_id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/todo/delete/user/${userId}/list/${this.item_list_id}/item/${this.event.item_id}`)
             .then(response => {
                 this.showAlert()
                 console.log('Deleted', response)

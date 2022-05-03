@@ -158,7 +158,7 @@ export default {
 
     getAudio(){
       axios
-      .get(`http://localhost:3030/songs`)
+      .get(`https://focus-hub.herokuapp.com/songs`)
       .then(response => {
         console.log("music is here", response.data)
         this.songs = response.data
@@ -220,7 +220,7 @@ export default {
     },
     insertVideo(videoDetails){
       // let userId = localStorage.getItem('userId')
-      axios.post(`http://localhost:3030/youtube/add/${this.user_id}`, {
+      axios.post(`https://focus-hub.herokuapp.com/youtube/add/${this.user_id}`, {
         youtube_link: videoDetails.youtube_link,
         video_title: videoDetails.video_title,
         user_id: videoDetails.user_id
@@ -238,7 +238,7 @@ export default {
 
     getAllVideos(){
       let userId = localStorage.getItem('userId')
-      axios.get(`http://localhost:3030/youtube/${userId}`)
+      axios.get(`https://focus-hub.herokuapp.com/youtube/${userId}`)
       .then(response => {
         console.log("data is here", response.data)
         this.videos = response.data

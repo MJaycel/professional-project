@@ -287,7 +287,7 @@ export default ({
         // Get Item
         getItem() {
 
-            axios.get(`http://localhost:3030/todo/user/${this.userId}/list/${this.list_id}/item/${this.id}`)
+            axios.get(`https://focus-hub.herokuapp.com/todo/user/${this.userId}/list/${this.list_id}/item/${this.id}`)
             .then(response => {
                 console.log('ITEMS',response.data[0].todoLists.items)
                 this.item = response.data[0].todoLists.items
@@ -352,7 +352,7 @@ export default ({
                 this.deleteEvent()
             }
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}`, this.taskForm)
+            axios.post(`https://focus-hub.herokuapp.com/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}`, this.taskForm)
             .then(response => {
                 this.addItemtoCal()
                 console.log('item edited', response.data)
@@ -369,7 +369,7 @@ export default ({
         deleteTask() {
             let userId = localStorage.getItem('userId')
 
-            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.list_id}/item/${this.id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/todo/delete/user/${userId}/list/${this.list_id}/item/${this.id}`)
             .then(response => {
                 console.log(response)
                 this.$bvModal.hide('task-details-modal')
@@ -384,7 +384,7 @@ export default ({
             this.findInEvents()
             
             let userId = localStorage.getItem('userId')
-            axios.delete(`http://localhost:3030/calendar/delete/user/${userId}/event/${this.event_id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/calendar/delete/user/${userId}/event/${this.event_id}`)
             .then(response => {
                 console.log('Deleted', response)
             }) 
@@ -426,7 +426,7 @@ export default ({
 
 
             if(this.itemInCalendar === true){
-                axios.post(`http://localhost:3030/calendar/edit/event/${this.event_id}` , this.calForm )
+                axios.post(`https://focus-hub.herokuapp.com/calendar/edit/event/${this.event_id}` , this.calForm )
                 .then(response => {
                     console.log("Edit item due date",response.data.events)
                     this.$store.dispatch('getAllEvents')
@@ -437,7 +437,7 @@ export default ({
                 })
             } else {
                 let userId = localStorage.getItem('userId')
-                axios.post(`http://localhost:3030/calendar/add/event/${userId}` , this.calForm )
+                axios.post(`https://focus-hub.herokuapp.com/calendar/add/event/${userId}` , this.calForm )
                 .then(response => {
                     console.log("Task added to calendar",response.data)
                     this.$store.dispatch('getAllEvents')
@@ -470,7 +470,7 @@ export default ({
 
             this.subTaskForm.title = this.subTask_title
 
-            axios.post(`http://localhost:3030/todo/add/user/${userId}/list/${this.list_id}/item/${this.id}`, this.subTaskForm) 
+            axios.post(`https://focus-hub.herokuapp.com/todo/add/user/${userId}/list/${this.list_id}/item/${this.id}`, this.subTaskForm) 
             .then(response => {
                 console.log("Sub Task Added", response.data)
                 this.getItem()
@@ -492,7 +492,7 @@ export default ({
 
             this.subTaskForm.title = task.title
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${subTaskID}`, this.subTaskForm) 
+            axios.post(`https://focus-hub.herokuapp.com/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${subTaskID}`, this.subTaskForm) 
             .then(response => {
                 console.log("Sub Task Added", response.data)
                 this.getItem()
@@ -505,7 +505,7 @@ export default ({
             this.subTaskForm.title = task.title
             this.subTaskForm.isComplete = !this.subTaskForm.isComplete
 
-            axios.post(`http://localhost:3030/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${id}`, this.subTaskForm) 
+            axios.post(`https://focus-hub.herokuapp.com/todo/edit/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${id}`, this.subTaskForm) 
             .then(response => {
                 console.log("Sub Task Added", response.data)
                 // this.subTaskForm.title = ''
@@ -516,7 +516,7 @@ export default ({
         deleteSubTask(id){
             let userId = localStorage.getItem('userId')
 
-            axios.delete(`http://localhost:3030/todo/delete/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${id}`)
+            axios.delete(`https://focus-hub.herokuapp.com/todo/delete/user/${userId}/list/${this.list_id}/item/${this.id}/subTask/${id}`)
             .then(response => {
                 console.log('DELETED' ,response)
                 this.getItem()
@@ -529,7 +529,7 @@ export default ({
 
             this.setArchive.archived = true
 
-            axios.post(`http://localhost:3030/todo/archive/user/${userId}/list/${this.list_id}/item/${this.id}`, this.setArchive)
+            axios.post(`https://focus-hub.herokuapp.com/todo/archive/user/${userId}/list/${this.list_id}/item/${this.id}`, this.setArchive)
                 .then(response => {
                     console.log('edited', response.data)
                     this.getItem()
@@ -544,7 +544,7 @@ export default ({
 
             this.setArchive.archived = false
 
-            axios.post(`http://localhost:3030/todo/archive/user/${userId}/list/${this.list_id}/item/${this.id}`, this.setArchive)
+            axios.post(`https://focus-hub.herokuapp.com/todo/archive/user/${userId}/list/${this.list_id}/item/${this.id}`, this.setArchive)
                 .then(response => {
                     console.log('edited', response.data)
                     this.hideModal()

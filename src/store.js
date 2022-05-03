@@ -147,7 +147,7 @@ export default new Vuex.Store({
     },
     actions: {
         login(context, credentials){
-            axios.post("http://localhost:3030/login", {
+            axios.post("https://focus-hub.herokuapp.com/login", {
                 email: credentials.email,
                 password: credentials.password
             }) 
@@ -178,7 +178,7 @@ export default new Vuex.Store({
 
         ///////// CREATE
         register(context, credentials){
-            axios.post("http://localhost:3030/register", {
+            axios.post("https://focus-hub.herokuapp.com/register", {
                 name: credentials.name,
                 email: credentials.email,
                 password: credentials.password
@@ -206,7 +206,7 @@ export default new Vuex.Store({
         //////get all events
         getAllEvents(context) {
             let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/calendar/${userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/calendar/${userId}`)
                 .then(response=> {
                     // this.items = response.data
                     context.commit('setCalendarItems', response.data)
@@ -217,7 +217,7 @@ export default new Vuex.Store({
         },
         getUser(context){
             let userId = localStorage.getItem('userId')
-            axios.get(`http://localhost:3030/user/${userId}`)
+            axios.get(`https://focus-hub.herokuapp.com/user/${userId}`)
             .then(response => {
                 console.log('User',response.data)
                 const USER_NAME = response.data.name
@@ -231,7 +231,7 @@ export default new Vuex.Store({
             .catch(error => console.log(error))
         },
         getAllUsers(context) {
-            axios.get(`http://localhost:3030/users`)
+            axios.get(`https://focus-hub.herokuapp.com/users`)
             .then(response => {
                 context.commit('setUsers', response.data)
             })
@@ -239,7 +239,7 @@ export default new Vuex.Store({
         },
         // getAllToDo(context) {
         //     let userId = localStorage.getItem('userId')
-        //     axios.get(`http://localhost:3030/todo/${userId}`)
+        //     axios.get(`https://focus-hub.herokuapp.com/todo/${userId}`)
         //         .then(response => {
         //             context.commit('setToDoLists', response.data)
         //             console.log('Lists', response.data)
